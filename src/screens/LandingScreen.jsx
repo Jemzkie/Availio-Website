@@ -7,9 +7,6 @@ function HeroSection() {
   return (
     <div>
       <FirstSection />
-      <DealsSection />
-      <StatsSection />
-      <DownloadAppSection />
     </div>
   );
 }
