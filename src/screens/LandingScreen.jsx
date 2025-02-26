@@ -5,8 +5,11 @@ import StatsSection from "../components/Landing/StatsSection";
 import DownloadAppSection from "../components/Landing/DownloadAppSection";
 function HeroSection() {
   return (
-    <div>
+    <div className="w-full h-auto pb-32">
       <FirstSection />
+      <StatsSection />
+      <DealsSection />
+      <DownloadAppSection />
     </div>
   );
 }
