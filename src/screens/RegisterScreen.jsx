@@ -29,7 +29,7 @@ function Register() {
           <p>Or Sign up with</p>
           <button className="social-button">Facebook</button>
           <button className="social-button">Google</button>
-          <button className="social-button">Apple</button>
+          <button className="soci al-button">Apple</button>
         </div>
       </div>
     </div>
