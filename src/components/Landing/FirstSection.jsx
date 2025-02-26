@@ -9,29 +9,10 @@ import Suzuki from "../../assets/images/Suzuki.png";
 import Kymco from "../../assets/images/Kymco.png";
 import Sunra from "../../assets/images/Sunra.jpg";
 import Vespa from "../../assets/images/Vespa.png";
-import fetchUser from "../../hooks/fetchUser";
 
 const FirstSection = () => {
-  const uid = "SA7eUtDBejX3uv05LsnmRrQwrkh2";
-  useEffect(() => {
-    const fetchAndSetUserData = async () => {
-      try {
-        const data = await fetchUser(uid);
-        if (data) {
-          console.log("Fetched user data:", data);
-          s;
-        } else {
-          console.error("Failed to fetch user data.");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchAndSetUserData();
-  }, [uid]);
   return (
-    <div className=" h-screen flex flex-col px-20 debug overflow-x-hidden">
+    <div className=" h-screen flex flex-col px-20 overflow-x-hidden">
       <Header />
       <div className="w-full flex flex-row">
         <div className="w-1/2 text-6xl mt-28  ">
