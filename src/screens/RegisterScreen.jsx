@@ -1,4 +1,10 @@
 import React, { useState } from "react";
+import logo from "../assets/images/logo.png";
+import back from "../assets/images/back.png";
+import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { FaApple } from "react-icons/fa";
+import Footer from "../components/General/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import {
   registerUser,
@@ -6,12 +12,6 @@ import {
   signInWithFacebook,
   signInWithApple,
 } from "../hooks/userService";
-import logo from "../assets/images/logo.png";
-import back from "../assets/images/back.png";
-import { FaFacebook } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa";
-import Footer from "../components/General/Footer";
 
 function Register() {
   const [userData, setUserData] = useState({
@@ -41,20 +41,33 @@ function Register() {
   // Handle registration
   const handleRegister = async () => {
     setError("");
-    setLoading(true);
 
-    let isMounted = true; // Track if component is still mounted
-
-    if (
-      !userData.firstName ||
-      !userData.lastName ||
-      !userData.email ||
-      !userData.phone ||
-      !userData.password
-    ) {
-      if (isMounted) setError("Please fill all fields.");
+    if (!userData.firstName || !userData.lastName || !userData.email || !userData.phone || !userData.password) {
+      setError("Please fill all fields.");
       return;
     }
+
+    if (!validateEmail(userData.email)) {
+      setError("Invalid email format.");
+      return;
+    }
+
+    if (!validatePhone(userData.phone)) {
+      setError("Phone number must be between 10-15 digits.");
+      return;
+    }
+
+    if (userData.password !== userData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (!agreeTerms) {
+      setError("You must agree to the terms and privacy policy.");
+      return;
+    }
+
+    setLoading(true);
 
     const response = await registerUser(userData.email, userData.password, {
       firstName: userData.firstName,
@@ -62,47 +75,33 @@ function Register() {
       phone: userData.phone,
     });
 
-    if (isMounted) {
-      setLoading(false);
-      if (response.success) {
-        navigate("/dashboard");
-      } else {
-        setError(response.error);
-      }
+    setLoading(false);
+
+    if (response.success) {
+      navigate("/dashboard");
+    } else {
+      setError(response.error);
     }
-
-    return () => {
-      isMounted = false;
-    };
   };
 
+  // Handle social sign-in
   const handleSocialLogin = async (provider) => {
-    // try {
-    //   setError("");
-    //   setLoading(true);
-    //   let response;
-    //   if (provider === "google") {
-    //     response = await signInWithGoogle();
-    //   } else if (provider === "facebook") {
-    //     response = await signInWithFacebook();
-    //   } else if (provider === "apple") {
-    //     response = await signInWithApple();
-    //   } else {
-    //     throw new Error("Invalid authentication provider.");
-    //   }
-    //   if (response?.success) {
-    //     navigate("/dashboard");
-    //   } else {
-    //     setError(response?.error || "Something went wrong.");
-    //   }
-    // } catch (error) {
-    //   console.error("Social login error:", error); // Log to debug
-    //   setError(error.message || "Login failed.");
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+    setError("");
+    setLoading(true);
 
+    let response;
+    if (provider === "google") response = await signInWithGoogle();
+    if (provider === "facebook") response = await signInWithFacebook();
+    if (provider === "apple") response = await signInWithApple();
+
+    setLoading(false);
+
+    if (response.success) {
+      navigate("/dashboard");
+    } else {
+      setError(response.error);
+    }
+  };
   return (
     <div>
       <div className="w-full h-auto flex flex-col p-16 gap-5">
@@ -121,21 +120,24 @@ function Register() {
                 <input
                   type="text"
                   name="firstName"
-                  placeholder="First Name"
+                  value={userData.firstName}
                   onChange={handleChange}
                   className="w-full placeholder:text-gray-300 py-5 px-10 rounded-lg border border-solid"
+                  placeholder="Enter your first name"
                 />
+
               </div>
               <div className="relative w-2/3">
                 <label className="absolute -top-3 px-2 left-6 bg-white">
                   Last Name
                 </label>
                 <input
-                  className="w-full placeholder:text-gray-300 py-5 px-10 rounded-lg border border-solid"
                   type="text"
                   name="lastName"
-                  placeholder="Last Name"
+                  value={userData.lastName}
                   onChange={handleChange}
+                  className="w-full placeholder:text-gray-300 py-5 px-10 rounded-lg border border-solid"
+                  placeholder="Enter your last name"
                 />
               </div>
             </div>
@@ -147,9 +149,10 @@ function Register() {
                 <input
                   type="email"
                   name="email"
+                  value={userData.email}
                   onChange={handleChange}
                   className="w-full placeholder:text-gray-300 py-5 px-10 rounded-lg border border-solid"
-                  placeholder="Enter your Email Address"
+                  placeholder="Enter your email address"
                 />
               </div>
               <div className="relative w-2/3">
@@ -157,8 +160,9 @@ function Register() {
                   Phone Number
                 </label>
                 <input
-                  type="tel"
+                  type="text"
                   name="phone"
+                  value={userData.phone}
                   onChange={handleChange}
                   className="w-full placeholder:text-gray-300 py-5 px-10 rounded-lg border border-solid"
                   placeholder="Enter your phone number"
@@ -173,6 +177,7 @@ function Register() {
                 <input
                   type="password"
                   name="password"
+                  value={userData.password}
                   onChange={handleChange}
                   className="w-full placeholder:text-gray-300 py-5 px-10 rounded-lg border border-solid"
                   placeholder="•••••••••••••••••••••••••"
@@ -185,6 +190,7 @@ function Register() {
                 <input
                   type="password"
                   name="confirmPassword"
+                  value={userData.confirmPassword}
                   onChange={handleChange}
                   className="w-full placeholder:text-gray-300 py-5 px-10 rounded-lg border border-solid"
                   placeholder="•••••••••••••••••••••••••"
@@ -193,13 +199,12 @@ function Register() {
             </div>
             <div className="flex flex-row justify-between mt-5">
               <div className="justify-center items-center gap-2 flex">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  checked={agreeTerms}
-                  onChange={() => setAgreeTerms(!agreeTerms)}
-                  className="w-5 h-5"
-                />
+              <input 
+                type="checkbox" 
+                className="w-5 h-5" 
+                checked={agreeTerms} 
+                onChange={() => setAgreeTerms(!agreeTerms)} 
+              />
 
                 <label className="font-semibold">
                   I agree to all the
@@ -215,13 +220,14 @@ function Register() {
                 </label>
               </div>
             </div>
-            <button
+            <button 
+              className="w-full py-5 px-10 rounded-lg bg-[#2E709E] text-white font-semibold font-roboto mt-5 cursor-pointer disabled:opacity-50" 
               onClick={handleRegister}
               disabled={loading}
-              className="w-full py-5 px-10 rounded-lg bg-[#2E709E] text-white font-semibold font-roboto mt-5 cursor-pointer"
             >
-              {loading ? "Creating account..." : "Create account"}
+              {loading ? "Registering..." : "Register"}
             </button>
+
             <div className="justify-center items-center flex gap-2 mt-5">
               <label>Already have an account?</label>
               <Link
@@ -239,28 +245,29 @@ function Register() {
             </div>
 
             <div className="flex flex-row gap-5 justify-center mt-10">
-              <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                <FaFacebook
-                  onClick={() => handleSocialLogin("facebook")}
-                  disabled={loading}
-                  className="w-10 h-10"
-                />
-              </div>
-              <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                <FcGoogle
-                  onClick={handleSocialLogin("google")}
-                  disabled={loading}
-                  className="w-10 h-10"
-                />
-              </div>
-              <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                <FaApple
-                  onClick={() => handleSocialLogin("apple")}
-                  disabled={loading}
-                  className="w-10 h-10"
-                />
-              </div>
+              <button 
+                className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer disabled:opacity-50"
+                onClick={() => handleSocialLogin("facebook")}
+                disabled={loading}
+              >
+                <FaFacebook className="w-10 h-10" />
+              </button>
+              <button 
+                className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer disabled:opacity-50"
+                onClick={() => handleSocialLogin("google")}
+                disabled={loading}
+              >
+                <FcGoogle className="w-10 h-10" />
+              </button>
+              <button 
+                className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer disabled:opacity-50"
+                onClick={() => handleSocialLogin("apple")}
+                disabled={loading}
+              >
+                <FaApple className="w-10 h-10" />
+              </button>
             </div>
+            
           </div>
           <div className="w-1/2 h-full">
             <img src={back} />
