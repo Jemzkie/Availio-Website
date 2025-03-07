@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser, signInWithGoogle, signInWithFacebook, signInWithApple } from "../hooks/userService";
+import {
+  registerUser,
+  signInWithGoogle,
+  signInWithFacebook,
+  signInWithApple,
+} from "../hooks/userService";
 import Back from "../assets/images/back.png";
 
 function Register() {
@@ -13,12 +18,20 @@ function Register() {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const navigate = useNavigate();
 
   // Handle input changes
   const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    setUserData({ ...userData, [e.target.name]: e.target.value.trim() });
   };
+
+  // Validate email format
+  const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+
+  // Validate phone format (simple check for digits)
+  const validatePhone = (phone) => /^\d{10,15}$/.test(phone);
 
   // Handle registration
   const handleRegister = async () => {
@@ -29,10 +42,27 @@ function Register() {
       return;
     }
 
+    if (!validateEmail(userData.email)) {
+      setError("Invalid email format.");
+      return;
+    }
+
+    if (!validatePhone(userData.phone)) {
+      setError("Phone number must be between 10-15 digits.");
+      return;
+    }
+
     if (userData.password !== userData.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
+
+    if (!agreeTerms) {
+      setError("You must agree to the terms and privacy policy.");
+      return;
+    }
+
+    setLoading(true);
 
     const response = await registerUser(userData.email, userData.password, {
       firstName: userData.firstName,
@@ -40,8 +70,10 @@ function Register() {
       phone: userData.phone,
     });
 
+    setLoading(false);
+
     if (response.success) {
-      navigate("/dashboard"); // Redirect after successful signup
+      navigate("/dashboard");
     } else {
       setError(response.error);
     }
@@ -50,11 +82,14 @@ function Register() {
   // Handle social sign-in
   const handleSocialLogin = async (provider) => {
     setError("");
-    let response;
+    setLoading(true);
 
+    let response;
     if (provider === "google") response = await signInWithGoogle();
     if (provider === "facebook") response = await signInWithFacebook();
     if (provider === "apple") response = await signInWithApple();
+
+    setLoading(false);
 
     if (response.success) {
       navigate("/dashboard");
@@ -80,19 +115,27 @@ function Register() {
         <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
 
         <div className="terms">
-          <input type="checkbox" id="terms" />
+          <input type="checkbox" id="terms" checked={agreeTerms} onChange={() => setAgreeTerms(!agreeTerms)} />
           <label htmlFor="terms">I agree to all the Terms and Privacy Policies</label>
         </div>
 
-        <button className="register-button" onClick={handleRegister}>Create account</button>
+        <button className="register-button" onClick={handleRegister} disabled={loading}>
+          {loading ? "Creating account..." : "Create account"}
+        </button>
 
         <p>Already have an account? <Link to="/login">Login</Link></p>
 
         <div className="social-signup">
           <p>Or Sign up with</p>
-          <button className="social-button" onClick={() => handleSocialLogin("facebook")}>Facebook</button>
-          <button className="social-button" onClick={() => handleSocialLogin("google")}>Google</button>
-          <button className="social-button" onClick={() => handleSocialLogin("apple")}>Apple</button>
+          <button className="social-button" onClick={() => handleSocialLogin("facebook")} disabled={loading}>
+            Facebook
+          </button>
+          <button className="social-button" onClick={() => handleSocialLogin("google")} disabled={loading}>
+            Google
+          </button>
+          <button className="social-button" onClick={() => handleSocialLogin("apple")} disabled={loading}>
+            Apple
+          </button>
         </div>
       </div>
     </div>
