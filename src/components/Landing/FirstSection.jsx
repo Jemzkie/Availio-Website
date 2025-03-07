@@ -12,7 +12,7 @@ import Vespa from "../../assets/images/Vespa.png";
 
 const FirstSection = () => {
   return (
-    <div className="h-screen flex flex-col px-20 debug overflow-x-hidden">
+    <div className="h-screen flex flex-col px-20  overflow-x-hidden">
       <Header />
       <div className="w-full flex flex-row">
         <div className="w-1/2 text-6xl mt-28">
