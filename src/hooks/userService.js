@@ -136,10 +136,10 @@ export const loginUser = async (email, password) => {
       if (!userSnap.exists()) {
         const userDoc = {
           uid: user.uid,
-          email: user.email || "", // Apple sometimes hides emails
+          email: user.email || `appleuser_${user.uid}@privaterelay.appleid.com`,
           emailVerified: user.emailVerified,
-          firstName: user.displayName ? user.displayName.split(" ")[0] : "Apple User",
-          lastName: user.displayName ? user.displayName.split(" ")[1] : "",
+          firstName: user.displayName ? user.displayName.split(" ")[0] : "Apple",
+          lastName: user.displayName ? user.displayName.split(" ")[1] : "User",
           username: generateUsername(user.email || `apple_${user.uid.slice(-4)}`),
           phoneNum: "Not Provided",
           numRides: 0,
@@ -155,5 +155,5 @@ export const loginUser = async (email, password) => {
     } catch (error) {
       return { success: false, error: error.message };
     }
-  };
+  };  
   
