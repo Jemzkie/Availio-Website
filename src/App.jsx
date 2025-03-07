@@ -7,6 +7,8 @@ import LandingScreen from "./screens/LandingScreen";
 import ForgotPassScreen from "./screens/ForgotPassScreen";
 import VerifyScreen from "./screens/VerifyScreen";
 import SetPassScreen from "./screens/SetPassScreen";
+import Dashboard from "./screens/DashboardScreen";
+import MenuScreen from "./components/Dashboard/MenuScreen";
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         <Route path="/forgotpass" element={<ForgotPassScreen />} />
         <Route path="/verify" element={<VerifyScreen />} />
         <Route path="/setpass" element={<SetPassScreen />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
