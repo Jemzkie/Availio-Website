@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -99,6 +100,7 @@ function Register() {
   };
 
   return (
+
     <div className="register-container">
       <img src={Back} alt="Background" />
       <div className="register-form">
@@ -136,8 +138,10 @@ function Register() {
           <button className="social-button" onClick={() => handleSocialLogin("apple")} disabled={loading}>
             Apple
           </button>
+
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -6,6 +7,7 @@ import {
   signInWithFacebook,
   signInWithApple,
 } from "../hooks/userService";
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -108,7 +110,7 @@ function Login() {
           </button>
         </div>
       </div>
-      <div className="login-image"></div>
+      <Footer />
     </div>
   );
 }
