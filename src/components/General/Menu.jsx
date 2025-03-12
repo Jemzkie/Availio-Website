@@ -9,8 +9,21 @@ import { AiOutlineTransaction } from "react-icons/ai";
 import { GoReport } from "react-icons/go";
 import { MdLogout } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebaseConfig";
+import { useNavigate } from "react-router-dom";
 
 const MenuScreen = ({ ViewData }) => {
+  const navigate = useNavigate();
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+
   return (
     <div className="flex flex-col w-[350px] bg-[#1A1919] min-h-screen px-4">
       <img className="w-[300px] mt-5" src={logo} />
@@ -56,10 +69,12 @@ const MenuScreen = ({ ViewData }) => {
         <label className="text-white text-lg">Scooter Report</label>
       </div>
 
-      <div className="flex justify-center gap-2 items-center py-5 mt-20 bg-gray-700">
+      <button className="flex justify-center gap-2 items-center py-5 mt-20 bg-gray-700 cursor-pointer">
         <MdLogout className="text-white w-6 h-6" />
-        <label className="text-white text-lg">Logout</label>
-      </div>
+        <label onClick={logout} className="text-white text-lg cursor-pointer">
+          Logout
+        </label>
+      </button>
     </div>
   );
 };

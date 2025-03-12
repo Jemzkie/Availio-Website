@@ -2,7 +2,7 @@ import React from "react";
 import { IoNotifications } from "react-icons/io5";
 import { IoSearch } from "react-icons/io5";
 import Cat from "../../assets/images/Cat.jpg";
-const Ribbon = () => {
+const Ribbon = ({ ViewData }) => {
   return (
     <div className="h-20 w-auto flex flex-row justify-end items-center px-4">
       <div className="flex gap-12 justify-between items-center">
