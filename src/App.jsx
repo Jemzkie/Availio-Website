@@ -9,6 +9,7 @@ import VerifyScreen from "./screens/VerifyScreen";
 import SetPassScreen from "./screens/SetPassScreen";
 import Dashboard from "./screens/DashboardScreen";
 import ListingScreen from "./screens/ListingScreen";
+import CreateListingScreen from "./screens/CreateListingScreen";
 import { auth } from "./config/firebaseConfig";
 import { SessionProvider } from "./context/SessionContext";
 import PrivateRoute from "./components/PrivateRoute";
@@ -44,6 +45,7 @@ function App() {
           <Route path="/setpass" element={<PrivateRoute element={<SetPassScreen />} />} />
           <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
           <Route path="/listing" element={<PrivateRoute element={<ListingScreen />} />} />
+          <Route path="/create-listing" element={<PrivateRoute element={<CreateListingScreen />} />} />
 
           {/* ✅ Redirect invalid routes to "/" */}
           <Route path="*" element={<Navigate to="/" />} />
