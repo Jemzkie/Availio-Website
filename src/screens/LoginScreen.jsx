@@ -6,6 +6,7 @@ import back from "../assets/images/back.png";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
+import { useSession } from "../context/SessionContext";
 
 import {
   loginUser,
@@ -20,6 +21,7 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUser } = useSession();
 
   // Validate email format
   const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
@@ -43,6 +45,7 @@ function Login() {
     setLoading(false);
 
     if (response.success) {
+      setUser(response.user); // Update session
       navigate("/dashboard"); // Redirect to dashboard after successful login
     } else {
       setError(response.error);
