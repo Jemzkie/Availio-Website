@@ -59,6 +59,7 @@ export const registerUser = async (email, password, userData) => {
 
 // ✅ Login user with Email/Password
 export const loginUser = async (email, password) => {
+  console.log(email, password);
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -66,6 +67,7 @@ export const loginUser = async (email, password) => {
       password
     );
     const user = userCredential.user;
+    console.log(user);
 
     return { success: true, message: "Login successful", userId: user.uid };
   } catch (error) {

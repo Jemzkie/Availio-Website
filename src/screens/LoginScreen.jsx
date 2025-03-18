@@ -44,8 +44,8 @@ function Login() {
     const response = await loginUser(email.trim(), password.trim());
     setLoading(false);
 
+    console.log(response);
     if (response.success) {
-      setUser(response.user); // Update session
       navigate("/dashboard"); // Redirect to dashboard after successful login
     } else {
       setError(response.error);
