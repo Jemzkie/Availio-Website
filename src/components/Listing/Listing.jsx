@@ -6,6 +6,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { VscSettings } from "react-icons/vsc";
 import { fetchVehicles } from "../../hooks/vehicleService";
+import { MdDeleteOutline } from "react-icons/md";
 
 const Listing = () => {
   const [listings, setListings] = useState([]);
@@ -13,6 +14,10 @@ const Listing = () => {
   const navigate = useNavigate();
 
   const ViewData = "Listing";
+
+  const Click = () => {
+    console.log("handle delete here");
+  };
 
   useEffect(() => {
     // ✅ Get logged-in user ID
@@ -32,7 +37,9 @@ const Listing = () => {
       if (userId) {
         const vehicles = await fetchVehicles();
         // ✅ Filter listings to only the current user's
-        const userListings = vehicles.filter((vehicle) => vehicle.ownerId === userId);
+        const userListings = vehicles.filter(
+          (vehicle) => vehicle.ownerId === userId
+        );
         setListings(userListings);
       }
     };
@@ -62,35 +69,44 @@ const Listing = () => {
         </div>
       </div>
 
+      {listings.length === 0 ? (
+        <div className="text-5xl font-semibold text-center w-full h-full flex justify-center items-center">
+          No listings found.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {listings.length > 0
+            ? listings.map((vehicle) => (
+                <div
+                  key={vehicle.id}
+                  className="border rounded-lg shadow-md overflow-hidden relative"
+                >
+                  <MdDeleteOutline
+                    onClick={Click}
+                    className="absolute top-4 right-4 w-6 h-6 text-red-600 cursor-pointer"
+                  />
+                  <img
+                    src={vehicle.images?.[0]}
+                    alt={vehicle.name}
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold">{vehicle.name}</h3>
+                    <p className="text-gray-500">
+                      {vehicle.model} - {vehicle.fuelType}
+                    </p>
+                    <p className="text-gray-700">
+                      ₱{vehicle.pricePerDay} / day
+                    </p>
+                    <p className="text-gray-400">{vehicle.location}</p>
+                  </div>
+                </div>
+              ))
+            : null}
+        </div>
+      )}
+
       {/* ✅ Listings Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {listings.length > 0 ? (
-          listings.map((vehicle) => (
-            <div
-              key={vehicle.id}
-              className="border rounded-lg shadow-md overflow-hidden"
-            >
-              <img
-                src={vehicle.images?.[0]}
-                alt={vehicle.name}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold">{vehicle.name}</h3>
-                <p className="text-gray-500">
-                  {vehicle.model} - {vehicle.fuelType}
-                </p>
-                <p className="text-gray-700">
-                  ${vehicle.pricePerDay} / day
-                </p>
-                <p className="text-gray-400">{vehicle.location}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 text-center">No listings available</p>
-        )}
-      </div>
     </div>
   );
 };
