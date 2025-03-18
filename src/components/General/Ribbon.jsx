@@ -26,6 +26,7 @@ const Ribbon = ({ ViewData }) => {
         <img
           className="rounded-full w-10 h-10"
           src={user?.profilePicture || Cat}
+          onError={(e) => (e.target.src = Cat)} // ✅ Fallback if URL fails
           alt="Profile Picture"
         />
       </div>
