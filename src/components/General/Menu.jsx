@@ -49,10 +49,15 @@ const MenuScreen = ({ ViewData }) => {
         <TbBrandBooking className="text-white w-6 h-6" />
         <label className="text-white text-lg">Bookings</label>
       </div>
-      <div className="flex justify-center gap-2 items-center py-5 mt-5">
-        <VscAccount className="text-white w-6 h-6" />
+      <Link
+        to="/profile"
+        className={`flex justify-center gap-2 items-center py-5 mt-5 ${
+          ViewData === "Profile" ? "bg-[#E60000]" : ""
+        }`}
+      >
+        <VscAccount className="text-white w-6 h-6 " />
         <label className="text-white text-lg">Profile</label>
-      </div>
+      </Link>
 
       <div className="border-t border-gray-400 mt-5"></div>
 
