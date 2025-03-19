@@ -1,7 +1,17 @@
-import { collection, addDoc, getDocs, getDoc, doc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  getDoc,
+  doc,
+  serverTimestamp,
+  query,
+  where,
+  updateDoc
+} from "firebase/firestore";
 import { db } from "../config/firebaseConfig.js";
 
-// Function to add a vehicle
+// ✅ Add a vehicle
 export const addVehicle = async (vehicleData) => {
   try {
     const { ownerId, images, name, plateNumber, model, fuelType, pricePerDay, location } = vehicleData;
@@ -29,11 +39,39 @@ export const addVehicle = async (vehicleData) => {
   }
 };
 
-// Function to get all vehicles
+// ✅ Fetch bookings for a specific vehicle
+const fetchBookingsForVehicle = async (vehicleId) => {
+  try {
+    const bookingsQuery = query(
+      collection(db, "bookings"),
+      where("vehicleId", "==", vehicleId)
+    );
+
+    const bookingsSnapshot = await getDocs(bookingsQuery);
+    const bookings = bookingsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return bookings;
+  } catch (error) {
+    console.error(`Error fetching bookings for vehicle ${vehicleId}:`, error);
+    return [];
+  }
+};
+
+// ✅ Get all vehicles (with bookings)
 export const fetchVehicles = async () => {
   try {
     const vehiclesSnapshot = await getDocs(collection(db, "vehicles"));
-    const vehicles = vehiclesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const vehicles = await Promise.all(
+      vehiclesSnapshot.docs.map(async (doc) => {
+        const vehicle = { id: doc.id, ...doc.data() };
+        const bookings = await fetchBookingsForVehicle(vehicle.id);
+        return { ...vehicle, bookings };
+      })
+    );
+
     return vehicles;
   } catch (error) {
     console.error("Error fetching vehicles:", error);
@@ -41,19 +79,51 @@ export const fetchVehicles = async () => {
   }
 };
 
-// Function to fetch a specific vehicle by ID
+// ✅ Get specific vehicle by ID (with bookings)
 export const fetchVehicleById = async (vehicleId) => {
   try {
     const vehicleRef = doc(db, "vehicles", vehicleId);
     const vehicleSnap = await getDoc(vehicleRef);
 
     if (vehicleSnap.exists()) {
-      return { id: vehicleSnap.id, ...vehicleSnap.data() };
+      const vehicle = { id: vehicleSnap.id, ...vehicleSnap.data() };
+      const bookings = await fetchBookingsForVehicle(vehicleId);
+      return { ...vehicle, bookings };
     } else {
       throw new Error("Vehicle not found");
     }
   } catch (error) {
-    console.error("Error fetching vehicle:", error);
+    console.error(`Error fetching vehicle ${vehicleId}:`, error);
+    return { success: false, error: error.message };
+  }
+};
+
+// ✅ Update booking status (by owner)
+export const updateBookingStatus = async (bookingId, newStatus) => {
+  try {
+    if (!bookingId || !newStatus) {
+      throw new Error("Booking ID and new status are required.");
+    }
+
+    const bookingRef = doc(db, "bookings", bookingId);
+
+    // Check if booking exists
+    const bookingSnap = await getDoc(bookingRef);
+    if (!bookingSnap.exists()) {
+      throw new Error("Booking not found");
+    }
+
+    // Update booking status
+    await updateDoc(bookingRef, {
+      bookingStatus: newStatus,
+    });
+
+    return {
+      success: true,
+      message: `Booking status updated to '${newStatus}'`,
+    };
+  } catch (error) {
+    console.error("Error updating booking status:", error);
     return { success: false, error: error.message };
   }
 };
