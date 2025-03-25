@@ -2,7 +2,6 @@ import React from "react";
 import logo from "../../assets/images/logo.png";
 import { RxDashboard } from "react-icons/rx";
 import { GiScooter } from "react-icons/gi";
-import { TbBrandBooking } from "react-icons/tb";
 import { VscAccount } from "react-icons/vsc";
 import { AiFillCreditCard } from "react-icons/ai";
 import { AiOutlineTransaction } from "react-icons/ai";
@@ -12,6 +11,7 @@ import { Link } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import { LuMessageCircleMore } from "react-icons/lu";
 
 const MenuScreen = ({ ViewData }) => {
   const navigate = useNavigate();
@@ -45,10 +45,15 @@ const MenuScreen = ({ ViewData }) => {
         <GiScooter className="text-white w-6 h-6 " />
         <label className="text-white text-lg">Listings</label>
       </Link>
-      <div className="flex justify-center gap-2 items-center py-5 mt-5">
-        <TbBrandBooking className="text-white w-6 h-6" />
-        <label className="text-white text-lg">Bookings</label>
-      </div>
+      <Link
+        to="/messaging"
+        className={`flex justify-center gap-2 items-center py-5 mt-5 ${
+          ViewData === "Messaging" ? "bg-[#E60000]" : ""
+        }`}
+      >
+        <LuMessageCircleMore className="text-white w-6 h-6" />
+        <label className="text-white text-lg">Messaging</label>
+      </Link>
       <Link
         to="/profile"
         className={`flex justify-center gap-2 items-center py-5 mt-5 ${

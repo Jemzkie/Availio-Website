@@ -40,6 +40,7 @@ export const registerUser = async (email, password, userData) => {
       username: generateUsername(user.email),
       phoneNum: userData.phone || "Not Provided",
       numRides: 0,
+      role: "Owner",
       profilePicture: "",
       provider: "email",
       createdAt: new Date(),

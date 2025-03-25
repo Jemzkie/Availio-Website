@@ -19,6 +19,7 @@ import { auth } from "./config/firebaseConfig";
 import { SessionProvider } from "./context/SessionContext";
 import PrivateRoute from "./components/PrivateRoute";
 import ProfileScreen from "./screens/ProfileScreen";
+import MessagingScreen from "./screens/MessagingScreen";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,6 +60,10 @@ function App() {
           <Route
             path="/listing"
             element={<PrivateRoute element={<ListingScreen />} />}
+          />
+          <Route
+            path="/messaging"
+            element={<PrivateRoute element={<MessagingScreen />} />}
           />
           <Route
             path="/create-listing"
