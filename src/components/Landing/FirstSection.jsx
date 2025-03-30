@@ -12,7 +12,7 @@ import Vespa from "../../assets/images/Vespa.png";
 
 const FirstSection = () => {
   return (
-    <div className="h-screen flex flex-col px-20  overflow-x-hidden">
+    <div className="h-screen flex flex-col px-20 overflow-hidden">
       <Header />
       <div className="w-full flex flex-row">
         <div className="w-1/2 text-6xl mt-28">
@@ -36,7 +36,7 @@ const FirstSection = () => {
             </Link>
           </div>
         </div>
-        <div className="w-1/2 flex justify-center items-center relative mt-50">
+        <div className="w-1/2 flex justify-center items-center relative mt-48">
           <img
             src={Nmax}
             className="object-cover absolute transform -translate-x-30 -translate-y-40"

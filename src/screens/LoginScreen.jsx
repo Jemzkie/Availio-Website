@@ -14,6 +14,7 @@ import {
   signInWithFacebook,
   signInWithApple,
 } from "../hooks/userService";
+import { MoonLoader } from "react-spinners";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,8 @@ function Login() {
   // Validate email format
   const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     setError("");
 
     if (!email.trim() || !password.trim()) {
@@ -75,7 +77,7 @@ function Login() {
       <div className="w-full h-auto flex flex-col p-16 gap-5">
         <img className="w-[360px]" src={logo} />
         <div className="w-full flex flex-row gap-5">
-          <div className="w-1/2 h-full mt-20">
+          <form onSubmit={handleLogin} className="w-1/2 h-full mt-20">
             <label className="text-5xl font-semibold">Login</label>
             <label className="text-xl flex flex-col mt-10 text-[#E60000]">
               Login to access your scooter gaming account
@@ -118,9 +120,11 @@ function Login() {
               </Link>
             </div>
             <button
-              onClick={handleLogin}
+              type="submit"
               disabled={loading}
-              className="w-full py-5 px-10 rounded-lg bg-[#2E709E] text-white font-semibold font-roboto mt-5 cursor-pointer"
+              className={`w-full py-5 px-10 rounded-lg  text-white font-semibold font-roboto mt-5 cursor-pointer ${
+                loading ? "bg-gray-400" : "bg-[#2E709E]"
+              }`}
             >
               {loading ? "Logging in..." : "Login"}
             </button>
@@ -140,30 +144,36 @@ function Login() {
               <div className="w-64 h-[1px] border border-gray-200"></div>
             </div>
 
-            <div className="flex flex-row gap-5 justify-center mt-10">
-              <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                <FaFacebook
-                  onClick={() => handleSocialLogin("facebook")}
-                  disabled={loading}
-                  className="w-10 h-10"
-                />
+            {loading ? (
+              <div className="w-full mt-10 duration-300 bg-gray-50 rounded-lg flex items-center justify-center">
+                <MoonLoader />
               </div>
-              <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                <FcGoogle
-                  onClick={() => handleSocialLogin("google")}
-                  disabled={loading}
-                  className="w-10 h-10"
-                />
+            ) : (
+              <div className="flex flex-row gap-5 justify-center mt-10">
+                <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
+                  <FaFacebook
+                    onClick={() => handleSocialLogin("facebook")}
+                    disabled={loading}
+                    className="w-10 h-10"
+                  />
+                </div>
+                <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
+                  <FcGoogle
+                    onClick={() => handleSocialLogin("google")}
+                    disabled={loading}
+                    className="w-10 h-10"
+                  />
+                </div>
+                <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
+                  <FaApple
+                    onClick={() => handleSocialLogin("apple")}
+                    disabled={loading}
+                    className="w-10 h-10"
+                  />
+                </div>
               </div>
-              <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                <FaApple
-                  onClick={() => handleSocialLogin("apple")}
-                  disabled={loading}
-                  className="w-10 h-10"
-                />
-              </div>
-            </div>
-          </div>
+            )}
+          </form>
           <div className="w-1/2 h-full">
             <img src={back} />
           </div>
