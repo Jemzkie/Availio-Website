@@ -4,6 +4,24 @@
   border: 1px solid red;
 }
 
+:root {
+  --primary: #ffffff;
+  --secondary: #e60000;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  background-color: var(--primary);
+}
+
+*::-webkit-scrollbar-track {
+  background-color: var(--primary);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+}
+
 @font-face {
   font-family: "Roboto";
   src: url("./fonts/Roboto/OpenSans-Regular.ttf") format("truetype");

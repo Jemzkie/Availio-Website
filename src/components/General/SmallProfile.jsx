@@ -2,6 +2,7 @@ import React from "react";
 import { useSession } from "../../context/SessionContext";
 import { IoNotifications } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
+import Cat from "../../assets/images/Cat.jpg";
 
 const SmallProfile = ({}) => {
   const { user } = useSession();

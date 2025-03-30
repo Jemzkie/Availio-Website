@@ -28,6 +28,7 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        console.log("triggered");
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -42,9 +43,14 @@ function App() {
     <SessionProvider>
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<LandingScreen />} />
+          <Route
+            path="/register"
+            element={isLoggedIn ? <Navigate to="/dashboard" /> : <Register />}
+          />
+          <Route
+            path="/login"
+            element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />}
+          />
           <Route path="/forgotpass" element={<ForgotPassScreen />} />
           <Route path="/verify" element={<VerifyScreen />} />
 
