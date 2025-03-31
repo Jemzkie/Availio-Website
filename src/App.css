@@ -24,19 +24,39 @@
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/OpenSans-Regular.ttf") format("truetype");
+  src: url("./assets/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/OpenSans-Bold.ttf") format("truetype");
+  src: url("./assets/fonts/Roboto/Roboto-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Jakarta";
+  src: url("./assets/fonts/Jakarta/PlusJakartaSans-Regular.ttf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Jakarta";
+  src: url("./assets/fonts/Jakarta/PlusJakartaSans-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 
 .font-roboto {
   font-family: "Roboto", sans-serif;
+  font-style: normal;
+}
+
+.font-jakarta {
+  font-family: "Jakarta", sans-serif;
   font-style: normal;
 }

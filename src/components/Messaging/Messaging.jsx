@@ -4,20 +4,20 @@ import { IoFilter } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { useSession } from "../../context/SessionContext";
 import { getConversations } from "../../hooks/messageService";
+import MessageContainer from "./MessageContainer";
 const Messaging = ({ ViewData }) => {
   const { user } = useSession();
-
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
     const data = async () => {
       try {
-        const userListData = await getConversations(user.uid);
-        // const userListData = [
-        //   { uid: 1, name: "User 1", profilePic: "user1.jpg" },
-        //   { uid: 2, name: "User 2", profilePic: "user2.jpg" },
-        //   { uid: 3, name: "User 3", profilePic: "user3.jpg" },
-        // ];
+        // const userListData = await getConversations(user.uid);
+        const userListData = [
+          { uid: 1, username: "User 1", profilePic: "user1.jpg" },
+          { uid: 2, username: "User 2", profilePic: "user2.jpg" },
+          { uid: 3, username: "User 3", profilePic: "user3.jpg" },
+        ];
         setUserList(userListData);
       } catch (error) {
         console.log(error);
@@ -26,8 +26,8 @@ const Messaging = ({ ViewData }) => {
     data();
   }, [user]);
   return (
-    <div className="flex flex-col font-roboto flex-1 p-5">
-      <div className="flex w-full h-20 px-12 py-12 flex-row items-center justify-end mb-4 border-b border-gray-400">
+    <div className="flex flex-col font-jakarta flex-1 p-5">
+      <div className="flex w-full h-20 flex-row items-center justify-end mb-4 border-b border-gray-400">
         <SmallProfile />
       </div>
 
@@ -35,10 +35,10 @@ const Messaging = ({ ViewData }) => {
         <div className="w-1/4 flex flex-col">
           <div className="flex flex-row justify-between items-center">
             {/*User Conversation List*/}
-            <label className="text-4xl font-sans font-semibold">
+            <label className="text-4xl font-jakarta font-semibold">
               Messaging
             </label>
-            <button className="border cursor-pointer border-gray-400 py-2 px-3 rounded-lg flex flex-row items-center gap-2">
+            <button className="cursor-pointer font-jakarta py-2 px-3 rounded-lg flex flex-row items-center gap-2">
               <IoFilter />
               Renters
             </button>
@@ -47,7 +47,7 @@ const Messaging = ({ ViewData }) => {
             <CiSearch className="w-6 h-6 font-semibold" />
             <input
               placeholder="Search In People..."
-              className="text-lg w-full text-gray-500"
+              className="text-lg w-full text-gray-500 font-jakarta"
             />
           </div>
           <div className="flex-1 h-auto mt-5">
@@ -72,7 +72,7 @@ const Messaging = ({ ViewData }) => {
             ) : (
               /*Else Render This*/
               <div className="justify-center flex">
-                <label className="text-gray-400 text-xl">
+                <label className="text-gray-400 text-xl font-jakarta">
                   No Renters Messaged Yet
                 </label>
               </div>
@@ -80,8 +80,8 @@ const Messaging = ({ ViewData }) => {
           </div>
         </div>
         {/*User Messages Container*/}
-        <div className="flex-1 debug">
-          <div className=""></div>
+        <div className="flex-1">
+          <MessageContainer uid={1} />
         </div>
       </div>
     </div>
