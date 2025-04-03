@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../assets/images/logo.png";
 import { RxDashboard } from "react-icons/rx";
 import { GiScooter } from "react-icons/gi";
@@ -12,12 +12,16 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { LuMessageCircleMore } from "react-icons/lu";
+import { MoonLoader } from "react-spinners";
 
 const MenuScreen = ({ ViewData }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const logout = async () => {
     try {
+      setLoading(true);
       await signOut(auth);
+      setLoading(false);
       navigate("/");
     } catch (error) {
       console.error("Error signing out: ", error);
@@ -25,7 +29,7 @@ const MenuScreen = ({ ViewData }) => {
   };
 
   return (
-    <div className="flex flex-col w-[350px] bg-[#1A1919] min-h-screen px-4">
+    <div className="flex flex-col w-[275px] bg-[#1A1919] min-h-screen px-4">
       <img className="w-[300px] mt-5" src={logo} />
       <div className="w-full h-auto flex flex-col gap-1 px-6">
         <Link
@@ -95,10 +99,21 @@ const MenuScreen = ({ ViewData }) => {
         </div>
 
         <button className="flex h-12 justify-center gap-2 items-center w-full py-5 mt-20 bg-gray-700 rounded-md cursor-pointer">
-          <MdLogout className="text-white w-6 h-6" />
-          <label onClick={logout} className="text-white text-lg cursor-pointer">
-            Logout
-          </label>
+          {loading ? (
+            <div className="w-full h-auto mt-10 duration-300 rounded-lg flex items-center justify-center">
+              <MoonLoader className="w-8 h-8" />
+            </div>
+          ) : (
+            <>
+              <MdLogout className="text-white w-6 h-6" />
+              <label
+                onClick={logout}
+                className="text-white text-lg cursor-pointer"
+              >
+                Logout
+              </label>
+            </>
+          )}
         </button>
       </div>
     </div>

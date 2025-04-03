@@ -74,17 +74,25 @@ function Login() {
 
   return (
     <div>
-      <div className="w-full h-auto flex flex-col p-16 gap-5">
+      <div className="w-full h-auto flex flex-col md:items-start items-center p-6 md:p-16 gap-5">
         <img className="w-[360px]" src={logo} />
         <div className="w-full flex flex-row gap-5">
-          <form onSubmit={handleLogin} className="w-1/2 h-full mt-20">
-            <label className="text-5xl font-semibold">Login</label>
-            <label className="text-xl flex flex-col mt-10 text-[#E60000]">
+          <form
+            onSubmit={handleLogin}
+            className="md:w-1/2 w-full h-full md:mt-20"
+          >
+            <div className="w-full md:text-left text-center">
+              <label className="text-5xl  text-center font-semibold">
+                Login
+              </label>
+            </div>
+
+            <label className="text-xl flex flex-col mt-8 text-center md:text-left md:mt-10 text-[#E60000]">
               Login to access your scooter gaming account
             </label>
             {error && <p className="error-message">{error}</p>}
 
-            <div className="flex flex-col gap-5 mt-12">
+            <div className="flex flex-col gap-10 md:gap-5 mt-8 md:mt-12">
               <div className="relative">
                 <label className="absolute -top-3 px-2 left-6 bg-white">
                   Email
@@ -139,13 +147,13 @@ function Login() {
             </div>
 
             <div className="flex flex-row justify-center items-center gap-5 mt-10">
-              <div className="w-64 h-[1px] border border-gray-200"></div>
+              <div className="md:w-64 w-12 h-[1px] border border-gray-200"></div>
               <label className="text-gray-400">Or login with</label>
-              <div className="w-64 h-[1px] border border-gray-200"></div>
+              <div className="md:w-64 w-12 h-[1px] border border-gray-200"></div>
             </div>
 
             {loading ? (
-              <div className="w-full mt-10 duration-300 bg-gray-50 rounded-lg flex items-center justify-center">
+              <div className="w-full mt-10 duration-300  rounded-lg flex items-center justify-center">
                 <MoonLoader />
               </div>
             ) : (
@@ -174,7 +182,7 @@ function Login() {
               </div>
             )}
           </form>
-          <div className="w-1/2 h-full">
+          <div className="md:block hidden md:w-1/2 h-full">
             <img src={back} />
           </div>
         </div>
