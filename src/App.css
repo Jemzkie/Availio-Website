@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .debug {
-  border: 1px solid red;
+  border: 1px solid yellow;
 }
 
 :root {
@@ -59,4 +59,33 @@
 .font-jakarta {
   font-family: "Jakarta", sans-serif;
   font-style: normal;
+}
+
+@keyframes subtleBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.bounce {
+  animation: subtleBounce 2s ease-in-out infinite;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideInLeft 1.5s ease-out;
 }
