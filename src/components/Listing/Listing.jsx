@@ -70,7 +70,7 @@ const Listing = () => {
       </div>
 
       {listings.length === 0 ? (
-        <div className="text-5xl font-semibold text-center w-full h-full flex justify-center items-center">
+        <div className="text-4xl text-gray-600 font-jakarta font-semibold text-center w-full h-full flex justify-center items-center">
           No listings found.
         </div>
       ) : (

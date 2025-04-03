@@ -5,9 +5,10 @@ import StatsSection from "../components/Landing/StatsSection";
 import DownloadAppSection from "../components/Landing/DownloadAppSection";
 import Footer from "../components/General/Footer";
 function HeroSection() {
+  const ViewData = "Landing";
   return (
-    <div className="w-full h-auto">
-      <FirstSection />
+    <div className="w-full h-auto overflow-x-hidden pt-12">
+      <FirstSection ViewData={ViewData} />
       <StatsSection />
       <DealsSection />
       <DownloadAppSection />

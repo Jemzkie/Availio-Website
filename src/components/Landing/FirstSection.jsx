@@ -10,47 +10,47 @@ import Kymco from "../../assets/images/Kymco.png";
 import Sunra from "../../assets/images/Sunra.jpg";
 import Vespa from "../../assets/images/Vespa.png";
 
-const FirstSection = () => {
+const FirstSection = ({ ViewData }) => {
   return (
-    <div className="h-screen flex flex-col px-20 overflow-hidden">
-      <Header />
-      <div className="w-full flex flex-row">
-        <div className="w-1/2 text-6xl mt-28">
-          <h1 className="text-[#2E709E] font-semibold font-roboto">
+    <div className="h-auto flex flex-col px-20 overflow-hidden ">
+      <Header ViewData={ViewData} />
+      <div className="w-full flex flex-col md:flex-row md:mt-28 mt-5 md:initial">
+        <div className="md:w-1/2 w-full text-6xl ">
+          <h1 className="text-[#2E709E] font-semibold font-roboto md:text-left text-center">
             Explore the freedom of scooter rental with{" "}
             <label className="text-[#E60000]">Scooter Gaming.</label>
           </h1>
 
-          <p className="text-[#2E709E] text-lg w-[544px] mt-10">
+          <p className="text-[#2E709E] text-lg md:text-left text-center md:w-[544px] mt-10">
             Whether you're planning to explore a city, need a reliable
             transportation vehicle, or just want the convenience of having a
             scooter at your disposal, we've got you covered.
           </p>
 
-          <div className="flex flex-row gap-5 mt-5">
+          <div className="flex flex-row gap-5 mt-5 md:justify-start justify-center">
             <button className="text-white bg-[#E60000] text-lg px-4 py-2 rounded-lg">
-              Get your scooter today
+              Get Now
             </button>
             <Link className="text-[#2E709E] text-lg items-center gap-2 justify-center flex flex-row">
               See all scooters <HiArrowSmallRight />
             </Link>
           </div>
         </div>
-        <div className="w-1/2 flex justify-center items-center relative mt-48">
+        <div className="md:w-1/2 md:flex justify-center items-center md:relative">
           <img
             src={Nmax}
-            className="object-cover absolute transform -translate-x-30 -translate-y-40"
+            className="md:object-cover slide-in absolute -translate-x-96 -translate-y-[600px] transform md:-translate-x-30 md:-translate-y-20 md:z-0 -z-10"
           />
-          <div className="to-[#E60000] bg-gradient-to-r from-white w-[864px] h-[506px] rounded-xl transform -translate-y-30 translate-x-42 -z-10"></div>
+          <div className="to-[#E60000] md:block hidden bg-gradient-to-r from-white w-[864px] h-[506px] rounded-xl transform  translate-x-42 -z-10"></div>
         </div>
       </div>
-      <div className="w-full h-32 flex justify-center flex-row gap-20">
-        <img src={Honda} className="w-32 object-contain" />
-        <img src={Yamaha} className="w-32 object-contain" />
-        <img src={Suzuki} className="w-32 object-contain" />
-        <img src={Kymco} className="w-32 object-contain" />
-        <img src={Sunra} className="w-32 object-contain" />
-        <img src={Vespa} className="w-32 object-contain" />
+      <div className="w-full h-auto flex justify-center md:flex-nowrap flex-wrap md:mt-0 mt-5 flex-row gap-5 md:gap-20">
+        <img src={Honda} className="md:w-32 w-20 object-contain" />
+        <img src={Yamaha} className="md:w-32 w-20 object-contain" />
+        <img src={Suzuki} className="md:w-32 w-20 object-contain" />
+        <img src={Kymco} className="md:w-32 w-20 object-contain" />
+        <img src={Sunra} className="md:w-32 w-20 object-contain" />
+        <img src={Vespa} className="md:w-32 w-20 object-contain" />
       </div>
     </div>
   );
