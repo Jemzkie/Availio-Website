@@ -63,7 +63,7 @@ const Messaging = ({ ViewData }) => {
                     <label className="text-lg font-semibold">
                       {user.username}
                     </label>
-                    <label className="text-lg text-gray-400 transform -translate-y-1 max-w-62 text-nowrap overflow-hidden">
+                    <label className="text-sm text-gray-400 transform -translate-y-1 max-w-48 text-nowrap overflow-hidden">
                       Render Recent Message Here...
                     </label>
                   </div>
