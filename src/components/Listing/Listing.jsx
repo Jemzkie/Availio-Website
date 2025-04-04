@@ -48,7 +48,7 @@ const Listing = () => {
   }, [userId]);
 
   return (
-    <div className="flex flex-col flex-1 p-5">
+    <div className="flex flex-col font-inter flex-1 p-5">
       {/* Header Section */}
       <div className="flex w-full h-20 flex-row items-center justify-between mb-4">
         {/* ✅ Redirect to Create Listing */}
@@ -70,7 +70,7 @@ const Listing = () => {
       </div>
 
       {listings.length === 0 ? (
-        <div className="text-4xl text-gray-600 font-jakarta font-semibold text-center w-full h-full flex justify-center items-center">
+        <div className="text-4xl text-gray-600 text-center w-full h-full flex justify-center items-center">
           No listings found.
         </div>
       ) : (
