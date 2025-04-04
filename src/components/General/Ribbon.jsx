@@ -6,14 +6,12 @@ import { MdVerified } from "react-icons/md";
 const Ribbon = ({ ViewData }) => {
   const { user } = useSession();
 
-  console.log("Ribbon user data:", user); // ✅ Debugging to check user state
-
   return (
     <div className="h-20 w-auto flex font-jakarta flex-row justify-end items-center px-4">
       <div className="flex gap-12 justify-between items-center">
         <div className="flex flex-row gap-2 items-center">
           <IoNotifications className="text-gray-500 w-8 h-8" />
-          <div className="shadow-md flex flex-row items-center px-5 py-2 rounded-lg">
+          <div className="border border-gray-400 flex flex-row items-center px-5 py-2 rounded-lg">
             <input
               className="text-lg w-60 text-gray-500"
               placeholder="Search here"
