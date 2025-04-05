@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoNotifications, IoSearch } from "react-icons/io5";
 import Cat from "../../assets/images/Cat.jpg";
 import { useSession } from "../../context/SessionContext"; // ✅ Import session context
 import { MdVerified } from "react-icons/md";
 const Ribbon = ({ ViewData }) => {
   const { user } = useSession();
+
+  useEffect(() => {
+    if (user === null) {
+      return;
+    }
+  }, [user]);
 
   return (
     <div className="h-20 w-auto flex font-jakarta flex-row justify-end items-center px-4">

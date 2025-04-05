@@ -8,6 +8,7 @@ const Profile = () => {
     if (user === null) {
       return;
     }
+    console.log(user);
   }, [user]);
 
   return (
