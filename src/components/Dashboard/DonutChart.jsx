@@ -12,7 +12,7 @@ const CustomDoughnutChart = () => {
       {
         label: "Today",
         data: [45, 25, 30],
-        backgroundColor: ["#4CAF50", "#FFC107", "#E60000"],
+        backgroundColor: ["#0000FF", "#FFC107", "#E60000"],
         borderWidth: 1,
       },
     ],
@@ -29,7 +29,7 @@ const CustomDoughnutChart = () => {
   };
 
   return (
-    <div className="mx-auto">
+    <div className="mx-auto max-h-60 items-center flex justify-center">
       <Doughnut data={data} options={options} />
     </div>
   );

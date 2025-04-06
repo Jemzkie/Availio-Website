@@ -54,7 +54,6 @@ function App() {
           <Route path="/forgotpass" element={<ForgotPassScreen />} />
           <Route path="/verify" element={<VerifyScreen />} />
 
-          {/* ✅ Use PrivateRoute for protected routes */}
           <Route
             path="/setpass"
             element={<PrivateRoute element={<SetPassScreen />} />}
@@ -80,7 +79,6 @@ function App() {
             element={<PrivateRoute element={<ProfileScreen />} />}
           />
 
-          {/* ✅ Redirect invalid routes to "/" */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
