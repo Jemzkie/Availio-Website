@@ -1,8 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import { BiSolidCoinStack } from "react-icons/bi";
-
+import { useSession } from "../../context/SessionContext";
+import axios from "axios";
 const WalletModal = ({ isOpen, setTopUpModal }) => {
+  const [totalTopup, setTotalTopUp] = useState(0);
   if (!isOpen) return null;
+
+  const { user } = useSession();
+
+  const checkout = async (e) => {
+    e.preventDefault();
+    const encodedKey = btoa(import.meta.env.VITE_PAYMONGO_SECRET_KEY); // 👈 base64 encode
+
+    const response = await axios.post(
+      "https://api.paymongo.com/v1/checkout_sessions",
+      {
+        data: {
+          attributes: {
+            billing: {
+              name: user.displayName,
+              email: user.email,
+              phone: user.phoneNumber,
+            },
+            send_email_receipt: true,
+            show_description: true,
+            show_line_items: true,
+            payment_method_types: ["gcash"],
+            line_items: [
+              {
+                currency: "PHP",
+                amount: totalTopup * 100,
+                description: "Top Up Wallet Balance",
+                name: "Top Up Wallet Balance",
+                quantity: 1,
+              },
+            ],
+            description: "Top Up Wallet Balance",
+            success_url: "http://localhost:5173/topup-success",
+            cancel_url: "http://localhost:5173/topup-cancel",
+            metadata: {
+              user_id: user.uid,
+            },
+          },
+        },
+      },
+      {
+        headers: {
+          Authorization: `Basic ${encodedKey}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response);
+    window.location.href = response.data.data.attributes.checkout_url;
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center">
@@ -19,9 +71,25 @@ const WalletModal = ({ isOpen, setTopUpModal }) => {
             <BiSolidCoinStack className="w-6 h-6 text-yellow-400" />
             <label>₱2000</label>
           </div>
-          <button className="text-sm px-4 text-white py-2 cursor-pointer bg-[#E60000] rounded-sm">
-            Top Up
-          </button>
+          <form
+            onSubmit={checkout}
+            className="flex flex-row gap-2 items-center"
+          >
+            <input
+              value={totalTopup}
+              onChange={(e) => setTotalTopUp(Number(e.target.value))}
+              type="number"
+              min={0}
+              className="border px-2 w-20"
+            />
+
+            <button
+              type="submit"
+              className="text-sm px-4 text-white py-2 cursor-pointer bg-[#E60000] rounded-sm"
+            >
+              Top Up
+            </button>
+          </form>
         </div>
       </div>
     </div>
