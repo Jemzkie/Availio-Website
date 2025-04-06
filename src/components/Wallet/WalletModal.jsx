@@ -36,8 +36,11 @@ const WalletModal = ({ isOpen, setTopUpModal }) => {
               },
             ],
             description: "Top Up Wallet Balance",
-            success_url: "http://localhost:5173/dashboard",
-            cancel_url: "http://localhost:5173/dashboard",
+            success_url: "http://localhost:5173/topup-success",
+            cancel_url: "http://localhost:5173/topup-cancel",
+            metadata: {
+              user_id: user.uid,
+            },
           },
         },
       },

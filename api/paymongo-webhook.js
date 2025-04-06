@@ -1,9 +1,3 @@
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 import { buffer } from "micro";
 import admin from "firebase-admin";
 
@@ -11,11 +5,21 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
+  if (req.method !== "POST") {
+    return res.status(405).end("Method Not Allowed");
+  }
 
   const rawBody = await buffer(req);
   const payload = JSON.parse(rawBody.toString());
+
+  console.log("Webhook received:", payload);
 
   const session = payload.data?.attributes;
   const status = session?.status;
@@ -23,6 +27,7 @@ export default async function handler(req, res) {
 
   if (status === "paid" && userId) {
     const amount = session.line_items[0].amount / 100;
+    console.log("Amount to add to wallet:", amount);
 
     try {
       await admin
