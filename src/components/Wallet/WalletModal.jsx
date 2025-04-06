@@ -10,7 +10,7 @@ const WalletModal = ({ isOpen, setTopUpModal }) => {
 
   const checkout = async (e) => {
     e.preventDefault();
-    const encodedKey = btoa(import.meta.env.VITE_PAYMONGO_SECRET_KEY); // 👈 base64 encode
+    const encodedKey = btoa(import.meta.env.VITE_PAYMONGO_SECRET_KEY);
 
     const response = await axios.post(
       "https://api.paymongo.com/v1/checkout_sessions",
@@ -36,11 +36,8 @@ const WalletModal = ({ isOpen, setTopUpModal }) => {
               },
             ],
             description: "Top Up Wallet Balance",
-            success_url: "http://localhost:5173/topup-success",
-            cancel_url: "http://localhost:5173/topup-cancel",
-            metadata: {
-              user_id: user.uid,
-            },
+            success_url: "http://localhost:5173/dashboard",
+            cancel_url: "http://localhost:5173/dashboard",
           },
         },
       },
@@ -52,7 +49,6 @@ const WalletModal = ({ isOpen, setTopUpModal }) => {
       }
     );
 
-    console.log(response);
     window.location.href = response.data.data.attributes.checkout_url;
   };
 
