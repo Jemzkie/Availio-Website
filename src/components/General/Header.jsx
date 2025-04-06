@@ -19,9 +19,6 @@ function Header({ ViewData }) {
           >
             Homepage
           </Link>
-          <Link className="hover:text-black" to="/scooters">
-            Scooters
-          </Link>
           <Link className="hover:text-black" to="/about">
             About Us
           </Link>
