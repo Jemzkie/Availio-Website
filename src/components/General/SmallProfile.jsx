@@ -7,9 +7,9 @@ import Cat from "../../assets/images/Cat.jpg";
 const SmallProfile = ({}) => {
   const { user } = useSession();
   return (
-    <div className="w-auto flex flex-row gap-5 font-jakarta justify-end px-5 items-center">
+    <div className="w-auto flex flex-row gap-5 font-jakarta justify-end px-5 items-end">
       {/* ✅ Use profilePicture if available, otherwise fallback to default Cat image */}
-      <IoNotifications className="text-gray-500 w-8 h-8" />
+      <IoNotifications className="text-gray-500 w-6 h-6" />
       <div className="flex flex-row gap-6">
         <div className="flex flex-col items-end">
           <label className="font-semibold text-sm">{user.displayName}</label>

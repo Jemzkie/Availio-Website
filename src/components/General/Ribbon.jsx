@@ -16,13 +16,10 @@ const Ribbon = ({ ViewData }) => {
     <div className="h-20 w-auto flex font-jakarta flex-row justify-end items-center px-4">
       <div className="flex gap-12 justify-between items-center">
         <div className="flex flex-row gap-2 items-center">
-          <IoNotifications className="text-gray-500 w-8 h-8" />
+          <IoNotifications className="text-gray-500 w-6 h-6" />
           <div className="border border-gray-400 flex flex-row items-center px-5 py-2 rounded-lg">
-            <input
-              className="text-lg w-60 text-gray-500"
-              placeholder="Search here"
-            />
-            <IoSearch className="text-gray-500 w-8 h-8" />
+            <input className=" w-60 text-gray-500" placeholder="Search here" />
+            <IoSearch className="text-gray-500 w-6 h-6" />
           </div>
         </div>
         <div className="flex flex-row gap-6">
