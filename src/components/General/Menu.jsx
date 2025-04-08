@@ -84,10 +84,6 @@ const MenuScreen = ({ ViewData }) => {
         <div className="border-t border-gray-400 mt-5"></div>
 
         <div className="w-full h-auto flex flex-col gap-1">
-          <div className="flex gap-2 items-center py-3">
-            <AiFillCreditCard className="text-white w-6 h-6" />
-            <label className="text-white text-lg">Payment Details</label>
-          </div>
           <div className="flex gap-2 items-center py-3 ">
             <AiOutlineTransaction className="text-white w-6 h-6" />
             <label className="text-white text-lg">Transactions</label>
