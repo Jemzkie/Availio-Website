@@ -1,17 +1,17 @@
 import React from "react";
 import Menu from "../components/General/Menu";
-import Messaging from "../components/Messaging/Messaging";
+import Transaction from "../components/Transaction/Transaction";
+const TransactionScreen = () => {
+  const ViewData = "Transactions";
 
-const MessagingScreen = () => {
-  const ViewData = "Messaging";
   return (
     <div className="w-full flex flex-col h-auto">
       <div className="flex flex-row">
         <Menu ViewData={ViewData} />
-        <Messaging ViewData={ViewData} />
+        <Transaction />
       </div>
     </div>
   );
 };
 
-export default MessagingScreen;
+export default TransactionScreen;

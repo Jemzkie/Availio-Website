@@ -20,6 +20,7 @@ import { SessionProvider } from "./context/SessionContext";
 import PrivateRoute from "./components/PrivateRoute";
 import ProfileScreen from "./screens/ProfileScreen";
 import MessagingScreen from "./screens/MessagingScreen";
+import TransactionScreen from "./screens/TransactionScreen";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +70,10 @@ function App() {
           <Route
             path="/messaging"
             element={<PrivateRoute element={<MessagingScreen />} />}
+          />
+          <Route
+            path="/transactions"
+            element={<PrivateRoute element={<TransactionScreen />} />}
           />
           <Route
             path="/create-listing"

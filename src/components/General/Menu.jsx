@@ -84,10 +84,18 @@ const MenuScreen = ({ ViewData }) => {
         <div className="border-t border-gray-400 mt-5"></div>
 
         <div className="w-full h-auto flex flex-col gap-1">
-          <div className="flex gap-2 items-center py-3 ">
+          <Link
+            to="/transactions"
+            className={`flex gap-2 items-center py-3 duration-300 rounded-lg ${
+              ViewData === "Transactions" ? "bg-[#E60000]" : ""
+            }`}
+          >
+            {ViewData === "Transactions" ? (
+              <div className="bg-white h-8 w-1 duration-300 rounded-md"></div>
+            ) : null}
             <AiOutlineTransaction className="text-white w-6 h-6" />
             <label className="text-white text-lg">Transactions</label>
-          </div>
+          </Link>
           <div className="flex gap-2 items-center py-3 ">
             <GoReport className="text-white w-6 h-6" />
             <label className="text-white text-lg">Scooter Report</label>
