@@ -12,8 +12,6 @@ const ProfileScreen = () => {
         <Menu ViewData={ViewData} />
         <Profile />
       </div>
-
-      <Footer />
     </div>
   );
 };

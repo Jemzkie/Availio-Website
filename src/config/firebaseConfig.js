@@ -29,4 +29,11 @@ const facebookProvider = new FacebookAuthProvider();
 const appleProvider = new OAuthProvider("apple.com");
 
 // Exported Modules
-export { auth, db, googleProvider, facebookProvider, appleProvider, signInWithCredential };
+export {
+  auth,
+  db,
+  googleProvider,
+  facebookProvider,
+  appleProvider,
+  signInWithCredential,
+};

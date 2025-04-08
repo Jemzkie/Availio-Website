@@ -10,8 +10,6 @@ const ListingScreen = () => {
         <Menu ViewData={ViewData} />
         <Listing />
       </div>
-
-      <Footer />
     </div>
   );
 };

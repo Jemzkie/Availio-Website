@@ -30,7 +30,7 @@ const Dashboard = () => {
   }, [user.uid]);
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader ViewData={ViewData} />;
   }
 
   return (

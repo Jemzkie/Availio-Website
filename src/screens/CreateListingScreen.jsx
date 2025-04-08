@@ -6,12 +6,11 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { BiArrowBack } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import Menu from "../components/General/Menu";
-import Footer from "../components/General/Footer";
 
 const CreateListingScreen = () => {
   const { user } = useSession(); // ✅ Get logged-in user info
   const navigate = useNavigate();
-  const ViewData = "Create Listing";
+  const ViewData = "Listing";
 
   const [vehicleData, setVehicleData] = useState({
     images: ["", "", "", ""],
@@ -57,14 +56,14 @@ const CreateListingScreen = () => {
   };
 
   return (
-    <div className="w-full flex flex-col h-auto">
+    <div className="flex flex-col flex-1">
       <div className="flex flex-row">
         <Menu ViewData={ViewData} />
-        <div className="w-full h-screen flex flex-col p-16 gap-5">
+        <div className="h-screen flex flex-col gap-5 p-5">
           <Link to="/listing">
             <BiArrowBack className="w-10 h-10" />
           </Link>
-          <div className="w-full h-screen flex flex-row gap-10 p-20">
+          <div className="w-full h-screen flex flex-row gap-10">
             <div className="w-1/2">
               <div className="h-100 border border-gray-400 rounded-lg text-2xl font-semibold mb-4 flex justify-center items-center">
                 <label className="flex justify-center">
@@ -174,7 +173,6 @@ const CreateListingScreen = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
