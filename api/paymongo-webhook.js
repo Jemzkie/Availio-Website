@@ -19,15 +19,17 @@ export default async function handler(req, res) {
   const rawBody = await buffer(req);
   const payload = JSON.parse(rawBody.toString());
 
-  console.log("Webhook received:", payload);
+  console.log("Webhook received:", JSON.stringify(payload, null, 2));
 
-  const session = payload.data?.attributes;
-  const status = session?.status;
-  const userId = session?.metadata?.user_id;
+  const eventType = payload.data?.attributes?.type;
+  const payment = payload.data?.attributes?.data;
+  const metadata = payment?.attributes?.metadata;
+  const status = payment?.attributes?.status;
+  const userId = metadata?.user_id;
 
-  if (status === "paid" && userId) {
-    const amount = session.line_items[0].amount / 100;
-    console.log("Amount to add to wallet:", amount);
+  if (eventType === "payment.paid" && status === "paid" && userId) {
+    const amount = payment.attributes.amount / 100;
+    console.log("Updating wallet for:", userId, "Amount:", amount);
 
     try {
       await admin
@@ -40,10 +42,10 @@ export default async function handler(req, res) {
 
       return res.status(200).send("Wallet updated");
     } catch (err) {
-      console.error("Error updating wallet:", err);
+      console.error("Error updating wallet:", err.message, err.stack);
       return res.status(500).send("Internal Server Error");
     }
   }
 
-  return res.status(200).send("Event received");
+  return res.status(200).send("Event received but skipped");
 }
