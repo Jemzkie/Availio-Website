@@ -1,58 +1,19 @@
 import React, { useState } from "react";
 import { BiSolidCoinStack } from "react-icons/bi";
-import { useSession } from "../../context/SessionContext";
-import axios from "axios";
-const WalletModal = ({ isOpen, setTopUpModal }) => {
+import checkout from "../../hooks/checkout";
+const WalletModal = ({ isOpen, setTopUpModal, user, userData }) => {
   const [totalTopup, setTotalTopUp] = useState(0);
   if (!isOpen) return null;
 
-  const { user } = useSession();
-
-  const checkout = async (e) => {
+  const TopUp = async (e) => {
     e.preventDefault();
-    const encodedKey = btoa(import.meta.env.VITE_PAYMONGO_SECRET_KEY);
+    try {
+      const response = await checkout(totalTopup, user);
 
-    const response = await axios.post(
-      "https://api.paymongo.com/v1/checkout_sessions",
-      {
-        data: {
-          attributes: {
-            billing: {
-              name: user.displayName,
-              email: user.email,
-              phone: user.phoneNumber,
-            },
-            send_email_receipt: true,
-            show_description: true,
-            show_line_items: true,
-            payment_method_types: ["gcash"],
-            line_items: [
-              {
-                currency: "PHP",
-                amount: totalTopup * 100,
-                description: "Top Up Wallet Balance",
-                name: "Top Up Wallet Balance",
-                quantity: 1,
-              },
-            ],
-            description: "Top Up Wallet Balance",
-            success_url: "https://scootergaming.vercel.app/dashboard",
-            cancel_url: "https://scootergaming.vercel.app/dashboard",
-            metadata: {
-              user_id: user.uid,
-            },
-          },
-        },
-      },
-      {
-        headers: {
-          Authorization: `Basic ${encodedKey}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    window.location.href = response.data.data.attributes.checkout_url;
+      window.location.href = response.data.data.attributes.checkout_url;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -68,18 +29,15 @@ const WalletModal = ({ isOpen, setTopUpModal }) => {
         <div className="w-full flex justify-between">
           <div className="flex flex-row items-center gap-2">
             <BiSolidCoinStack className="w-6 h-6 text-yellow-400" />
-            <label>₱2000</label>
+            <label>₱ {userData.walletBalance}</label>
           </div>
-          <form
-            onSubmit={checkout}
-            className="flex flex-row gap-2 items-center"
-          >
+          <form onSubmit={TopUp} className="flex flex-row gap-2 items-center">
             <input
               value={totalTopup}
               onChange={(e) => setTotalTopUp(Number(e.target.value))}
               type="number"
               min={0}
-              className="border px-2 w-20"
+              className="border px-2 py-1 w-24 rounded-sm"
             />
 
             <button

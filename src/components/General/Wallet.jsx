@@ -1,7 +1,7 @@
 import React from "react";
 import { FaWallet } from "react-icons/fa";
 import { BiSolidCoinStack } from "react-icons/bi";
-const Wallet = ({ isOpen, setTopUpModal }) => {
+const Wallet = ({ isOpen, setTopUpModal, userData }) => {
   return (
     <button
       onClick={() => setTopUpModal(true)}
@@ -9,7 +9,7 @@ const Wallet = ({ isOpen, setTopUpModal }) => {
     >
       <div className="flex flex-row items-center gap-2">
         <BiSolidCoinStack className="text-yellow-400" />
-        <label className="cursor-pointer">₱ 0</label>
+        <label className="cursor-pointer">₱ {userData?.walletBalance}</label>
       </div>
 
       <FaWallet />

@@ -11,7 +11,7 @@ import { FaArrowDownLong } from "react-icons/fa6";
 import { FaArrowUpLong } from "react-icons/fa6";
 import CustomLineChart from "./LineChart";
 
-const Analytics = ({ isOpen, setTopUpModal }) => {
+const Analytics = ({ isOpen, setTopUpModal, userData }) => {
   const [date, setDate] = useState("");
 
   useEffect(() => {
@@ -36,7 +36,11 @@ const Analytics = ({ isOpen, setTopUpModal }) => {
           <label className="text-gray-500">{date}</label>
         </div>
         <div className="w-9/12 flex flex-row items-center justify-between p-5">
-          <Wallet isOpen={isOpen} setTopUpModal={setTopUpModal} />
+          <Wallet
+            userData={userData}
+            isOpen={isOpen}
+            setTopUpModal={setTopUpModal}
+          />
           <Ribbon />
         </div>
       </div>
