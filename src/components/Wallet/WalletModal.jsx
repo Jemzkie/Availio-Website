@@ -36,8 +36,8 @@ const WalletModal = ({ isOpen, setTopUpModal }) => {
               },
             ],
             description: "Top Up Wallet Balance",
-            success_url: "http://localhost:5173/topup-success",
-            cancel_url: "http://localhost:5173/topup-cancel",
+            success_url: "https://scootergaming.vercel.app/dashboard",
+            cancel_url: "https://scootergaming.vercel.app/dashboard",
             metadata: {
               user_id: user.uid,
             },
