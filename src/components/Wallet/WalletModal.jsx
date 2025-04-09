@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BiSolidCoinStack } from "react-icons/bi";
-import checkout from "../../hooks/checkout";
+import checkout from "../../utils/checkout";
 import Visa from "../../assets/images/Visa.png";
 import PayMaya from "../../assets/images/PayMaya.png";
 import Mastercard from "../../assets/images/Mastercard.png";

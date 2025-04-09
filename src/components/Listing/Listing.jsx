@@ -1,51 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../config/firebaseConfig"; // Import Firebase Auth
 import Ribbon from "../General/Ribbon";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { VscSettings } from "react-icons/vsc";
-import { fetchVehicles } from "../../hooks/vehicleService";
+
 import { MdDeleteOutline } from "react-icons/md";
 
-const Listing = () => {
-  const [listings, setListings] = useState([]);
-  const [userId, setUserId] = useState(null);
+const Listing = ({ listings, ViewData }) => {
   const navigate = useNavigate();
-
-  const ViewData = "Listing";
 
   const Click = () => {
     console.log("handle delete here");
   };
-
-  useEffect(() => {
-    // ✅ Get logged-in user ID
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        setUserId(null);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (userId) {
-        const vehicles = await fetchVehicles();
-        // ✅ Filter listings to only the current user's
-        const userListings = vehicles.filter(
-          (vehicle) => vehicle.ownerId === userId
-        );
-        setListings(userListings);
-      }
-    };
-
-    fetchData();
-  }, [userId]);
 
   return (
     <div className="flex flex-col font-inter flex-1 p-5">
