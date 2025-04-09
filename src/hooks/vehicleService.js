@@ -7,16 +7,35 @@ import {
   serverTimestamp,
   query,
   where,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig.js";
 
 // ✅ Add a vehicle
 export const addVehicle = async (vehicleData) => {
   try {
-    const { ownerId, images, name, plateNumber, model, fuelType, pricePerDay, location } = vehicleData;
-    
-    if (!ownerId || !images || images.length !== 4 || !name || !plateNumber || !model || !fuelType || !pricePerDay || !location) {
+    const {
+      ownerId,
+      images,
+      name,
+      plateNumber,
+      model,
+      fuelType,
+      pricePerDay,
+      location,
+    } = vehicleData;
+
+    if (
+      !ownerId ||
+      !images ||
+      images.length !== 4 ||
+      !name ||
+      !plateNumber ||
+      !model ||
+      !fuelType ||
+      !pricePerDay ||
+      !location
+    ) {
       throw new Error("All fields are required, including 4 images.");
     }
 
@@ -32,7 +51,11 @@ export const addVehicle = async (vehicleData) => {
       createdAt: serverTimestamp(),
     });
 
-    return { success: true, message: "Vehicle added successfully", vehicleId: newVehicleRef.id };
+    return {
+      success: true,
+      message: "Vehicle added successfully",
+      vehicleId: newVehicleRef.id,
+    };
   } catch (error) {
     console.error("Error adding vehicle:", error);
     return { success: false, error: error.message };
@@ -125,5 +148,53 @@ export const updateBookingStatus = async (bookingId, newStatus) => {
   } catch (error) {
     console.error("Error updating booking status:", error);
     return { success: false, error: error.message };
+  }
+};
+
+export const fetchBookedVehiclesWithRenters = async (ownerId) => {
+  try {
+    // Step 1: Get vehicles owned by the owner
+    const vehicleSnapshot = await getDocs(
+      query(collection(db, "vehicles"), where("ownerId", "==", ownerId))
+    );
+
+    const vehicles = vehicleSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const vehicleIdSet = new Set(vehicles.map((v) => v.id));
+
+    // Step 2: Get all bookings
+    const bookingSnapshot = await getDocs(collection(db, "bookings"));
+
+    const matchedResults = [];
+
+    for (const bookingDoc of bookingSnapshot.docs) {
+      const booking = bookingDoc.data();
+      const vehicleId = booking.vehicleId;
+
+      // Only continue if the booking is for an owner's vehicle
+      if (vehicleIdSet.has(vehicleId)) {
+        const vehicle = vehicles.find((v) => v.id === vehicleId);
+
+        // Get renter info
+        const renterRef = doc(db, "users", booking.renterId);
+        const renterSnap = await getDoc(renterRef);
+        const renter = renterSnap.exists() ? renterSnap.data() : null;
+
+        matchedResults.push({
+          bookingId: bookingDoc.id,
+          ...booking,
+          vehicle,
+          renter,
+        });
+      }
+    }
+
+    return matchedResults;
+  } catch (error) {
+    console.error("Error fetching booked vehicles with renters:", error);
+    return [];
   }
 };

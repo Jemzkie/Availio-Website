@@ -21,6 +21,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import ProfileScreen from "./screens/ProfileScreen";
 import MessagingScreen from "./screens/MessagingScreen";
 import TransactionScreen from "./screens/TransactionScreen";
+import BookingScreen from "./screens/BookingScreen";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,6 +75,10 @@ function App() {
           <Route
             path="/transactions"
             element={<PrivateRoute element={<TransactionScreen />} />}
+          />
+          <Route
+            path="/bookings"
+            element={<PrivateRoute element={<BookingScreen />} />}
           />
           <Route
             path="/create-listing"

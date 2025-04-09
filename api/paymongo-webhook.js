@@ -41,7 +41,6 @@ export default async function handler(req, res) {
     status,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     paymentId,
-    rawData: payment,
   };
 
   try {
