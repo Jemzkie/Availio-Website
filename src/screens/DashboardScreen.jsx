@@ -8,7 +8,9 @@ import Loader from "../components/General/Loader";
 import {
   fetchIncomeandExpenses,
   fetchBookingStatus,
+  fetchEarningSummary,
 } from "../hooks/analyticsService";
+import { fetchVehicles } from "../hooks/vehicleService";
 
 const Dashboard = () => {
   const ViewData = "Dashboard";
@@ -16,6 +18,8 @@ const Dashboard = () => {
   const [userData, setUserData] = useState(null);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [bookingStatusData, setBookingStatusData] = useState(null);
+  const [listings, setListings] = useState([]);
+  const [earningData, setEarningData] = useState(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useSession();
@@ -31,6 +35,15 @@ const Dashboard = () => {
 
         const bookingStatusRequest = await fetchBookingStatus(user.uid);
         setBookingStatusData(bookingStatusRequest);
+
+        const vehicles = await fetchVehicles();
+        const userListings = vehicles.filter(
+          (vehicle) => vehicle.ownerId === user.uid
+        );
+        setListings(userListings);
+
+        const earningSummaryRequest = await fetchEarningSummary(user.uid);
+        setEarningData(earningSummaryRequest);
 
         setIsLoading(false);
       } catch (err) {
@@ -56,6 +69,8 @@ const Dashboard = () => {
           isOpen={TopUpModal}
           setTopUpModal={setTopUpModal}
           bookingStatusData={bookingStatusData}
+          listingsData={listings}
+          earningData={earningData}
         />
       </div>
       <WalletModal

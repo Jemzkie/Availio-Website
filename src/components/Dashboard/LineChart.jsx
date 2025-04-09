@@ -21,26 +21,69 @@ ChartJS.register(
   Legend
 );
 
-const CustomLineChart = () => {
+const CustomLineChart = ({ earningData }) => {
+  const [
+    January,
+    February,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December,
+  ] = earningData;
+
+  console.log(earningData);
+
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     datasets: [
       {
-        label: "Last 6 Months",
-        data: [500, 20000, 30000, 40000, 50000, 60000],
+        label: "Last 12 Months",
+        data: [
+          January,
+          February,
+          March,
+          April,
+          May,
+          June,
+          July,
+          August,
+          September,
+          October,
+          November,
+          December,
+        ],
         fill: true,
         backgroundColor: "rgba(0, 0, 255, 0.2)",
         borderColor: "#ADD8E6",
         tension: 0.4,
       },
-      {
-        label: "Same Period Last Year",
-        data: [500, 1000, 2000, 1500, 2000, 3000],
-        fill: true,
-        backgroundColor: "rgba(0, 0, 255, 0.2)",
-        borderColor: "#D3D3D3",
-        tension: 0.4,
-      },
+      // {
+      //   label: "Same Period Last Year",
+      //   data: [500, 1000, 2000, 1500, 2000, 3000],
+      //   fill: true,
+      //   backgroundColor: "rgba(0, 0, 255, 0.2)",
+      //   borderColor: "#D3D3D3",
+      //   tension: 0.4,
+      // },
     ],
   };
 
@@ -53,7 +96,7 @@ const CustomLineChart = () => {
     },
   };
   return (
-    <div className="w-full">
+    <div className="w-auto h-auto flex justify-center">
       <Line options={options} data={data} />
     </div>
   );

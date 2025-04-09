@@ -7,6 +7,7 @@ import {
   signInWithCredential,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -22,6 +23,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // Providers for Social Login
 const googleProvider = new GoogleAuthProvider();
@@ -32,6 +34,7 @@ const appleProvider = new OAuthProvider("apple.com");
 export {
   auth,
   db,
+  storage,
   googleProvider,
   facebookProvider,
   appleProvider,
