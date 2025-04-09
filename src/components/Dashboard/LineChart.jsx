@@ -37,8 +37,6 @@ const CustomLineChart = ({ earningData }) => {
     December,
   ] = earningData;
 
-  console.log(earningData);
-
   const data = {
     labels: [
       "January",
@@ -76,14 +74,6 @@ const CustomLineChart = ({ earningData }) => {
         borderColor: "#ADD8E6",
         tension: 0.4,
       },
-      // {
-      //   label: "Same Period Last Year",
-      //   data: [500, 1000, 2000, 1500, 2000, 3000],
-      //   fill: true,
-      //   backgroundColor: "rgba(0, 0, 255, 0.2)",
-      //   borderColor: "#D3D3D3",
-      //   tension: 0.4,
-      // },
     ],
   };
 
@@ -92,6 +82,12 @@ const CustomLineChart = ({ earningData }) => {
     plugins: {
       legend: {
         position: "top",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        min: 0,
       },
     },
   };

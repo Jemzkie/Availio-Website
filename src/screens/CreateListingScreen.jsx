@@ -57,20 +57,20 @@ const CreateListingScreen = () => {
 
     const newVehicle = {
       ...vehicleData,
-      ownerId: user.uid, // ✅ Use logged-in user's ID as ownerId
+      ownerId: user.uid,
     };
 
     const result = await addVehicle(newVehicle);
     if (result.success) {
       alert("Vehicle listed successfully!");
-      // navigate("/listing"); // ✅ Redirect to listing page after success
+      navigate("/listing");
     } else {
       alert(`Error: ${result.error}`);
     }
   };
 
   return (
-    <div className="flex flex-row w-full debug">
+    <div className="flex flex-row w-full">
       <Menu ViewData={ViewData} />
       <div className="h-auto flex flex-col gap-5 p-5 w-full">
         <Link className="w-10 h-10" to="/listing">
