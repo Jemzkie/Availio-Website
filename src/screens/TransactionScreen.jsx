@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Menu from "../components/General/Menu";
 import Transaction from "../components/Transaction/Transaction";
 import { useSession } from "../context/SessionContext";
-import { fetchOwnerTransaction } from "../hooks/fetchOwnerTransaction";
+import { fetchOwnerTransaction } from "../hooks/transactionService";
 import Loader from "../components/General/Loader";
 import fetchUser from "../hooks/userData";
 import WalletModal from "../components/Wallet/WalletModal";

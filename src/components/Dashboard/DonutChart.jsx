@@ -5,14 +5,16 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 // Register required components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const CustomDoughnutChart = () => {
+const CustomDoughnutChart = ({ bookingStatusData }) => {
+  const { completed, cancel, pending } = bookingStatusData;
+
   const data = {
-    labels: ["Completed", "Pending", "In Route"],
+    labels: ["Completed", "Cancel", "Pending"],
     datasets: [
       {
         label: "Today",
-        data: [45, 25, 30],
-        backgroundColor: ["#0000FF", "#FFC107", "#E60000"],
+        data: [completed, cancel, pending],
+        backgroundColor: ["#05df72", "#E60000", "#FFC107"],
         borderWidth: 1,
       },
     ],
