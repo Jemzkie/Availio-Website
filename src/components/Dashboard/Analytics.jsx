@@ -293,33 +293,42 @@ const Analytics = ({
                 </tr>
               </thead>
               <tbody className="text-sm">
-                {listingsData.map((listing, index) => (
-                  <tr key={index}>
-                    <td className="py-4 px-6">{index + 1}</td>
-                    <td className="py-4 px-6">
-                      <label className=" px-4 py-1 rounded-sm bg-gray-200">
-                        {listing.plateNumber}
-                      </label>
-                    </td>
-
-                    <td className="py-4 px-6">
-                      <label className="px-4 py-1 bg-green-100 rounded-md">
-                        {listing.bookings[0].bookingStatus}
-                      </label>
-                    </td>
-                    <td className="py-4 px-6">
-                      ₱{listing.bookings[0].totalPrice.toFixed(2)}
-                    </td>
-                    <td className="py-4 px-6">
-                      <Link
-                        to="/bookings"
-                        className="px-4 rounded-sm text-white py-1 bg-[#E60000]"
-                      >
-                        Details
-                      </Link>
+                {listingsData && listingsData.length > 0 ? (
+                  listingsData.map((listing, index) => (
+                    <tr key={index}>
+                      <td className="py-4 px-6">{index + 1}</td>
+                      <td className="py-4 px-6">
+                        <label className="px-4 py-1 rounded-sm bg-gray-200">
+                          {listing.plateNumber}
+                        </label>
+                      </td>
+                      <td className="py-4 px-6">
+                        <label className="px-4 py-1 bg-green-100 rounded-md">
+                          {listing.bookings?.[0]?.bookingStatus || "N/A"}
+                        </label>
+                      </td>
+                      <td className="py-4 px-6">
+                        ₱
+                        {listing.bookings?.[0]?.totalPrice?.toFixed(2) ||
+                          "0.00"}
+                      </td>
+                      <td className="py-4 px-6">
+                        <Link
+                          to="/bookings"
+                          className="px-4 rounded-sm text-white py-1 bg-[#E60000]"
+                        >
+                          Details
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center py-8 text-gray-500">
+                      No listings available.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

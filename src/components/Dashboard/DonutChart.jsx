@@ -30,6 +30,14 @@ const CustomDoughnutChart = ({ bookingStatusData }) => {
     },
   };
 
+  if (completed === 0 && cancel === 0 && pending === 0) {
+    return (
+      <div className="flex items-center justify-center text-gray-500">
+        No Data Found
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-h-60 items-center flex justify-center">
       <Doughnut data={data} options={options} />

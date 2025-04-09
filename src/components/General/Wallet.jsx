@@ -9,7 +9,9 @@ const Wallet = ({ isOpen, setTopUpModal, userData }) => {
     >
       <div className="flex flex-row items-center gap-2">
         <BiSolidCoinStack className="text-yellow-400" />
-        <label className="cursor-pointer">₱ {userData?.walletBalance}</label>
+        <label className="cursor-pointer">
+          ₱ {userData?.walletBalance || (0).toFixed(2)}
+        </label>
       </div>
 
       <FaWallet />
