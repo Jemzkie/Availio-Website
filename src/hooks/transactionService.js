@@ -1,7 +1,7 @@
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
-const fetchOwnerTransaction = async (uid) => {
+export const fetchOwnerTransaction = async (uid) => {
   try {
     const transactionCollection = collection(db, "transactions");
     const q = query(
@@ -24,5 +24,3 @@ const fetchOwnerTransaction = async (uid) => {
     return [];
   }
 };
-
-export { fetchOwnerTransaction };

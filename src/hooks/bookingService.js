@@ -9,11 +9,11 @@ import {
 import { db } from "../config/firebaseConfig";
 
 export const markBookingAsCompleted = async (bookingId, uid, commissionFee) => {
-  console.log(bookingId, uid, commissionFee);
   try {
     const bookingRef = doc(db, "bookings", bookingId);
     await updateDoc(bookingRef, {
       bookingStatus: "Completed",
+      completedAt: Timestamp.now(),
     });
 
     const userRef = doc(db, "users", uid);

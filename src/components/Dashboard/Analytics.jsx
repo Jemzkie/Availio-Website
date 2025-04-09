@@ -9,11 +9,19 @@ import Cat from "../../assets/images/Cat.jpg";
 import CustomDoughnutChart from "./DonutChart";
 import { FaArrowDownLong } from "react-icons/fa6";
 import { FaArrowUpLong } from "react-icons/fa6";
+import { GoDash } from "react-icons/go";
 import CustomLineChart from "./LineChart";
 
-const Analytics = ({ isOpen, setTopUpModal, userData }) => {
+const Analytics = ({
+  isOpen,
+  setTopUpModal,
+  userData,
+  analyticsData,
+  bookingStatusData,
+}) => {
   const [date, setDate] = useState("");
-
+  const [incomePercentage, setIncomePercentage] = useState(0);
+  const [expensePercentage, setExpensePercentage] = useState(0);
   useEffect(() => {
     const updateDate = () => {
       const now = new Date();
@@ -25,6 +33,28 @@ const Analytics = ({ isOpen, setTopUpModal, userData }) => {
     const interval = setInterval(updateDate, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (analyticsData) {
+      const incomepercentage = calculatePercentage(
+        analyticsData.incomeYesterday,
+        analyticsData.totalIncome
+      );
+      setIncomePercentage(incomepercentage);
+
+      const expensepercentage = calculatePercentage(
+        analyticsData.expenseYesterday,
+        analyticsData.totalExpenses
+      );
+      setExpensePercentage(expensepercentage);
+    }
+  }, [analyticsData]);
+
+  const calculatePercentage = (yesterday, total) => {
+    if (yesterday === 0) return total > 0 ? 100 : 0;
+    const percentageDifference = ((total - yesterday) / yesterday) * 100;
+    return percentageDifference.toFixed(2);
+  };
 
   return (
     <div className="flex flex-col flex-1 font-inter">
@@ -55,18 +85,34 @@ const Analytics = ({ isOpen, setTopUpModal, userData }) => {
               </label>
             </div>
             <div className="w-full flex flex-row justify-between items-center mt-2">
-              <label className="font-semibold text-2xl">₱ 9460.00</label>
-              <div className="flex flex-row items-center text-red-400 gap-2">
-                <FaArrowDownLong />
-                <label>1.5%</label>
-              </div>
+              <label className="font-semibold text-2xl">
+                ₱ {(analyticsData?.totalIncome).toFixed(2)}
+              </label>
+
+              {analyticsData?.totalIncome > analyticsData.incomeYesterday ? (
+                <div className="flex flex-row gap-1 items-center text-green-400">
+                  <FaArrowUpLong />
+                  <label>{incomePercentage}%</label>
+                </div>
+              ) : analyticsData?.totalIncome < analyticsData.incomeYesterday ? (
+                <div className="flex flex-row items-center text-red-400 gap-2">
+                  <FaArrowDownLong />
+                  <label>{incomePercentage}%</label>
+                </div>
+              ) : (
+                <div className="flex flex-row items-center text-gray-400 gap-2">
+                  <GoDash />
+                  <label>0.00%</label>
+                </div>
+              )}
             </div>
             <label className="text-xs text-gray-600">
-              Compared to ₱9940 Yesterday
+              Compared to ₱{(analyticsData?.incomeYesterday).toFixed(2)}{" "}
+              Yesterday
             </label>
             <div className="flex flex-row justify-between text-gray-600 text-xs">
               <label>Last Week Income</label>
-              <label>₱25858.00</label>
+              <label>₱{(analyticsData?.incomeLastWeek).toFixed(2)}</label>
             </div>
           </div>
           <div className="h-auto bg-white rounded-lg shadow-sm px-3 pt-2 pb-4">
@@ -77,18 +123,33 @@ const Analytics = ({ isOpen, setTopUpModal, userData }) => {
               </label>
             </div>
             <div className="w-full flex flex-row justify-between items-center mt-2">
-              <label className="font-semibold text-2xl">₱ 9460.00</label>
-              <div className="flex flex-row items-center text-green-400 gap-2">
-                <FaArrowUpLong />
-                <label>1.5%</label>
-              </div>
+              <label className="font-semibold text-2xl">
+                ₱ {(analyticsData?.totalExpenses).toFixed(2)}
+              </label>
+              {analyticsData?.totalExpenses > analyticsData.expenseYesterday ? (
+                <div className="flex flex-row gap-1 items-center text-green-400">
+                  <FaArrowUpLong />
+                  <label>{expensePercentage}%</label>
+                </div>
+              ) : analyticsData?.totalExpenses <
+                analyticsData.expenseYesterday ? (
+                <div className="flex flex-row items-center text-red-400 gap-2">
+                  <FaArrowDownLong />
+                  <label>{expensePercentage}%</label>
+                </div>
+              ) : (
+                <div className="flex flex-row items-center text-gray-400 gap-2">
+                  <GoDash />
+                  <label>0.00%</label>
+                </div>
+              )}
             </div>
             <label className="text-xs text-gray-600">
-              Compared to ₱9940 Yesterday
+              Compared to ₱{analyticsData.expenseYesterday} Yesterday
             </label>
             <div className="flex flex-row justify-between text-gray-600 text-xs">
               <label>Last Week Income</label>
-              <label>₱25858.00</label>
+              <label>₱{analyticsData.expenseLastWeek.toFixed(2)}</label>
             </div>
           </div>
           <div className="h-auto bg-white rounded-lg shadow-sm px-3 pt-2 py-4">
@@ -100,7 +161,7 @@ const Analytics = ({ isOpen, setTopUpModal, userData }) => {
                 Today
               </label>
             </div>
-            <CustomDoughnutChart />
+            <CustomDoughnutChart bookingStatusData={bookingStatusData} />
           </div>
         </div>
         <div className="w-9/12 h-full flex flex-col gap-12 px-10 py-5">
@@ -169,7 +230,7 @@ const Analytics = ({ isOpen, setTopUpModal, userData }) => {
                     <label className="text-gray-600">John Doe</label>
                   </td>
                   <td className="py-4 px-6">
-                    <label className="px-4 py-1 bg-green-200 rounded-md">
+                    <label className="px-4 py-1 bg-green-100 rounded-md">
                       Completed
                     </label>
                   </td>
