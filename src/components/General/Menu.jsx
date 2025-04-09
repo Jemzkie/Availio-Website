@@ -3,7 +3,7 @@ import logo from "../../assets/images/logo.png";
 import { RxDashboard } from "react-icons/rx";
 import { GiScooter } from "react-icons/gi";
 import { VscAccount } from "react-icons/vsc";
-import { AiFillCreditCard } from "react-icons/ai";
+import { LuBookCheck } from "react-icons/lu";
 import { AiOutlineTransaction } from "react-icons/ai";
 import { GoReport } from "react-icons/go";
 import { MdLogout } from "react-icons/md";
@@ -55,6 +55,18 @@ const MenuScreen = ({ ViewData }) => {
           ) : null}
           <GiScooter className="text-white w-6 h-6 " />
           <label className="text-white text-lg">Listings</label>
+        </Link>
+        <Link
+          to="/bookings"
+          className={`flex gap-2 items-center py-3 rounded-md duration-300  ${
+            ViewData === "Booking" ? "bg-[#E60000]" : ""
+          }`}
+        >
+          {ViewData === "Booking" ? (
+            <div className="bg-white h-8 w-1 rounded-md"></div>
+          ) : null}
+          <LuBookCheck className="text-white w-6 h-6 " />
+          <label className="text-white text-lg">Bookings</label>
         </Link>
         <Link
           to="/messaging"
