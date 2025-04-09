@@ -55,6 +55,52 @@ export const fetchBookingStatus = async (uid) => {
   }
 };
 
+export const fetchEarningSummary = async (uid) => {
+  try {
+    // Step 1: Get all vehicles owned by the user
+    const vehicleSnapshot = await getDocs(
+      query(collection(db, "vehicles"), where("ownerId", "==", uid))
+    );
+
+    const vehicles = vehicleSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const vehicleIdSet = new Set(vehicles.map((v) => v.id));
+
+    // Step 2: Get all completed bookings
+    const bookingSnapshot = await getDocs(
+      query(
+        collection(db, "bookings"),
+        where("bookingStatus", "==", "Completed")
+      )
+    );
+
+    const monthlyEarnings = Array(12).fill(0);
+
+    bookingSnapshot.forEach((doc) => {
+      const booking = doc.data();
+
+      if (vehicleIdSet.has(booking.vehicleId)) {
+        const completedAt = booking.completedAt?.seconds
+          ? new Date(booking.completedAt.seconds * 1000)
+          : null;
+
+        if (completedAt) {
+          const month = completedAt.getMonth(); // 0-11
+          monthlyEarnings[month] += booking.totalPrice || 0;
+        }
+      }
+    });
+
+    return monthlyEarnings;
+  } catch (error) {
+    console.error("Error fetching earning summary:", error);
+    return [];
+  }
+};
+
 export const fetchIncomeandExpenses = async (uid) => {
   try {
     // Step 1: Get vehicles owned by the owner

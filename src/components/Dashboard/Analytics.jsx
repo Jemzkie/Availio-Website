@@ -11,6 +11,7 @@ import { FaArrowDownLong } from "react-icons/fa6";
 import { FaArrowUpLong } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
 import CustomLineChart from "./LineChart";
+import { Link } from "react-router-dom";
 
 const Analytics = ({
   isOpen,
@@ -18,10 +19,19 @@ const Analytics = ({
   userData,
   analyticsData,
   bookingStatusData,
+  listingsData,
+  earningData,
 }) => {
   const [date, setDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [incomePercentage, setIncomePercentage] = useState(0);
   const [expensePercentage, setExpensePercentage] = useState(0);
+  const [selectedVehicle, setSelectedVehicle] = useState("");
+  const [availabilityMessage, setAvailabilityMessage] = useState("");
+
+  console.log(listingsData);
+
   useEffect(() => {
     const updateDate = () => {
       const now = new Date();
@@ -54,6 +64,40 @@ const Analytics = ({
     if (yesterday === 0) return total > 0 ? 100 : 0;
     const percentageDifference = ((total - yesterday) / yesterday) * 100;
     return percentageDifference.toFixed(2);
+  };
+
+  const handleCheckAvailability = (e) => {
+    e.preventDefault();
+
+    if (!selectedVehicle || !selectedDate || !selectedTime) {
+      setAvailabilityMessage("Please select vehicle, date and time.");
+      return;
+    }
+
+    const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
+    const vehicle = listingsData.find((v) => v.id === selectedVehicle);
+
+    if (!vehicle) {
+      setAvailabilityMessage("Vehicle not found.");
+      return;
+    }
+
+    const isUnavailable = vehicle.bookings?.some((booking) => {
+      const pickup = new Date(booking.pickupDate);
+      const returnTime = new Date(booking.returnDate);
+
+      return (
+        booking.bookingStatus !== "Cancelled" &&
+        selectedDateTime >= pickup &&
+        selectedDateTime <= returnTime
+      );
+    });
+
+    if (isUnavailable) {
+      setAvailabilityMessage("❌ Unavailable On This Time");
+    } else {
+      setAvailabilityMessage("✅ Vehicle Is Available.");
+    }
   };
 
   return (
@@ -169,22 +213,57 @@ const Analytics = ({
             <label className="font-semibold text-gray-600">
               Vehicle Availability
             </label>
-            <form className="flex flex-row h-auto justify-between">
-              <div className="border border-gray-200 flex items-center px-4 flex-row rounded-md">
-                <FaMotorcycle className="w-6 h-6 text-gray-600" />
-                <input className="px-2 py-2" placeholder="Vehicle No." />
-                <MdOutlineKeyboardArrowDown />
+            <form
+              onSubmit={handleCheckAvailability}
+              className="flex flex-row h-auto justify-between gap-2"
+            >
+              <div className="relative w-64">
+                <div className="border border-gray-200 flex items-center px-4 rounded-md">
+                  <FaMotorcycle className="w-6 h-6 text-gray-600" />
+                  <select
+                    className="px-2 py-2 w-full outline-none bg-transparent"
+                    value={selectedVehicle}
+                    onChange={(e) => setSelectedVehicle(e.target.value)}
+                  >
+                    <option value="">Select Vehicle</option>
+                    {listingsData?.map((vehicle) => (
+                      <option key={vehicle.id} value={vehicle.id}>
+                        {vehicle.plateNumber ||
+                          vehicle.name ||
+                          "Unnamed Vehicle"}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div className=" flex items-center  text-gray-800">
+
+              <div className="flex items-center text-gray-800">
                 <input
                   className="px-4 py-2 border border-gray-200 rounded-s-md"
                   type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
                 />
                 <input
                   className="px-4 py-2 border border-gray-200 rounded-e-md"
                   type="time"
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
                 />
               </div>
+
+              {availabilityMessage && (
+                <p
+                  className={`text-sm flex items-center text-center font-medium ${
+                    availabilityMessage === "✅ Vehicle Is Available."
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {availabilityMessage}
+                </p>
+              )}
+
               <button
                 type="submit"
                 className="px-8 text-white bg-[#E60000] rounded-sm"
@@ -208,49 +287,49 @@ const Analytics = ({
                 <tr className="border-b border-gray-300">
                   <th className="py-3 px-6 text-left">No.</th>
                   <th className="py-3 px-6 text-left">Vehicle No.</th>
-                  <th className="py-3 px-6 text-left">Driver</th>
                   <th className="py-3 px-6 text-left">Status</th>
                   <th className="py-3 px-6 text-left">Earning</th>
                   <th className="py-3 px-6 text-left"></th>
                 </tr>
               </thead>
               <tbody className="text-sm">
-                <tr>
-                  <td className="py-4 px-6">01</td>
-                  <td className="py-4 px-6">
-                    <label className=" px-4 py-1 rounded-sm bg-gray-200">
-                      6465
-                    </label>
-                  </td>
-                  <td className="flex flex-row gap-2 items-center py-4 px-6">
-                    <img
-                      src={Cat}
-                      className="w-6 h-6 bg-amber-50 rounded-full"
-                    />
-                    <label className="text-gray-600">John Doe</label>
-                  </td>
-                  <td className="py-4 px-6">
-                    <label className="px-4 py-1 bg-green-100 rounded-md">
-                      Completed
-                    </label>
-                  </td>
-                  <td className="py-4 px-6">₱35.44</td>
-                  <td className="py-4 px-6">
-                    <button className="px-4 rounded-sm text-white py-1 bg-[#E60000]">
-                      Details
-                    </button>
-                  </td>
-                </tr>
+                {listingsData.map((listing, index) => (
+                  <tr key={index}>
+                    <td className="py-4 px-6">{index + 1}</td>
+                    <td className="py-4 px-6">
+                      <label className=" px-4 py-1 rounded-sm bg-gray-200">
+                        {listing.plateNumber}
+                      </label>
+                    </td>
+
+                    <td className="py-4 px-6">
+                      <label className="px-4 py-1 bg-green-100 rounded-md">
+                        {listing.bookings[0].bookingStatus}
+                      </label>
+                    </td>
+                    <td className="py-4 px-6">
+                      ₱{listing.bookings[0].totalPrice.toFixed(2)}
+                    </td>
+                    <td className="py-4 px-6">
+                      <Link
+                        to="/bookings"
+                        className="px-4 rounded-sm text-white py-1 bg-[#E60000]"
+                      >
+                        Details
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-          <div className="flex flex-col ">
+          <div className="flex flex-col">
             <div className="flex flex-row justify-between">
               <div className="flex flex-row gap-5">
                 <label className="">Earning Summary</label>
               </div>
             </div>
-            <CustomLineChart />
+            <CustomLineChart earningData={earningData} />
           </div>
         </div>
       </div>

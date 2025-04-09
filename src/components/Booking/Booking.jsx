@@ -63,33 +63,39 @@ const Booking = ({
           filteredBookings.map((booking) => (
             <div
               key={booking.bookingId}
-              className="flex flex-row justify-between p-4 border-b border-gray-400"
+              className="flex flex-row justify-between p-4 border-b border-gray-200"
             >
-              <div className="flex flex-col gap-1">
-                <div className="text-sm text-gray-600">
-                  Vehicle: {booking.vehicle?.name || "N/A"}{" "}
-                  {booking.vehicle?.model}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Renter: {booking.renter?.username || "N/A"}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Pick-Up Date: {booking?.pickupDate || "N/A"}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Return Date: {booking?.returnDate || "N/A"}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Status:{" "}
-                  <label
-                    className={`px-2 py-1 rounded-md ${
-                      booking.bookingStatus === "Pending"
-                        ? "bg-yellow-100 text-yellow-600"
-                        : "bg-green-100 text-green-600"
-                    }`}
-                  >
-                    {booking.bookingStatus}
-                  </label>
+              <div className="flex flex-row gap-2">
+                <img
+                  className="w-40 object-contain border rounded-md border-gray-200"
+                  src={booking.vehicle?.images[0]}
+                />
+                <div className="flex flex-col gap-1">
+                  <div className="text-sm text-gray-600">
+                    Vehicle: {booking.vehicle?.name || "N/A"}{" "}
+                    {booking.vehicle?.model}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Renter: {booking.renter?.username || "N/A"}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Pick-Up Date: {booking?.pickupDate || "N/A"}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Return Date: {booking?.returnDate || "N/A"}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Status:{" "}
+                    <label
+                      className={`px-2 py-1 rounded-md ${
+                        booking.bookingStatus === "Pending"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : "bg-green-100 text-green-600"
+                      }`}
+                    >
+                      {booking.bookingStatus}
+                    </label>
+                  </div>
                 </div>
               </div>
 

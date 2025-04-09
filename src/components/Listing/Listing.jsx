@@ -55,7 +55,7 @@ const Listing = ({ listings, ViewData }) => {
                   <img
                     src={vehicle.images?.[0]}
                     alt={vehicle.name}
-                    className="w-full h-40 object-cover"
+                    className="w-full h-40 object-contain"
                   />
                   <div className="p-4">
                     <h3 className="text-lg font-semibold">{vehicle.name}</h3>
