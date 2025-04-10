@@ -25,7 +25,7 @@ export const fetchBookingStatus = async (uid) => {
     const vehicleIdSet = new Set(vehicles.map((v) => v.id));
 
     const bookingSnapshot = await getDocs(query(collection(db, "bookings")));
-    let completed = 0;
+    let complete = 0;
     let cancel = 0;
     let pending = 0;
 
@@ -36,8 +36,8 @@ export const fetchBookingStatus = async (uid) => {
       if (vehicleIdSet.has(vehicleId)) {
         const vehicle = vehicles.find((v) => v.id === vehicleId);
 
-        if (booking.bookingStatus === "Completed") {
-          completed++;
+        if (booking.bookingStatus === "Complete") {
+          complete++;
         }
         if (booking.bookingStatus === "Pending") {
           pending++;
@@ -48,10 +48,10 @@ export const fetchBookingStatus = async (uid) => {
       }
     }
 
-    return { completed, pending, cancel };
+    return { complete, pending, cancel };
   } catch (error) {
     console.error(error);
-    return { completed: 0, pending: 0, cancel: 0 };
+    return { complete: 0, pending: 0, cancel: 0 };
   }
 };
 
@@ -73,7 +73,7 @@ export const fetchEarningSummary = async (uid) => {
     const bookingSnapshot = await getDocs(
       query(
         collection(db, "bookings"),
-        where("bookingStatus", "==", "Completed")
+        where("bookingStatus", "==", "Complete")
       )
     );
 
@@ -115,11 +115,11 @@ export const fetchIncomeandExpenses = async (uid) => {
 
     const vehicleIdSet = new Set(vehicles.map((v) => v.id));
 
-    // Step 2: Get all bookings with "Completed" status and calculate total income
+    // Step 2: Get all bookings with "Complete" status and calculate total income
     const bookingSnapshot = await getDocs(
       query(
         collection(db, "bookings"),
-        where("bookingStatus", "==", "Completed")
+        where("bookingStatus", "==", "Complete")
       )
     );
 
@@ -127,43 +127,46 @@ export const fetchIncomeandExpenses = async (uid) => {
     let incomeYesterday = 0;
     let incomeLastWeek = 0;
     const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1); // Set yesterday's date
-    const lastWeek = new Date();
-    lastWeek.setDate(today.getDate() - 7);
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
 
-    // Convert to Firestore Timestamps
-    const yesterdayTimestamp = Timestamp.fromDate(yesterday);
-    const lastWeekTimestamp = Timestamp.fromDate(lastWeek);
+    const startOfYesterday = new Date(startOfToday);
+    startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+
+    const startOfLastWeek = new Date(startOfToday);
+    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+
+    // Convert to Firestore timestamps
+    const startOfTodayTimestamp = Timestamp.fromDate(startOfToday);
+    const startOfYesterdayTimestamp = Timestamp.fromDate(startOfYesterday);
+    const startOfLastWeekTimestamp = Timestamp.fromDate(startOfLastWeek);
 
     for (const bookingDoc of bookingSnapshot.docs) {
       const booking = bookingDoc.data();
       const vehicleId = booking.vehicleId;
 
-      // Only continue if the booking is for an owner's vehicle
       if (vehicleIdSet.has(vehicleId)) {
         const vehicle = vehicles.find((v) => v.id === vehicleId);
 
-        // Get renter info
         const renterRef = doc(db, "users", booking.renterId);
         const renterSnap = await getDoc(renterRef);
         const renter = renterSnap.exists() ? renterSnap.data() : null;
 
-        // Accumulate total income for completed bookings
         totalIncome += booking.totalPrice;
 
-        // Accumulate income for yesterday
         if (
-          booking.completedAt >= yesterdayTimestamp &&
-          booking.completedAt < today.getTime()
+          booking.completedAt >= startOfYesterdayTimestamp &&
+          booking.completedAt < startOfTodayTimestamp
         ) {
           incomeYesterday += booking.totalPrice;
         }
 
-        // Accumulate income for the last week (7 days)
         if (
-          booking.completedAt >= lastWeekTimestamp &&
-          booking.completedAt < today.getTime()
+          booking.completedAt >= startOfLastWeekTimestamp &&
+          booking.completedAt < startOfTodayTimestamp
         ) {
           incomeLastWeek += booking.totalPrice;
         }
@@ -185,15 +188,19 @@ export const fetchIncomeandExpenses = async (uid) => {
 
     for (const transactionDoc of transactionSnapshot.docs) {
       const transaction = transactionDoc.data();
+
       totalExpenses += transaction.amount;
 
-      if (transaction.createdAt >= yesterdayTimestamp < today.getTime()) {
+      if (
+        transaction.createdAt >= startOfYesterdayTimestamp &&
+        transaction.createdAt < startOfTodayTimestamp
+      ) {
         expenseYesterday += transaction.amount;
       }
 
       if (
-        transaction.createdAt >= lastWeekTimestamp &&
-        transaction.createdAt < today.getTime()
+        transaction.createdAt >= startOfLastWeekTimestamp &&
+        transaction.createdAt < startOfTodayTimestamp
       ) {
         expenseLastWeek += transaction.amount;
       }

@@ -12,7 +12,7 @@ export const markBookingAsCompleted = async (bookingId, uid, commissionFee) => {
   try {
     const bookingRef = doc(db, "bookings", bookingId);
     await updateDoc(bookingRef, {
-      bookingStatus: "Completed",
+      bookingStatus: "Complete",
       completedAt: Timestamp.now(),
     });
 

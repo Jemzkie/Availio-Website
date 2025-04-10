@@ -35,7 +35,9 @@ const WalletModal = ({ isOpen, setTopUpModal, user, userData }) => {
           <div className="w-full flex justify-between">
             <div className="flex flex-row items-center gap-2">
               <BiSolidCoinStack className="w-6 h-6 text-yellow-400" />
-              <label>₱ {userData.walletBalance || (0).toFixed(2)}</label>
+              <label>
+                ₱ {userData.walletBalance.toFixed(2) || (0).toFixed(2)}
+              </label>
             </div>
             <form onSubmit={TopUp} className="flex flex-row gap-2 items-center">
               <label className="text-xs text-gray-400">Min: ₱20.00</label>

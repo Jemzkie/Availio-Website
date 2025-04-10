@@ -53,13 +53,13 @@ const Transaction = ({ Transaction, userData, isOpen, setTopUpModal }) => {
                   {transaction.type === "Top-Up" ? (
                     <div className="flex items-center pe-8 text-green-600">
                       <label className="px-2 py-1 bg-green-100 rounded-md">
-                        +₱{transaction.amount}
+                        +₱{transaction.amount.toFixed(2)}
                       </label>
                     </div>
                   ) : (
                     <div className="flex items-center pe-8 text-red-600">
                       <label className="px-2 py-1 bg-red-100 rounded-md">
-                        -₱{transaction.amount}
+                        -₱{transaction.amount.toFixed(2)}
                       </label>
                     </div>
                   )}
