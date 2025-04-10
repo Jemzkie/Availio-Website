@@ -35,3 +35,16 @@ export const markBookingAsCompleted = async (bookingId, uid, commissionFee) => {
     return false;
   }
 };
+
+export const markBookingAsCancelled = async (bookingId) => {
+  try {
+    const bookingRef = doc(db, "bookings", bookingId);
+    await updateDoc(bookingRef, {
+      bookingStatus: "Cancel",
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating booking status:", error);
+    return false;
+  }
+};

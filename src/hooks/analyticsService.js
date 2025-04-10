@@ -103,7 +103,6 @@ export const fetchEarningSummary = async (uid) => {
 
 export const fetchIncomeandExpenses = async (uid) => {
   try {
-    // Step 1: Get vehicles owned by the owner
     const vehicleSnapshot = await getDocs(
       query(collection(db, "vehicles"), where("ownerId", "==", uid))
     );
@@ -115,7 +114,6 @@ export const fetchIncomeandExpenses = async (uid) => {
 
     const vehicleIdSet = new Set(vehicles.map((v) => v.id));
 
-    // Step 2: Get all bookings with "Complete" status and calculate total income
     const bookingSnapshot = await getDocs(
       query(
         collection(db, "bookings"),
@@ -132,17 +130,24 @@ export const fetchIncomeandExpenses = async (uid) => {
       today.getMonth(),
       today.getDate()
     );
+    const dayOfWeek = today.getDay();
 
     const startOfYesterday = new Date(startOfToday);
     startOfYesterday.setDate(startOfYesterday.getDate() - 1);
 
-    const startOfLastWeek = new Date(startOfToday);
-    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+    const startOfThisWeek = new Date(today);
+    startOfThisWeek.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
+    startOfThisWeek.setHours(0, 0, 0, 0);
 
-    // Convert to Firestore timestamps
+    const startOfLastWeek = new Date(startOfThisWeek);
+    startOfLastWeek.setDate(startOfThisWeek.getDate() - 7);
+
+    const endOfLastWeek = new Date(startOfThisWeek);
+
     const startOfTodayTimestamp = Timestamp.fromDate(startOfToday);
     const startOfYesterdayTimestamp = Timestamp.fromDate(startOfYesterday);
     const startOfLastWeekTimestamp = Timestamp.fromDate(startOfLastWeek);
+    const endOfLastWeekTimestamp = Timestamp.fromDate(endOfLastWeek);
 
     for (const bookingDoc of bookingSnapshot.docs) {
       const booking = bookingDoc.data();
@@ -166,7 +171,7 @@ export const fetchIncomeandExpenses = async (uid) => {
 
         if (
           booking.completedAt >= startOfLastWeekTimestamp &&
-          booking.completedAt < startOfTodayTimestamp
+          booking.completedAt < endOfLastWeekTimestamp
         ) {
           incomeLastWeek += booking.totalPrice;
         }
@@ -200,7 +205,7 @@ export const fetchIncomeandExpenses = async (uid) => {
 
       if (
         transaction.createdAt >= startOfLastWeekTimestamp &&
-        transaction.createdAt < startOfTodayTimestamp
+        transaction.createdAt < endOfLastWeekTimestamp
       ) {
         expenseLastWeek += transaction.amount;
       }

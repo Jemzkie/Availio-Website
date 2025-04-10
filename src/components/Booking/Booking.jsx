@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Wallet from "../General/Wallet";
 import Ribbon from "../General/Ribbon";
-import { MoonLoader } from "react-spinners";
+import { MoonLoader, ClipLoader } from "react-spinners";
 const Booking = ({
   isOpen,
   setTopUpModal,
   userData,
   bookingData,
   handleConfirmClick,
+  handleCancelClick,
+  confirmCancel,
 }) => {
   const [activeFilter, setActiveFilter] = useState("Pending");
   const [filteredBookings, setFilteredBookings] = useState([]);
@@ -35,7 +37,7 @@ const Booking = ({
       </div>
 
       <div className="flex flex-row gap-5 w-full h-auto px-5 mb-4">
-        {["Pending", "Complete"].map((status) => (
+        {["Pending", "Complete", "Cancel"].map((status) => (
           <button
             key={status}
             onClick={() => setActiveFilter(status)}
@@ -90,6 +92,8 @@ const Booking = ({
                       className={`px-2 py-1 rounded-md ${
                         booking.bookingStatus === "Pending"
                           ? "bg-yellow-100 text-yellow-600"
+                          : booking.bookingStatus === "Cancel"
+                          ? "bg-red-100 text-red-600"
                           : "bg-green-100 text-green-600"
                       }`}
                     >
@@ -103,13 +107,29 @@ const Booking = ({
                 <label className="text-gray-600">
                   Amount: ₱{booking.totalPrice.toFixed(2)}
                 </label>
-                {booking.bookingStatus === "Complete" ? null : (
-                  <button
-                    className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
-                    onClick={() => handleConfirmClick(booking)}
-                  >
-                    Confirm
-                  </button>
+                {booking.bookingStatus ===
+                "Complete" ? null : booking.bookingStatus ===
+                  "Cancel" ? null : (
+                  <>
+                    <button
+                      className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
+                      onClick={() => handleConfirmClick(booking)}
+                    >
+                      Confirm
+                    </button>
+                    {confirmCancel ? (
+                      <button className="bg-[#E60000] cursor-pointer items-center flex text-white px-8 py-2 rounded-md">
+                        <ClipLoader size={24} color="#FFFFFF" />
+                      </button>
+                    ) : (
+                      <button
+                        className="border border-gray-400 px-4 py-2 cursor-pointer rounded-md"
+                        onClick={() => handleCancelClick(booking)}
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>

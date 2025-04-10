@@ -7,7 +7,10 @@ import WalletModal from "../components/Wallet/WalletModal";
 import { useSession } from "../context/SessionContext";
 import { fetchBookedVehiclesWithRenters } from "../hooks/vehicleService";
 import ConfirmationModal from "../components/Booking/ConfirmationModal";
-import { markBookingAsCompleted } from "../hooks/bookingService";
+import {
+  markBookingAsCancelled,
+  markBookingAsCompleted,
+} from "../hooks/bookingService";
 
 const BookingScreen = () => {
   const ViewData = "Booking";
@@ -19,6 +22,7 @@ const BookingScreen = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
 
   const { user } = useSession();
 
@@ -44,6 +48,13 @@ const BookingScreen = () => {
   const handleConfirmClick = (booking) => {
     setSelectedBooking(booking);
     setIsModalOpen(true);
+  };
+
+  const handleCancelClick = async (booking) => {
+    setConfirmCancel(true);
+    await markBookingAsCancelled(booking.bookingId);
+
+    window.location.reload();
   };
 
   const handleCompleteBooking = async () => {
@@ -83,6 +94,8 @@ const BookingScreen = () => {
           isOpen={TopUpModal}
           setTopUpModal={setTopUpModal}
           handleConfirmClick={handleConfirmClick}
+          handleCancelClick={handleCancelClick}
+          confirmCancel={confirmCancel}
         />
       </div>
       <WalletModal

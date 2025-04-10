@@ -151,7 +151,7 @@ const Analytics = ({
               Yesterday
             </label>
             <div className="flex flex-row justify-between text-gray-600 text-xs">
-              <label>Last Week Income</label>
+              <label>Last Week's Income</label>
               <label>₱{(analyticsData?.incomeLastWeek).toFixed(2)}</label>
             </div>
           </div>
@@ -188,7 +188,7 @@ const Analytics = ({
               Compared to ₱{analyticsData.expenseYesterday} Yesterday
             </label>
             <div className="flex flex-row justify-between text-gray-600 text-xs">
-              <label>Last Week Income</label>
+              <label>Last Week's Expense</label>
               <label>₱{analyticsData.expenseLastWeek.toFixed(2)}</label>
             </div>
           </div>

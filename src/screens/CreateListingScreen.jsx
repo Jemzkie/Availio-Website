@@ -81,14 +81,44 @@ const CreateListingScreen = () => {
             {[0, 1, 2, 3].map((index) => (
               <div
                 key={index}
-                className="flex-1 h-60 border p-5 border-black rounded-lg flex items-center justify-center"
+                className="relative flex-1 h-60 border p-2 border-black rounded-lg flex items-center justify-center"
               >
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="text-xs h-full w-full"
-                  onChange={(e) => handleImageChange(index, e.target.files[0])}
-                />
+                {vehicleData.images[index] ? (
+                  <div className="relative w-full h-full">
+                    <img
+                      src={vehicleData.images[index]}
+                      alt={`Uploaded ${index + 1}`}
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedImages = [...vehicleData.images];
+                        updatedImages[index] = "";
+                        setVehicleData((prev) => ({
+                          ...prev,
+                          images: updatedImages,
+                        }));
+                      }}
+                      className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-800"
+                      title="Remove Image"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <label className="cursor-pointer flex items-center justify-center w-full h-full border-2 border-dashed border-gray-400 rounded-md">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) =>
+                        handleImageChange(index, e.target.files[0])
+                      }
+                    />
+                    <MdOutlineFileUpload className="text-3xl text-gray-500" />
+                  </label>
+                )}
               </div>
             ))}
           </div>
