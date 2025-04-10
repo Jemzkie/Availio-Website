@@ -54,7 +54,7 @@ const CustomLineChart = ({ earningData }) => {
     ],
     datasets: [
       {
-        label: "Last 12 Months",
+        label: "Income",
         data: [
           January,
           February,

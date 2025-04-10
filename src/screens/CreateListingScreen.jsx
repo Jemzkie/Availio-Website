@@ -72,7 +72,7 @@ const CreateListingScreen = () => {
   return (
     <div className="flex flex-row w-full">
       <Menu ViewData={ViewData} />
-      <div className="h-auto flex flex-col gap-5 p-5 w-full">
+      <div className="h-auto flex flex-col gap-5 p-5 flex-1">
         <Link className="w-10 h-10" to="/listing">
           <BiArrowBack className="w-full h-full" />
         </Link>
@@ -81,7 +81,7 @@ const CreateListingScreen = () => {
             {[0, 1, 2, 3].map((index) => (
               <div
                 key={index}
-                className="w-1/3 h-60 border p-5 border-black rounded-lg flex items-center justify-center"
+                className="flex-1 h-60 border p-5 border-black rounded-lg flex items-center justify-center"
               >
                 <input
                   type="file"

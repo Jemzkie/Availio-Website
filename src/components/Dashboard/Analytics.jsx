@@ -3,9 +3,7 @@ import Ribbon from "../General/Ribbon";
 import { formatDateDisplay } from "../../utils/dateDisplay";
 import Wallet from "../General/Wallet";
 import { FaMotorcycle } from "react-icons/fa6";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
-import Cat from "../../assets/images/Cat.jpg";
 import CustomDoughnutChart from "./DonutChart";
 import { FaArrowDownLong } from "react-icons/fa6";
 import { FaArrowUpLong } from "react-icons/fa6";
@@ -29,8 +27,6 @@ const Analytics = ({
   const [expensePercentage, setExpensePercentage] = useState(0);
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [availabilityMessage, setAvailabilityMessage] = useState("");
-
-  console.log(listingsData);
 
   useEffect(() => {
     const updateDate = () => {
@@ -171,13 +167,13 @@ const Analytics = ({
                 ₱ {(analyticsData?.totalExpenses).toFixed(2)}
               </label>
               {analyticsData?.totalExpenses > analyticsData.expenseYesterday ? (
-                <div className="flex flex-row gap-1 items-center text-green-400">
+                <div className="flex flex-row gap-1 items-center text-red-400">
                   <FaArrowUpLong />
                   <label>{expensePercentage}%</label>
                 </div>
               ) : analyticsData?.totalExpenses <
                 analyticsData.expenseYesterday ? (
-                <div className="flex flex-row items-center text-red-400 gap-2">
+                <div className="flex flex-row items-center text-green-400 gap-2">
                   <FaArrowDownLong />
                   <label>{expensePercentage}%</label>
                 </div>
@@ -294,34 +290,55 @@ const Analytics = ({
               </thead>
               <tbody className="text-sm">
                 {listingsData && listingsData.length > 0 ? (
-                  listingsData.map((listing, index) => (
-                    <tr key={index}>
-                      <td className="py-4 px-6">{index + 1}</td>
-                      <td className="py-4 px-6">
-                        <label className="px-4 py-1 rounded-sm bg-gray-200">
-                          {listing.plateNumber}
-                        </label>
-                      </td>
-                      <td className="py-4 px-6">
-                        <label className="px-4 py-1 bg-green-100 rounded-md">
-                          {listing.bookings?.[0]?.bookingStatus || "N/A"}
-                        </label>
-                      </td>
-                      <td className="py-4 px-6">
-                        ₱
-                        {listing.bookings?.[0]?.totalPrice?.toFixed(2) ||
-                          "0.00"}
-                      </td>
-                      <td className="py-4 px-6">
-                        <Link
-                          to="/bookings"
-                          className="px-4 rounded-sm text-white py-1 bg-[#E60000]"
-                        >
-                          Details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
+                  listingsData.map((listing, index) => {
+                    const totalPrice = listing.bookings?.reduce(
+                      (sum, booking) => {
+                        return booking.bookingStatus === "Complete"
+                          ? sum + (booking.totalPrice || 0)
+                          : sum;
+                      },
+                      0
+                    );
+
+                    const now = new Date();
+
+                    const isUnavailable = listing.bookings?.some((booking) => {
+                      const pickup = new Date(booking.pickupDate);
+                      const returnDate = new Date(booking.returnDate);
+                      return now >= pickup && now <= returnDate;
+                    });
+
+                    const status = isUnavailable ? "Unavailable" : "Available";
+
+                    return (
+                      <tr key={index}>
+                        <td className="py-4 px-6">{index + 1}</td>
+                        <td className="py-4 px-6">
+                          <label className="px-4 py-1 rounded-sm bg-gray-200">
+                            {listing.plateNumber}
+                          </label>
+                        </td>
+                        <td className="py-4 px-6">
+                          <label
+                            className={`px-4 py-1 rounded-md ${
+                              isUnavailable ? "bg-red-100" : "bg-green-100"
+                            }`}
+                          >
+                            {status}
+                          </label>
+                        </td>
+                        <td className="py-4 px-6">₱{totalPrice.toFixed(2)}</td>
+                        <td className="py-4 px-6">
+                          <Link
+                            to="/bookings"
+                            className="px-4 rounded-sm text-white py-1 bg-[#E60000]"
+                          >
+                            Details
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td colSpan="5" className="text-center py-8 text-gray-500">

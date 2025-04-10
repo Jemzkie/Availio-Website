@@ -6,14 +6,14 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CustomDoughnutChart = ({ bookingStatusData }) => {
-  const { completed, cancel, pending } = bookingStatusData;
+  const { complete, cancel, pending } = bookingStatusData;
 
   const data = {
-    labels: ["Completed", "Cancel", "Pending"],
+    labels: ["Complete", "Cancel", "Pending"],
     datasets: [
       {
         label: "Today",
-        data: [completed, cancel, pending],
+        data: [complete, cancel, pending],
         backgroundColor: ["#05df72", "#E60000", "#FFC107"],
         borderWidth: 1,
       },
@@ -30,7 +30,7 @@ const CustomDoughnutChart = ({ bookingStatusData }) => {
     },
   };
 
-  if (completed === 0 && cancel === 0 && pending === 0) {
+  if (complete === 0 && cancel === 0 && pending === 0) {
     return (
       <div className="flex items-center justify-center text-gray-500">
         No Data Found

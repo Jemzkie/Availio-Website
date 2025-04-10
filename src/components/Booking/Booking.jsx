@@ -35,7 +35,7 @@ const Booking = ({
       </div>
 
       <div className="flex flex-row gap-5 w-full h-auto px-5 mb-4">
-        {["Pending", "Completed"].map((status) => (
+        {["Pending", "Complete"].map((status) => (
           <button
             key={status}
             onClick={() => setActiveFilter(status)}
@@ -101,9 +101,9 @@ const Booking = ({
 
               <div className="flex items-center px-6 gap-5">
                 <label className="text-gray-600">
-                  Amount: ₱{booking.totalPrice}
+                  Amount: ₱{booking.totalPrice.toFixed(2)}
                 </label>
-                {booking.bookingStatus === "Completed" ? null : (
+                {booking.bookingStatus === "Complete" ? null : (
                   <button
                     className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
                     onClick={() => handleConfirmClick(booking)}
