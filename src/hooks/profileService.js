@@ -2,22 +2,32 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../config/firebaseConfig";
 
-// ✅ Update User Profile
 export const updateUserProfile = async (userId, updatedData) => {
   try {
     if (!userId) throw new Error("User ID is required");
 
     const userRef = doc(db, "users", userId);
 
-    // ✅ If there's an image, upload to Firebase Storage
-    if (updatedData.profilePicture) {
-      const imageRef = ref(storage, `profile_pictures/${userId}`);
-      await uploadBytes(imageRef, updatedData.profilePicture);
-      const imageUrl = await getDownloadURL(imageRef);
-      updatedData.profilePicture = imageUrl;
+    if (updatedData.businessProfile) {
+      const businessImageRef = ref(
+        storage,
+        `profile_pictures/business/${userId}`
+      );
+      await uploadBytes(businessImageRef, updatedData.businessProfile);
+      const businessImageUrl = await getDownloadURL(businessImageRef);
+      updatedData.businessProfile = businessImageUrl;
     }
 
-    // ✅ Update Firestore document with new data
+    if (updatedData.personalProfile) {
+      const personalImageRef = ref(
+        storage,
+        `profile_pictures/personal/${userId}`
+      );
+      await uploadBytes(personalImageRef, updatedData.personalProfile);
+      const personalImageUrl = await getDownloadURL(personalImageRef);
+      updatedData.personalProfile = personalImageUrl;
+    }
+
     await updateDoc(userRef, updatedData);
 
     return { success: true, message: "Profile updated successfully" };

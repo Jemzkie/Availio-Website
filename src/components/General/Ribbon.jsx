@@ -3,7 +3,7 @@ import { IoNotifications, IoSearch } from "react-icons/io5";
 import Cat from "../../assets/images/Cat.jpg";
 import { useSession } from "../../context/SessionContext"; // ✅ Import session context
 import { MdVerified } from "react-icons/md";
-const Ribbon = ({ ViewData }) => {
+const Ribbon = ({ userData }) => {
   const { user } = useSession();
 
   useEffect(() => {
@@ -35,8 +35,8 @@ const Ribbon = ({ ViewData }) => {
 
           {/* ✅ Use profilePicture if available, otherwise fallback to default Cat image */}
           <img
-            className="rounded-full w-10 h-10"
-            src={user?.profilePicture || Cat}
+            className="rounded-full w-10 h-10 border-gray-400 border object-cover"
+            src={userData?.personalProfile || user?.profilePicture || Cat}
             onError={(e) => (e.target.src = Cat)} // ✅ Fallback if URL fails
             alt="Profile Picture"
           />

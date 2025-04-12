@@ -28,7 +28,7 @@ const Transaction = ({ Transaction, userData, isOpen, setTopUpModal }) => {
           isOpen={isOpen}
           setTopUpModal={setTopUpModal}
         />
-        <SmallProfile />
+        <SmallProfile userData={userData} />
       </div>
 
       {Transaction.length === 0 ? (
