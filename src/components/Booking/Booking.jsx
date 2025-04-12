@@ -8,6 +8,7 @@ const Booking = ({
   userData,
   bookingData,
   handleConfirmClick,
+  handleOngoingClick,
   handleCancelClick,
   confirmCancel,
 }) => {
@@ -37,7 +38,7 @@ const Booking = ({
       </div>
 
       <div className="flex flex-row gap-5 w-full h-auto px-5 mb-4">
-        {["Pending", "Complete", "Cancel"].map((status) => (
+        {["Pending", "On-Going", "Cancelled", "Complete"].map((status) => (
           <button
             key={status}
             onClick={() => setActiveFilter(status)}
@@ -92,8 +93,10 @@ const Booking = ({
                       className={`px-2 py-1 rounded-md ${
                         booking.bookingStatus === "Pending"
                           ? "bg-yellow-100 text-yellow-600"
-                          : booking.bookingStatus === "Cancel"
+                          : booking.bookingStatus === "Cancelled"
                           ? "bg-red-100 text-red-600"
+                          : booking.bookingStatus === "On-Going"
+                          ? "bg-orange-100 text-orange-600"
                           : "bg-green-100 text-green-600"
                       }`}
                     >
@@ -109,19 +112,29 @@ const Booking = ({
                 </label>
                 {booking.bookingStatus ===
                 "Complete" ? null : booking.bookingStatus ===
-                  "Cancel" ? null : (
+                  "Cancelled" ? null : (
                   <>
-                    <button
-                      className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
-                      onClick={() => handleConfirmClick(booking)}
-                    >
-                      Confirm
-                    </button>
+                    {booking.bookingStatus === "On-Going" ? (
+                      <button
+                        className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
+                        onClick={() => handleConfirmClick(booking)}
+                      >
+                        Confirm
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
+                        onClick={() => handleOngoingClick(booking)}
+                      >
+                        Confirm
+                      </button>
+                    )}
+
                     {confirmCancel ? (
                       <button className="bg-[#E60000] cursor-pointer items-center flex text-white px-8 py-2 rounded-md">
                         <ClipLoader size={24} color="#FFFFFF" />
                       </button>
-                    ) : (
+                    ) : booking.bookingStatus === "On-Going" ? null : (
                       <button
                         className="border border-gray-400 px-4 py-2 cursor-pointer rounded-md"
                         onClick={() => handleCancelClick(booking)}

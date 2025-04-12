@@ -6,10 +6,13 @@ import Loader from "../components/General/Loader";
 import WalletModal from "../components/Wallet/WalletModal";
 import { useSession } from "../context/SessionContext";
 import { fetchBookedVehiclesWithRenters } from "../hooks/vehicleService";
-import ConfirmationModal from "../components/Booking/ConfirmationModal";
+import ConfirmationOngoingModal from "../components/Booking/ConfirmationOngoingModal";
+import ConfirmationCompleteModal from "../components/Booking/ConfirmationCompleteModal";
+
 import {
   markBookingAsCancelled,
   markBookingAsCompleted,
+  markBookingAsOngoing,
 } from "../hooks/bookingService";
 
 const BookingScreen = () => {
@@ -20,6 +23,7 @@ const BookingScreen = () => {
   const [bookingData, setBookingData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
@@ -47,12 +51,29 @@ const BookingScreen = () => {
 
   const handleConfirmClick = (booking) => {
     setSelectedBooking(booking);
+    setIsConfirmOpen(true);
+  };
+
+  const handleOngoingClick = (booking) => {
+    setSelectedBooking(booking);
     setIsModalOpen(true);
   };
 
   const handleCancelClick = async (booking) => {
     setConfirmCancel(true);
     await markBookingAsCancelled(booking.bookingId);
+
+    window.location.reload();
+  };
+
+  const handleOngoingBooking = async () => {
+    if (!selectedBooking) return;
+    setConfirmLoading(true);
+
+    await markBookingAsOngoing(selectedBooking.bookingId);
+
+    setIsModalOpen(false);
+    setSelectedBooking(null);
 
     window.location.reload();
   };
@@ -84,7 +105,7 @@ const BookingScreen = () => {
     <div className="w-full flex flex-col h-auto">
       <div
         className={`flex flex-row ${
-          TopUpModal || isModalOpen ? "blur-xs" : ""
+          TopUpModal || isModalOpen || isConfirmOpen ? "blur-xs" : ""
         }`}
       >
         <Menu ViewData={ViewData} />
@@ -94,6 +115,7 @@ const BookingScreen = () => {
           isOpen={TopUpModal}
           setTopUpModal={setTopUpModal}
           handleConfirmClick={handleConfirmClick}
+          handleOngoingClick={handleOngoingClick}
           handleCancelClick={handleCancelClick}
           confirmCancel={confirmCancel}
         />
@@ -104,10 +126,19 @@ const BookingScreen = () => {
         isOpen={TopUpModal}
         setTopUpModal={setTopUpModal}
       />
-      <ConfirmationModal
+
+      <ConfirmationCompleteModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleCompleteBooking}
+        confirmLoading={confirmLoading}
+        booking={selectedBooking}
+      />
+
+      <ConfirmationOngoingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleCompleteBooking}
+        onConfirm={handleOngoingBooking}
         confirmLoading={confirmLoading}
         booking={selectedBooking}
       />
