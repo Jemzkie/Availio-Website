@@ -14,23 +14,14 @@ import { db } from "../config/firebaseConfig.js";
 // ✅ Add a vehicle
 export const addVehicle = async (vehicleData) => {
   try {
-    const {
-      ownerId,
-      images,
-      name,
-      plateNumber,
-      model,
-      fuelType,
-      pricePerDay,
-      location,
-    } = vehicleData;
+    const { ownerId, images, name, model, fuelType, pricePerDay, location } =
+      vehicleData;
 
     if (
       !ownerId ||
       !images ||
       images.length !== 4 ||
       !name ||
-      !plateNumber ||
       !model ||
       !fuelType ||
       !pricePerDay ||
@@ -43,7 +34,6 @@ export const addVehicle = async (vehicleData) => {
       ownerId,
       images,
       name,
-      plateNumber,
       model,
       fuelType,
       pricePerDay,

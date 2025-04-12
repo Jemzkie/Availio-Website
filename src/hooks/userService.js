@@ -48,6 +48,7 @@ export const registerUser = async (email, password, userData) => {
       profilePicture: "",
       provider: "email",
       createdAt: new Date(),
+      walletBalance: 0,
     };
 
     await setDoc(doc(db, "users", user.uid), userDoc);
@@ -105,6 +106,7 @@ export const signInWithGoogle = async () => {
         profilePicture: user.photoURL || "",
         provider: "google",
         createdAt: new Date(),
+        walletBalance: 0,
       };
 
       await setDoc(userRef, userDoc);
@@ -144,6 +146,7 @@ export const signInWithFacebook = async () => {
         profilePicture: user.photoURL || "",
         provider: "facebook",
         createdAt: new Date(),
+        walletBalance: 0,
       };
 
       await setDoc(userRef, userDoc);
@@ -182,6 +185,7 @@ export const signInWithApple = async () => {
         profilePicture: user.photoURL || "",
         provider: "apple",
         createdAt: new Date(),
+        walletBalance: 0,
       };
 
       await setDoc(userRef, userDoc);
