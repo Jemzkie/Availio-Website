@@ -4,7 +4,7 @@ import { IoNotifications } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import Cat from "../../assets/images/Cat.jpg";
 
-const SmallProfile = ({}) => {
+const SmallProfile = ({ userData }) => {
   const { user } = useSession();
   return (
     <div className="w-auto flex flex-row gap-5 font-jakarta justify-end px-5 items-end">
@@ -22,8 +22,8 @@ const SmallProfile = ({}) => {
         </div>
 
         <img
-          className="rounded-full w-10 h-10"
-          src={user?.profilePicture || Cat}
+          className="rounded-full w-10 h-10 border-gray-400 border object-cover"
+          src={userData?.personalProfile || user?.profilePicture || Cat}
           onError={(e) => (e.target.src = Cat)} // ✅ Fallback if URL fails
           alt="Profile Picture"
         />

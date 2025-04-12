@@ -5,16 +5,21 @@ import Listing from "../components/Listing/Listing";
 import { fetchVehicles } from "../hooks/vehicleService";
 import Loader from "../components/General/Loader";
 import { useSession } from "../context/SessionContext";
+import fetchUser from "../hooks/userData";
 
 const ListingScreen = () => {
   const ViewData = "Listing";
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState(null);
   const { user } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const userRequest = await fetchUser(user.uid);
+        setUserData(userRequest);
+
         const vehicles = await fetchVehicles();
         const userListings = vehicles.filter(
           (vehicle) => vehicle.ownerId === user.uid
@@ -39,7 +44,7 @@ const ListingScreen = () => {
     <div className="w-full flex flex-col h-auto">
       <div className="flex flex-row">
         <Menu ViewData={ViewData} />
-        <Listing listings={listings} />
+        <Listing userData={userData} listings={listings} />
       </div>
     </div>
   );

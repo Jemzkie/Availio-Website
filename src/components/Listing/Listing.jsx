@@ -7,7 +7,7 @@ import { VscSettings } from "react-icons/vsc";
 
 import { MdDeleteOutline } from "react-icons/md";
 
-const Listing = ({ listings, ViewData }) => {
+const Listing = ({ listings, ViewData, userData }) => {
   const navigate = useNavigate();
 
   const Click = () => {
@@ -32,7 +32,7 @@ const Listing = ({ listings, ViewData }) => {
           <button className="w-auto text-nowrap items-center p-1 gap-2 flex flex-row text-sm px-4 font-semibold rounded-lg border border-gray-400 cursor-pointer">
             Filter <VscSettings className="w-8 h-8" />
           </button>
-          <Ribbon ViewData={ViewData} />
+          <Ribbon userData={userData} ViewData={ViewData} />
         </div>
       </div>
 

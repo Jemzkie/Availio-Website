@@ -33,7 +33,7 @@ const Booking = ({
           isOpen={isOpen}
           setTopUpModal={setTopUpModal}
         />
-        <Ribbon />
+        <Ribbon userData={userData} />
       </div>
 
       <div className="flex flex-row gap-5 w-full h-auto px-5 mb-4">

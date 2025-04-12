@@ -252,7 +252,7 @@ const Analytics = ({
             isOpen={isOpen}
             setTopUpModal={setTopUpModal}
           />
-          <Ribbon />
+          <Ribbon userData={userData} />
         </div>
       </div>
 
