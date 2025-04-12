@@ -7,8 +7,9 @@ import Honda from "../../assets/images/Honda.png";
 import Yamaha from "../../assets/images/Yamaha.webp";
 import Suzuki from "../../assets/images/Suzuki.png";
 import Kymco from "../../assets/images/Kymco.png";
-import Sunra from "../../assets/images/Sunra.jpg";
 import Vespa from "../../assets/images/Vespa.png";
+import Toyota from "../../assets/images/Toyota.jpg";
+import Subaru from "../../assets/images/Subaru.jpg";
 
 const FirstSection = ({ ViewData }) => {
   return (
@@ -16,9 +17,9 @@ const FirstSection = ({ ViewData }) => {
       <Header ViewData={ViewData} />
       <div className="w-full flex flex-col md:flex-row md:mt-28 mt-5 md:initial">
         <div className="md:w-1/2 w-full text-6xl ">
-          <h1 className="text-[#2E709E] font-semibold font-roboto md:text-left text-center">
-            Explore the freedom of scooter rental with{" "}
-            <label className="text-[#E60000]">Scooter Gaming.</label>
+          <h1 className="text-[#2E709E] w-[500px] font-semibold font-roboto md:text-left text-center">
+            Check Availability Check{" "}
+            <label className="text-[#E60000]">Avalio.</label>
           </h1>
 
           <p className="text-[#2E709E] text-lg md:text-left text-center md:w-[544px] mt-10">
@@ -32,7 +33,7 @@ const FirstSection = ({ ViewData }) => {
               Get Now
             </button>
             <Link className="text-[#2E709E] text-lg items-center gap-2 justify-center flex flex-row">
-              See all scooters <HiArrowSmallRight />
+              See details <HiArrowSmallRight />
             </Link>
           </div>
         </div>
@@ -49,8 +50,9 @@ const FirstSection = ({ ViewData }) => {
         <img src={Yamaha} className="md:w-32 w-20 object-contain" />
         <img src={Suzuki} className="md:w-32 w-20 object-contain" />
         <img src={Kymco} className="md:w-32 w-20 object-contain" />
-        <img src={Sunra} className="md:w-32 w-20 object-contain" />
         <img src={Vespa} className="md:w-32 w-20 object-contain" />
+        <img src={Toyota} className="md:w-32 w-20 object-contain" />
+        <img src={Subaru} className="md:w-32 w-20 object-contain" />
       </div>
     </div>
   );

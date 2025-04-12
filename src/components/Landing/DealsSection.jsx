@@ -18,7 +18,7 @@ function DealsSection() {
           <label>Honda Beat</label>
           <label className="text-2xl">From ₱500</label>
           <Link className="bg-[#E60000] text-xl px-6 py-3 rounded-lg">
-            See Scooter
+            See Details
           </Link>
         </div>
         <div className="bg-[#2E709E] h-[525px] justify-end flex w-96 pb-20 flex-col text-white items-center gap-5 text-3xl rounded-xl font-semibold font-roboto">
@@ -29,7 +29,7 @@ function DealsSection() {
           <label>Honda Click</label>
           <label className="text-2xl">From ₱600</label>
           <Link className="bg-[#E60000] text-xl px-6 py-3 rounded-lg">
-            See Scooter
+            See Details
           </Link>
         </div>
         <div className="bg-[#2E709E] h-[525px] justify-end flex w-96 pb-20 flex-col text-white items-center gap-5 text-3xl rounded-xl font-semibold font-roboto">
@@ -40,7 +40,7 @@ function DealsSection() {
           <label>Aerox</label>
           <label className="text-2xl">From ₱800</label>
           <Link className="bg-[#E60000] text-xl px-6 py-3 rounded-lg">
-            See Scooter
+            See Details
           </Link>
         </div>
       </div>
