@@ -30,7 +30,9 @@ const MenuScreen = ({ ViewData }) => {
 
   return (
     <div className="flex flex-col w-[275px] bg-[#1A1919] min-h-screen px-4">
-      <img className="w-[300px] mt-5" src={logo} />
+      <Link to="/" className="w-[300px mt-5">
+        <img src={logo} />
+      </Link>
       <div className="w-full h-auto flex flex-col gap-1 px-6">
         <Link
           to="/dashboard"
