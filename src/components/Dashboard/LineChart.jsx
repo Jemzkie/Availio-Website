@@ -21,57 +21,36 @@ ChartJS.register(
   Legend
 );
 
-const CustomLineChart = ({ earningData }) => {
-  const [
-    January,
-    February,
-    March,
-    April,
-    May,
-    June,
-    July,
-    August,
-    September,
-    October,
-    November,
-    December,
-  ] = earningData;
+const CustomLineChart = ({ earningData, filterOptions }) => {
+  if (filterOptions === "Yearly") {
+    filterOptions = "Monthly";
+  }
+
+  const type = filterOptions.toLowerCase();
+  const incomeData = earningData?.income?.[type] || {};
+  const expenseData = earningData?.expense?.[type] || {};
+
+  const labels = Object.keys(incomeData);
 
   const data = {
-    labels: [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ],
+    labels,
     datasets: [
       {
-        label: "Income",
-        data: [
-          January,
-          February,
-          March,
-          April,
-          May,
-          June,
-          July,
-          August,
-          September,
-          October,
-          November,
-          December,
-        ],
+        label: `${
+          filterOptions.charAt(0).toUpperCase() + filterOptions.slice(1)
+        } Gross Profit`,
+        data: labels.map((label) => incomeData[label] || 0),
         fill: true,
         backgroundColor: "rgba(0, 0, 255, 0.2)",
-        borderColor: "#ADD8E6",
+        borderColor: "#007bff",
+        tension: 0.4,
+      },
+      {
+        label: `${filterOptions} Net Profit`,
+        data: labels.map((label) => expenseData[label] || 0),
+        fill: true,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "#ff6384",
         tension: 0.4,
       },
     ],
@@ -91,6 +70,7 @@ const CustomLineChart = ({ earningData }) => {
       },
     },
   };
+
   return (
     <div className="w-auto h-auto flex justify-center">
       <Line options={options} data={data} />
