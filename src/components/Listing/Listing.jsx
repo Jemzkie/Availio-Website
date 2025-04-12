@@ -27,10 +27,7 @@ const Listing = ({ listings, ViewData }) => {
         </button>
         <div className="flex flex-row gap-4 items-center">
           <button className="w-auto text-nowrap items-center p-1 gap-2 flex flex-row text-sm px-4 font-semibold rounded-lg border border-gray-400 cursor-pointer">
-            Brand <RiArrowDropDownLine className="w-8 h-8" />
-          </button>
-          <button className="w-auto text-nowrap items-center p-1 gap-2 flex flex-row text-sm px-4 font-semibold rounded-lg border border-gray-400 cursor-pointer">
-            Filter <VscSettings className="w-8 h-8" />
+            Brands <RiArrowDropDownLine className="w-8 h-8" />
           </button>
           <Ribbon ViewData={ViewData} />
         </div>
