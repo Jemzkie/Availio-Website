@@ -10,6 +10,8 @@ import { FaArrowUpLong } from "react-icons/fa6";
 import { GoDash } from "react-icons/go";
 import CustomLineChart from "./LineChart";
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 
 const Analytics = ({
   isOpen,
@@ -20,13 +22,21 @@ const Analytics = ({
   listingsData,
   earningData,
 }) => {
+  console.log(listingsData);
   const [date, setDate] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [incomePercentage, setIncomePercentage] = useState(0);
   const [expensePercentage, setExpensePercentage] = useState(0);
+
+  const [filteredIncome, setFilteredIncome] = useState(0);
+  const [prevFilteredIncome, setPrevFilteredIncome] = useState(0);
+
+  const [filteredExpense, setFilteredExpense] = useState(0);
+  const [prevFilteredExpense, setPrevFilteredExpense] = useState(0);
+
   const [selectedVehicle, setSelectedVehicle] = useState("");
-  const [availabilityMessage, setAvailabilityMessage] = useState("");
+  const [filterIndex, setFilterIndex] = useState(0);
 
   useEffect(() => {
     const updateDate = () => {
@@ -41,24 +51,86 @@ const Analytics = ({
   }, []);
 
   useEffect(() => {
-    if (analyticsData) {
-      const incomepercentage = calculatePercentage(
-        analyticsData.incomeYesterday,
-        analyticsData.totalIncome
-      );
-      setIncomePercentage(incomepercentage);
+    if (!analyticsData) return;
+    let previousIncome = 0;
+    let totalIncome = 0;
+    let previousExpense = 0;
+    let totalExpense = 0;
 
-      const expensepercentage = calculatePercentage(
-        analyticsData.expenseYesterday,
-        analyticsData.totalExpenses
-      );
-      setExpensePercentage(expensepercentage);
+    const currentFilter = filterOptions[filterIndex];
+
+    switch (currentFilter) {
+      case "Daily":
+        previousIncome = analyticsData.incomeYesterday;
+        totalIncome = analyticsData.incomeToday;
+        previousExpense = analyticsData.expenseYesterday;
+        totalExpense = analyticsData.expenseToday;
+
+        setFilteredIncome(totalIncome.toFixed(2));
+        setPrevFilteredIncome(previousIncome.toFixed(2));
+
+        setFilteredExpense(totalExpense.toFixed(2));
+        setPrevFilteredExpense(previousExpense.toFixed(2));
+        break;
+      case "Weekly":
+        previousIncome = analyticsData.incomeLastWeek;
+        totalIncome = analyticsData.incomeThisWeek;
+        previousExpense = analyticsData.expenseLastWeek;
+        totalExpense = analyticsData.expenseThisWeek;
+
+        setFilteredIncome(totalIncome.toFixed(2));
+        setPrevFilteredIncome(previousIncome.toFixed(2));
+
+        setFilteredExpense(totalExpense.toFixed(2));
+        setPrevFilteredExpense(previousExpense.toFixed(2));
+        break;
+      case "Monthly":
+        previousIncome = analyticsData.incomeLastMonth;
+        totalIncome = analyticsData.incomeThisMonth;
+        previousExpense = analyticsData.expenseLastMonth;
+        totalExpense = analyticsData.expenseThisMonth;
+
+        setFilteredIncome(totalIncome.toFixed(2));
+        setPrevFilteredIncome(previousIncome.toFixed(2));
+
+        setFilteredExpense(totalExpense.toFixed(2));
+        setPrevFilteredExpense(previousExpense.toFixed(2));
+        break;
+      case "Quarterly":
+        previousIncome = analyticsData.incomeLastQuarter;
+        totalIncome = analyticsData.incomeThisQuarter;
+        previousExpense = analyticsData.expenseLastQuarter;
+        totalExpense = analyticsData.expenseThisQuarter;
+
+        setFilteredIncome(totalIncome.toFixed(2));
+        setPrevFilteredIncome(previousIncome.toFixed(2));
+
+        setFilteredExpense(totalExpense.toFixed(2));
+        setPrevFilteredExpense(previousExpense.toFixed(2));
+        break;
+      case "Yearly":
+        previousIncome = analyticsData.incomeLastYear;
+        totalIncome = analyticsData.incomeThisYear;
+        previousExpense = analyticsData.expenseLastYear;
+        totalExpense = analyticsData.expenseThisYear;
+
+        setFilteredIncome(totalIncome.toFixed(2));
+        setPrevFilteredIncome(previousIncome.toFixed(2));
+
+        setFilteredExpense(totalExpense.toFixed(2));
+        setPrevFilteredExpense(previousExpense.toFixed(2));
+        break;
+      default:
+        break;
     }
-  }, [analyticsData]);
 
-  const calculatePercentage = (yesterday, total) => {
-    if (yesterday === 0) return total > 0 ? 100 : 0;
-    const percentageDifference = ((total - yesterday) / yesterday) * 100;
+    setIncomePercentage(calculatePercentage(previousIncome, totalIncome));
+    setExpensePercentage(calculatePercentage(previousExpense, totalExpense));
+  }, [analyticsData, filterIndex]);
+
+  const calculatePercentage = (previous, total) => {
+    if (previous === 0) return total > 0 ? 100 : 0;
+    const percentageDifference = ((total - previous) / previous) * 100;
     return percentageDifference.toFixed(2);
   };
 
@@ -66,7 +138,17 @@ const Analytics = ({
     e.preventDefault();
 
     if (!selectedVehicle || !selectedDate || !selectedTime) {
-      setAvailabilityMessage("Please select vehicle, date and time.");
+      toast.error("Please select vehicle, date and time.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       return;
     }
 
@@ -74,7 +156,17 @@ const Analytics = ({
     const vehicle = listingsData.find((v) => v.id === selectedVehicle);
 
     if (!vehicle) {
-      setAvailabilityMessage("Vehicle not found.");
+      toast.error("Vehicle Not Found", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       return;
     }
 
@@ -90,10 +182,59 @@ const Analytics = ({
     });
 
     if (isUnavailable) {
-      setAvailabilityMessage("❌ Unavailable On This Time");
+      toast.error("Unavailable On This Time", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     } else {
-      setAvailabilityMessage("✅ Vehicle Is Available.");
+      toast.success("Vehicle Is Available.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     }
+  };
+
+  const getGroupKey = (date, filter) => {
+    const jsDate = new Date(date.seconds * 1000); // assuming Firestore Timestamp
+    const day = jsDate.toLocaleDateString("en-US", { weekday: "short" });
+    const week = `Week ${Math.ceil(jsDate.getDate() / 7)}`;
+    const month = jsDate.toLocaleString("default", { month: "short" });
+    const quarter = `Q${Math.floor(jsDate.getMonth() / 3) + 1}`;
+    const year = jsDate.getFullYear();
+
+    switch (filter) {
+      case "Daily":
+        return day;
+      case "Weekly":
+        return week;
+      case "Monthly":
+        return month;
+      case "Quarterly":
+        return quarter;
+      case "Yearly":
+        return year;
+      default:
+        return month;
+    }
+  };
+
+  const filterOptions = ["Monthly", "Quarterly", "Yearly", "Weekly", "Daily"];
+  const handleCycle = () => {
+    setFilterIndex((prevIndex) => (prevIndex + 1) % filterOptions.length);
   };
 
   return (
@@ -101,7 +242,7 @@ const Analytics = ({
       <div className="flex w-full h-28 flex-row">
         <div className="w-3/12 bg-[#F8F7F1] flex flex-col py-10 px-5">
           <label className="text-gray-600 font-semibold text-lg">
-            Todays Statistics
+            {filterOptions[filterIndex]} Statistics
           </label>
           <label className="text-gray-500">{date}</label>
         </div>
@@ -117,27 +258,33 @@ const Analytics = ({
 
       <div className="w-full flex flex-row h-full">
         <div className="w-3/12 h-full flex flex-col gap-5 bg-[#F8F7F1] px-5 pb-10">
+          <button
+            onClick={handleCycle}
+            className="w-full py-2 hover:bg-[#E60000] hover:text-white duration-300 flex items-center text-center justify-center bg-white rounded-md"
+          >
+            {filterOptions[filterIndex]}
+          </button>
           <div className="h-auto bg-white rounded-lg shadow-sm px-3 pt-2 pb-4">
-            <div className="w-full flex justify-between p-2 border-b border-gray-200">
-              <label className="text-gray-600 font-medium">Income</label>
+            <div className="w-full flex justify-between p-2 border-b border-gray-200 bg-white">
+              <label className="text-gray-600 font-medium">Gross Profit</label>
               <label className="text-xs bg-gray-100 flex items-center px-4 rounded-xs text-gray-400">
-                Today
+                {filterOptions[filterIndex]}
               </label>
             </div>
             <div className="w-full flex flex-row justify-between items-center mt-2">
               <label className="font-semibold text-2xl">
-                ₱ {(analyticsData?.totalIncome).toFixed(2)}
+                ₱ {filteredIncome}
               </label>
 
-              {analyticsData?.totalIncome > analyticsData.incomeYesterday ? (
+              {filteredIncome > prevFilteredIncome ? (
                 <div className="flex flex-row gap-1 items-center text-green-400">
                   <FaArrowUpLong />
-                  <label>{incomePercentage}%</label>
+                  <label>{incomePercentage.toFixed(2)}%</label>
                 </div>
-              ) : analyticsData?.totalIncome < analyticsData.incomeYesterday ? (
+              ) : filteredIncome < prevFilteredIncome ? (
                 <div className="flex flex-row items-center text-red-400 gap-2">
                   <FaArrowDownLong />
-                  <label>{incomePercentage}%</label>
+                  <label>{incomePercentage.toFixed(2)}%</label>
                 </div>
               ) : (
                 <div className="flex flex-row items-center text-gray-400 gap-2">
@@ -147,35 +294,29 @@ const Analytics = ({
               )}
             </div>
             <label className="text-xs text-gray-600">
-              Compared to ₱{(analyticsData?.incomeYesterday).toFixed(2)}{" "}
-              Yesterday
+              Compared to ₱{prevFilteredIncome} Previously
             </label>
-            <div className="flex flex-row justify-between text-gray-600 text-xs">
-              <label>Last Week's Income</label>
-              <label>₱{(analyticsData?.incomeLastWeek).toFixed(2)}</label>
-            </div>
           </div>
           <div className="h-auto bg-white rounded-lg shadow-sm px-3 pt-2 pb-4">
             <div className="w-full flex justify-between p-2 border-b border-gray-200">
-              <label className="text-gray-600 font-medium">Expenses</label>
+              <label className="text-gray-600 font-medium">Net Profit</label>
               <label className="text-xs bg-gray-100 flex items-center px-4 rounded-xs text-gray-400">
-                Today
+                {filterOptions[filterIndex]}
               </label>
             </div>
             <div className="w-full flex flex-row justify-between items-center mt-2">
               <label className="font-semibold text-2xl">
-                ₱ {(analyticsData?.totalExpenses).toFixed(2)}
+                ₱ {filteredExpense}
               </label>
-              {analyticsData?.totalExpenses > analyticsData.expenseYesterday ? (
+              {filteredExpense > prevFilteredExpense ? (
                 <div className="flex flex-row gap-1 items-center text-red-400">
                   <FaArrowUpLong />
-                  <label>{expensePercentage}%</label>
+                  <label>{expensePercentage.toFixed(2)}%</label>
                 </div>
-              ) : analyticsData?.totalExpenses <
-                analyticsData.expenseYesterday ? (
+              ) : filteredExpense < prevFilteredExpense ? (
                 <div className="flex flex-row items-center text-green-400 gap-2">
                   <FaArrowDownLong />
-                  <label>{expensePercentage}%</label>
+                  <label>{expensePercentage.toFixed(2)}%</label>
                 </div>
               ) : (
                 <div className="flex flex-row items-center text-gray-400 gap-2">
@@ -185,12 +326,8 @@ const Analytics = ({
               )}
             </div>
             <label className="text-xs text-gray-600">
-              Compared to ₱{analyticsData.expenseYesterday} Yesterday
+              Compared to ₱{prevFilteredExpense} Previously
             </label>
-            <div className="flex flex-row justify-between text-gray-600 text-xs">
-              <label>Last Week's Expense</label>
-              <label>₱{analyticsData.expenseLastWeek.toFixed(2)}</label>
-            </div>
           </div>
           <div className="h-auto bg-white rounded-lg shadow-sm px-3 pt-2 py-4">
             <div className="w-full flex justify-between p-2 border-b border-gray-200 mb-5">
@@ -198,10 +335,13 @@ const Analytics = ({
                 Overall Status
               </label>
               <label className="text-xs bg-gray-100 flex items-center px-4 rounded-xs text-gray-400">
-                Today
+                {filterOptions[filterIndex]}
               </label>
             </div>
-            <CustomDoughnutChart bookingStatusData={bookingStatusData} />
+            <CustomDoughnutChart
+              filterOptions={filterOptions[filterIndex]}
+              bookingStatusData={bookingStatusData}
+            />
           </div>
         </div>
         <div className="w-9/12 h-full flex flex-col gap-12 px-10 py-5">
@@ -248,18 +388,6 @@ const Analytics = ({
                 />
               </div>
 
-              {availabilityMessage && (
-                <p
-                  className={`text-sm flex items-center text-center font-medium ${
-                    availabilityMessage === "✅ Vehicle Is Available."
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {availabilityMessage}
-                </p>
-              )}
-
               <button
                 type="submit"
                 className="px-8 text-white bg-[#E60000] rounded-sm"
@@ -291,16 +419,33 @@ const Analytics = ({
               <tbody className="text-sm">
                 {listingsData && listingsData.length > 0 ? (
                   listingsData.map((listing, index) => {
-                    const totalPrice = listing.bookings?.reduce(
-                      (sum, booking) => {
-                        return booking.bookingStatus === "Complete"
-                          ? sum + (booking.totalPrice || 0)
-                          : sum;
+                    const now = new Date();
+
+                    const groupedTotal = listing.bookings?.reduce(
+                      (acc, booking) => {
+                        if (
+                          booking.bookingStatus !== "Complete" ||
+                          !booking.completedAt
+                        )
+                          return acc;
+
+                        const key = getGroupKey(
+                          booking.completedAt,
+                          filterOptions[filterIndex]
+                        );
+                        const amount = booking.totalPrice || 0;
+
+                        acc[key] = (acc[key] || 0) + amount;
+                        return acc;
                       },
-                      0
+                      {}
                     );
 
-                    const now = new Date();
+                    const currentKey = getGroupKey(
+                      { seconds: now.getTime() / 1000 },
+                      filterOptions[filterIndex]
+                    );
+                    const filteredTotal = groupedTotal?.[currentKey] || 0;
 
                     const isUnavailable = listing.bookings?.some((booking) => {
                       const pickup = new Date(booking.pickupDate);
@@ -327,7 +472,9 @@ const Analytics = ({
                             {status}
                           </label>
                         </td>
-                        <td className="py-4 px-6">₱{totalPrice.toFixed(2)}</td>
+                        <td className="py-4 px-6">
+                          ₱{filteredTotal.toFixed(2)}
+                        </td>
                         <td className="py-4 px-6">
                           <Link
                             to="/bookings"
@@ -355,10 +502,14 @@ const Analytics = ({
                 <label className="">Earning Summary</label>
               </div>
             </div>
-            <CustomLineChart earningData={earningData} />
+            <CustomLineChart
+              filterOptions={filterOptions[filterIndex]}
+              earningData={earningData}
+            />
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

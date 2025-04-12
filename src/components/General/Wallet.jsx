@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaWallet } from "react-icons/fa";
 import { BiSolidCoinStack } from "react-icons/bi";
 const Wallet = ({ isOpen, setTopUpModal, userData }) => {
+  useEffect(() => {
+    if (!userData) {
+      return;
+    }
+  }, [userData]);
+
   return (
     <button
       onClick={() => setTopUpModal(true)}
@@ -10,7 +16,7 @@ const Wallet = ({ isOpen, setTopUpModal, userData }) => {
       <div className="flex flex-row items-center gap-2">
         <BiSolidCoinStack className="text-yellow-400" />
         <label className="cursor-pointer">
-          ₱ {(userData?.walletBalance).toFixed(2) || (0).toFixed(2)}
+          ₱ {userData?.walletBalance.toFixed(2) || (0).toFixed(2)}
         </label>
       </div>
 
