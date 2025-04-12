@@ -17,7 +17,6 @@ const CreateListingScreen = () => {
   const [vehicleData, setVehicleData] = useState({
     images: ["", "", "", ""],
     name: "",
-    plateNumber: "",
     model: "",
     fuelType: "",
     pricePerDay: "",
