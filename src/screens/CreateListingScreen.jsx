@@ -136,17 +136,6 @@ const CreateListingScreen = () => {
                 className="border p-2 rounded"
               />
 
-              {/* Plate Number */}
-              <input
-                type="text"
-                name="plateNumber"
-                value={vehicleData.plateNumber}
-                onChange={handleChange}
-                placeholder="Vehicle Plate Number"
-                required
-                className="border p-2 rounded"
-              />
-
               {/* Model */}
               <input
                 type="text"
@@ -158,6 +147,19 @@ const CreateListingScreen = () => {
                 className="border p-2 rounded"
               />
 
+              {/* Vehicle Type */}
+              <select
+                name="vehicleType"
+                value={vehicleData.vehicleType}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              >
+                <option value="">Select Vehicle Type</option>
+                <option value="2 Wheels">2 Wheels</option>
+                <option value="4 Wheels">4 Wheels</option>
+              </select>
+
               {/* Fuel Type */}
               <select
                 name="fuelType"
@@ -167,10 +169,22 @@ const CreateListingScreen = () => {
                 className="border p-2 rounded"
               >
                 <option value="">Select Fuel Type</option>
-                <option value="Petrol">Petrol</option>
+                <option value="Gas">Gas</option>
                 <option value="Diesel">Diesel</option>
-                <option value="Unleaded">Unleaded</option>
                 <option value="Electric">Electric</option>
+              </select>
+
+              {/* Transmission Type */}
+              <select
+                name="transmissionType"
+                value={vehicleData.transmissonType}
+                onChange={handleChange}
+                required
+                className="border p-2 rounded"
+              >
+                <option value="">Select Transmission Type</option>
+                <option value="Petrol">Automatic</option>
+                <option value="Diesel">Manual</option>
               </select>
 
               {/* Price Per Day */}
