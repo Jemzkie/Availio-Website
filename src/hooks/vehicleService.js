@@ -74,17 +74,6 @@ export const addVehicle = async (vehicleData) => {
   }
 };
 
-export const deleteVehicle = async (vehicleId) => {
-  try {
-    const vehicleRef = doc(db, "vehicles", vehicleId);
-    await deleteDoc(vehicleRef);
-    return true;
-  } catch (error) {
-    console.error("Error deleting vehicle:", error);
-    return false;
-  }
-};
-
 // ✅ Fetch bookings for a specific vehicle
 const fetchBookingsForVehicle = async (vehicleId) => {
   try {
@@ -170,6 +159,17 @@ export const updateBookingStatus = async (bookingId, newStatus) => {
     };
   } catch (error) {
     console.error("Error updating booking status:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+// ✅ Delete a vehicle by ID
+export const deleteVehicleById = async (vehicleId) => {
+  try {
+    await deleteDoc(doc(db, "vehicles", vehicleId));
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting vehicle:", error);
     return { success: false, error: error.message };
   }
 };
