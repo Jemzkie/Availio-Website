@@ -18,13 +18,6 @@ const ConfirmationCompleteModal = ({
           Are you sure you want to mark this booking as{" "}
           <strong>Completed</strong>?
         </p>
-        <p className="mt-2">Make Sure You Have:</p>
-        <li>Dropped Off The Vehicle</li>
-        <li>Received Payment From The Renter</li>
-        <label>Total Price: ₱{booking.totalPrice}</label>
-
-        <p className="mt-2">Comission Deduction:</p>
-        <label>₱{booking.totalPrice - booking.totalPrice * 0.9}</label>
 
         <div className="mt-6 flex justify-end gap-4">
           <button

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { deleteVehicleById } from "../../hooks/vehicleService";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
-import AlertModal from "./AlertModal";
 import { useNavigate } from "react-router-dom";
 import Ribbon from "../General/Ribbon";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdDeleteOutline } from "react-icons/md";
+import { ToastContainer } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 
 const Listing = ({
   listings,
@@ -28,9 +29,6 @@ const Listing = ({
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [selectedVehicleName, setSelectedVehicleName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertType, setAlertType] = useState("success");
 
   const handleDeleteClick = (vehicleId, vehicleName) => {
     setSelectedVehicleId(vehicleId);
@@ -43,17 +41,36 @@ const Listing = ({
 
     const result = await deleteVehicleById(selectedVehicleId);
     if (result.success) {
-      setAlertType("success");
-      setAlertMessage("Vehicle deleted successfully!");
+      toast.success("Vehicle deleted successfully!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+
+      // Update listings after successful deletion
       setLocalListings((prev) =>
         prev.filter((vehicle) => vehicle.id !== selectedVehicleId)
       );
     } else {
-      setAlertType("error");
-      setAlertMessage("Failed to delete vehicle: " + result.error);
+      toast.error("Failed to delete vehicle: " + result.error, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     }
 
-    setIsAlertOpen(true);
     setIsModalOpen(false);
   };
 
@@ -115,14 +132,7 @@ const Listing = ({
         onConfirm={confirmDelete}
         vehicleName={selectedVehicleName}
       />
-
-      {/* Success/Error Alert Modal */}
-      <AlertModal
-        isOpen={isAlertOpen}
-        onClose={() => setIsAlertOpen(false)}
-        message={alertMessage}
-        type={alertType}
-      />
+      <ToastContainer />
     </div>
   );
 };

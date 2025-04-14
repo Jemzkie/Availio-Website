@@ -44,7 +44,7 @@ const MenuScreen = ({ ViewData }) => {
             <div className="bg-white h-8 w-1 rounded-md"></div>
           ) : null}
           <RxDashboard className="text-white w-6 h-6" />
-          <label className="text-white text-lg">Dashboard</label>
+          <label className="text-white text-lg cursor-pointer">Dashboard</label>
         </Link>
         <Link
           to="/listing"
@@ -56,7 +56,7 @@ const MenuScreen = ({ ViewData }) => {
             <div className="bg-white h-8 w-1 rounded-md"></div>
           ) : null}
           <GiScooter className="text-white w-6 h-6 " />
-          <label className="text-white text-lg">Listings</label>
+          <label className="text-white text-lg cursor-pointer">Listings</label>
         </Link>
         <Link
           to="/bookings"
@@ -68,7 +68,7 @@ const MenuScreen = ({ ViewData }) => {
             <div className="bg-white h-8 w-1 rounded-md"></div>
           ) : null}
           <LuBookCheck className="text-white w-6 h-6 " />
-          <label className="text-white text-lg">Bookings</label>
+          <label className="text-white text-lg cursor-pointer">Bookings</label>
         </Link>
         <Link
           to="/messaging"
@@ -80,7 +80,7 @@ const MenuScreen = ({ ViewData }) => {
             <div className="bg-white h-8 w-1 rounded-md"></div>
           ) : null}
           <LuMessageCircleMore className="text-white w-6 h-6" />
-          <label className="text-white text-lg">Messaging</label>
+          <label className="text-white text-lg cursor-pointer">Messaging</label>
         </Link>
 
         <Link
@@ -93,7 +93,9 @@ const MenuScreen = ({ ViewData }) => {
             <div className="bg-white h-8 w-1 duration-300 rounded-md"></div>
           ) : null}
           <AiOutlineTransaction className="text-white w-6 h-6" />
-          <label className="text-white text-lg">Transactions</label>
+          <label className="text-white text-lg cursor-pointer">
+            Transactions
+          </label>
         </Link>
 
         <Link
@@ -106,7 +108,7 @@ const MenuScreen = ({ ViewData }) => {
             <div className="bg-white h-8 w-1 duration-300 rounded-md"></div>
           ) : null}
           <VscAccount className="text-white w-6 h-6 " />
-          <label className="text-white text-lg">Profile</label>
+          <label className="text-white text-lg cursor-pointer">Profile</label>
         </Link>
 
         <button className="flex h-12 justify-center gap-2 items-center w-full py-5 mt-20 bg-gray-700 rounded-md cursor-pointer">
