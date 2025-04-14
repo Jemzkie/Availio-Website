@@ -1,8 +1,13 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect } from "react";
+import { deleteVehicleById } from "../../hooks/vehicleService";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import { useNavigate } from "react-router-dom";
 import Ribbon from "../General/Ribbon";
 import { MdOutlineFileUpload } from "react-icons/md";
+import { RiArrowDropDownLine } from "react-icons/ri";
 import { MdDeleteOutline } from "react-icons/md";
-import { deleteVehicle } from "../../hooks/vehicleService";
+import { ToastContainer } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 
 const Listing = ({
   listings,
@@ -20,21 +25,66 @@ const Listing = ({
     return [...new Set(allBrands)];
   }, [listings]);
 
-  const filteredListings = listings?.filter((listing) => {
-    const matchesSearch = listing?.name
-      ?.toLowerCase()
-      .includes(searchInput?.toLowerCase() || "");
-    const matchesBrand = selectedBrand
-      ? listing?.brand === selectedBrand
-      : true;
-    return matchesSearch && matchesBrand;
-  });
+  // Local state for listings
+  const [localListings, setLocalListings] = useState(listings);
+
+  // Keep localListings in sync when prop updates
+  useEffect(() => {
+    setLocalListings(listings);
+  }, [listings]);
+
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const [selectedVehicleName, setSelectedVehicleName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDeleteClick = (vehicleId, vehicleName) => {
+    setSelectedVehicleId(vehicleId);
+    setSelectedVehicleName(vehicleName);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedVehicleId) return;
+
+    const result = await deleteVehicleById(selectedVehicleId);
+    if (result.success) {
+      toast.success("Vehicle deleted successfully!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+
+      // Update listings after successful deletion
+      setLocalListings((prev) =>
+        prev.filter((vehicle) => vehicle.id !== selectedVehicleId)
+      );
+    } else {
+      toast.error("Failed to delete vehicle: " + result.error, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="flex flex-col font-inter flex-1 p-5">
       {/* Header Section */}
       <div className="flex w-full h-20 flex-row items-center justify-between mb-4">
-        {/* ✅ Redirect to Create Listing */}
         <button
           className="w-auto text-nowrap items-center p-1 gap-2 flex flex-row text-sm px-4 font-semibold rounded-lg border border-gray-400 cursor-pointer"
           onClick={() => setIsCreateOpen(true)}
@@ -62,55 +112,48 @@ const Listing = ({
         </div>
       </div>
 
-      {filteredListings?.length === 0 ? (
+
+      {localListings.length === 0 ? (
         <div className="text-4xl text-gray-600 text-center w-full h-full flex justify-center items-center">
           No Vehicle Found, Try Adding One!
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredListings?.length > 0
-            ? filteredListings?.map((vehicle) => (
-                <div
-                  key={vehicle.id}
-                  className="rounded-lg shadow-md overflow-hidden relative"
-                >
-                  <MdDeleteOutline
-                    onClick={async () => {
-                      const confirmDelete = window.confirm(
-                        `Are you sure you want to delete "${vehicle.name}"?`
-                      );
-                      if (confirmDelete) {
-                        const success = await deleteVehicle(vehicle.id);
-                        if (success) {
-                          setListings((prevListings) =>
-                            prevListings.filter((v) => v.id !== vehicle.id)
-                          );
-                        }
-                      }
-                    }}
-                    className="absolute top-4 right-4 w-6 h-6 text-red-600 cursor-pointer"
-                  />
-
-                  <img
-                    src={vehicle.images?.[0]}
-                    alt={vehicle.name}
-                    className="w-full h-40 object-contain"
-                  />
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold">{vehicle.name}</h3>
-                    <p className="text-gray-500">
-                      {vehicle.model} - {vehicle.fuelType}
-                    </p>
-                    <p className="text-gray-700">
-                      ₱{vehicle.pricePerDay} / day
-                    </p>
-                    <p className="text-gray-400">{vehicle.location}</p>
-                  </div>
-                </div>
-              ))
-            : null}
+          {localListings.map((vehicle) => (
+            <div
+              key={vehicle.id}
+              className="rounded-lg shadow-md overflow-hidden relative"
+            >
+              <MdDeleteOutline
+                onClick={() => handleDeleteClick(vehicle.id, vehicle.name)}
+                className="absolute top-4 right-4 w-6 h-6 text-red-600 cursor-pointer"
+              />
+              <img
+                src={vehicle.images?.[0]}
+                alt={vehicle.name}
+                className="w-full h-40 object-contain"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold">{vehicle.name}</h3>
+                <p className="text-gray-500">
+                  {vehicle.model} - {vehicle.fuelType}
+                </p>
+                <p className="text-gray-700">₱{vehicle.pricePerDay} / day</p>
+                <p className="text-gray-400">{vehicle.location}</p>
+              </div>
+            </div>
+          ))}
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmDeleteModal
+        isOpen={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+        vehicleName={selectedVehicleName}
+      />
+      <ToastContainer />
     </div>
   );
 };
