@@ -25,7 +25,7 @@ const FirstSection = ({ ViewData }) => {
           <p className="text-[#2E709E] text-lg md:text-left text-center md:w-[544px] mt-10">
             Whether you're planning to explore a city, need a reliable
             transportation vehicle, or just want the convenience of having a
-            scooter at your disposal, we've got you covered.
+            vehicle at your disposal, we've got you covered.
           </p>
 
           <div className="flex flex-row gap-5 mt-5 md:justify-start justify-center">
