@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Wallet from "../General/Wallet";
 import Ribbon from "../General/Ribbon";
-import { MoonLoader, ClipLoader } from "react-spinners";
+import { MoonLoader } from "react-spinners";
 const Booking = ({
   isOpen,
   setTopUpModal,
   userData,
   bookingData,
+  listingsData,
   handleConfirmClick,
   handleOngoingClick,
   handleCancelClick,
@@ -36,7 +37,7 @@ const Booking = ({
           isOpen={isOpen}
           setTopUpModal={setTopUpModal}
         />
-        <Ribbon userData={userData} />
+        <Ribbon listings={listingsData} userData={userData} />
       </div>
 
       <div className="flex flex-row gap-5 w-full h-auto px-5 mb-4">

@@ -13,15 +13,15 @@ const CustomDoughnutChart = ({ bookingStatusData, filterOptions }) => {
     pending: 0,
   };
 
-  const { complete, ongoing, cancelled, pending } = statusData;
+  const { complete, cancelled, ongoing, pending } = statusData;
 
   const data = {
     labels: ["Complete", "Cancelled", "On-Going", "Pending"],
     datasets: [
       {
         label: filterOptions,
-        data: [complete, ongoing, cancelled, pending],
-        backgroundColor: ["#05df72", "#E60000", "#d97706", "#FFC107"],
+        data: [complete, cancelled, ongoing, pending],
+        backgroundColor: ["#05df72", "#E60000", "#FFA500", "#FFC107"],
         borderWidth: 1,
       },
     ],

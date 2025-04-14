@@ -142,7 +142,7 @@ function Login() {
                 className="text-center text-[#E60000] font-semibold"
                 to="/register"
               >
-                Sign up
+                Sign up as Supplier
               </Link>
             </div>
 

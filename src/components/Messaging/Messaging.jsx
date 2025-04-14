@@ -5,7 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import { useSession } from "../../context/SessionContext";
 import { getConversations } from "../../hooks/messageService";
 import MessageContainer from "./MessageContainer";
-const Messaging = ({ userData, ViewData }) => {
+const Messaging = ({ userData, ViewData, listingsData }) => {
   const { user } = useSession();
   const [userList, setUserList] = useState([]);
 
@@ -28,7 +28,7 @@ const Messaging = ({ userData, ViewData }) => {
   return (
     <div className="flex flex-col font-jakarta flex-1 p-5">
       <div className="flex w-full h-20 flex-row items-center justify-end mb-4 border-b border-gray-400">
-        <SmallProfile userData={userData} />
+        <SmallProfile listings={listingsData} userData={userData} />
       </div>
 
       <div className="w-full flex flex-row h-auto flex-1 gap-5">
