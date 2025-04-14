@@ -3,12 +3,12 @@ import {
   addDoc,
   getDocs,
   getDoc,
-  deleteDoc,
   doc,
   serverTimestamp,
   query,
   where,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig.js";
 
@@ -22,6 +22,7 @@ export const addVehicle = async (vehicleData) => {
       model,
       transmissionType,
       fuelType,
+      cchp,
       vehicleType,
       pricePerDay,
       location,
@@ -37,6 +38,7 @@ export const addVehicle = async (vehicleData) => {
       !fuelType ||
       !pricePerDay ||
       !vehicleType ||
+      !cchp ||
       !location ||
       !transmissionType ||
       !brand
@@ -53,6 +55,7 @@ export const addVehicle = async (vehicleData) => {
       fuelType,
       vehicleType,
       transmissionType,
+      cchp,
       pricePerDay,
       location,
       brand,

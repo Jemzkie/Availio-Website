@@ -8,7 +8,6 @@ import { useSession } from "../context/SessionContext";
 import { fetchBookedVehiclesWithRenters } from "../hooks/vehicleService";
 import ConfirmationOngoingModal from "../components/Booking/ConfirmationOngoingModal";
 import ConfirmationCompleteModal from "../components/Booking/ConfirmationCompleteModal";
-
 import {
   markBookingAsCancelled,
   markBookingAsCompleted,
@@ -16,6 +15,7 @@ import {
 } from "../hooks/bookingService";
 import ExtendBookingModal from "../components/Booking/ExtendBookingModal";
 import RateRenterModal from "../components/Booking/RateRenterModal";
+import ConfirmationCancelModal from "../components/Booking/ConfirmationCancelModal";
 
 const BookingScreen = () => {
   const ViewData = "Booking";
@@ -28,10 +28,9 @@ const BookingScreen = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isExtendOpen, setIsExtendOpen] = useState(false);
   const [isRatingOpen, setIsRatingOpen] = useState(false);
+  const [isCancelledOpen, setIsCancelledOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
-
-  const [confirmCancel, setConfirmCancel] = useState(false);
 
   const { user } = useSession();
 
@@ -74,9 +73,19 @@ const BookingScreen = () => {
     setIsModalOpen(true);
   };
 
-  const handleCancelClick = async (booking) => {
-    setConfirmCancel(true);
-    await markBookingAsCancelled(booking.bookingId);
+  const handleCancelClick = (booking) => {
+    setSelectedBooking(booking);
+    setIsCancelledOpen(true);
+  };
+
+  const handleCancelBooking = async () => {
+    if (!selectedBooking) return;
+    setConfirmLoading(true);
+
+    await markBookingAsCancelled(selectedBooking.bookingId);
+
+    setIsCancelledOpen(false);
+    setSelectedBooking(null);
 
     window.location.reload();
   };
@@ -124,7 +133,8 @@ const BookingScreen = () => {
           isModalOpen ||
           isConfirmOpen ||
           isExtendOpen ||
-          isRatingOpen
+          isRatingOpen ||
+          isCancelledOpen
             ? "blur-xs"
             : ""
         }`}
@@ -140,7 +150,6 @@ const BookingScreen = () => {
           handleCancelClick={handleCancelClick}
           handleExtendClick={handleExtendClick}
           handleRatingClick={handleRatingClick}
-          confirmCancel={confirmCancel}
         />
       </div>
       <WalletModal
@@ -176,6 +185,14 @@ const BookingScreen = () => {
       <RateRenterModal
         isOpen={isRatingOpen}
         onClose={() => setIsRatingOpen(false)}
+        booking={selectedBooking}
+      />
+
+      <ConfirmationCancelModal
+        isOpen={isCancelledOpen}
+        onClose={() => setIsCancelledOpen(false)}
+        onConfirm={handleCancelBooking}
+        confirmLoading={confirmLoading}
         booking={selectedBooking}
       />
     </div>

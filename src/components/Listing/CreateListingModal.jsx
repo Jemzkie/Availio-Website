@@ -15,8 +15,9 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
     images: ["", "", "", ""],
     name: "",
     model: "",
+    cchp: 0,
     fuelType: "",
-    pricePerDay: "",
+    pricePerDay: 0,
     transmissionType: "",
     vehicleType: "",
     location: "",
@@ -258,6 +259,17 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
                 className="border p-2 rounded"
               />
 
+              <input
+                min={0}
+                type="number"
+                name="cchp"
+                value={vehicleData.cchp}
+                onChange={handleChange}
+                placeholder="Vehicle CC or Horsepower"
+                required
+                className="border p-2 rounded"
+              />
+
               {/* Vehicle Type */}
               <select
                 name="vehicleType"
@@ -294,8 +306,8 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
                 className="border p-2 rounded"
               >
                 <option value="">Select Transmission Type</option>
-                <option value="Petrol">Automatic</option>
-                <option value="Diesel">Manual</option>
+                <option value="Automatic">Automatic</option>
+                <option value="Manual">Manual</option>
               </select>
 
               {/* Price Per Day */}

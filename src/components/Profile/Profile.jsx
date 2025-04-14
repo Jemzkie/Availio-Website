@@ -410,7 +410,7 @@ const Profile = ({ user, userData }) => {
                   <div className="flex flex-col">
                     <label className="text-lg">Verify Account</label>
                     <label className="text-xs text-gray-600">
-                      These Information Will Be Only Displayed On This Website.
+                      Submit Your Details To Be Verified By The Platform
                     </label>
                   </div>
                   <div className="flex items-center gap-2 rounded-md border border-gray-400 px-4">

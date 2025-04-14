@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { deleteVehicleById } from "../../hooks/vehicleService";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import { useNavigate } from "react-router-dom";
@@ -13,22 +13,31 @@ const Listing = ({
   listings,
   ViewData,
   userData,
-  isCreateOpen,
   setIsCreateOpen,
+  setSearchInput,
+  searchInput,
+  setListings,
 }) => {
-  const navigate = useNavigate();
-
-  // Local state for listings
-  const [localListings, setLocalListings] = useState(listings);
-
-  // Keep localListings in sync when prop updates
-  useEffect(() => {
-    setLocalListings(listings);
-  }, [listings]);
-
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [selectedVehicleName, setSelectedVehicleName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const brandOptions = useMemo(() => {
+    const allBrands = listings?.map((l) => l.brand).filter(Boolean);
+    return [...new Set(allBrands)];
+  }, [listings]);
+
+  // Keep localListings in sync when prop updates
+  const filteredListings = listings?.filter((listing) => {
+    const matchesSearch = listing?.name
+      ?.toLowerCase()
+      .includes(searchInput?.toLowerCase() || "");
+    const matchesBrand = selectedBrand
+      ? listing?.brand === selectedBrand
+      : true;
+    return matchesSearch && matchesBrand;
+  });
 
   const handleDeleteClick = (vehicleId, vehicleName) => {
     setSelectedVehicleId(vehicleId);
@@ -54,7 +63,7 @@ const Listing = ({
       });
 
       // Update listings after successful deletion
-      setLocalListings((prev) =>
+      setListings((prev) =>
         prev.filter((vehicle) => vehicle.id !== selectedVehicleId)
       );
     } else {
@@ -85,20 +94,33 @@ const Listing = ({
           Upload Your Unit <MdOutlineFileUpload className="w-8 h-8" />
         </button>
         <div className="flex flex-row gap-4 items-center">
-          <button className="w-auto text-nowrap items-center p-1 gap-2 flex flex-row text-sm px-4 font-semibold rounded-lg border border-gray-400 cursor-pointer">
-            Brands <RiArrowDropDownLine className="w-8 h-8" />
-          </button>
-          <Ribbon userData={userData} ViewData={ViewData} />
+          <select
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            className="border px-3 py-2 rounded-md text-gray-700 bg-white"
+          >
+            <option value="">All Brands</option>
+            {brandOptions.map((brand) => (
+              <option key={brand} value={brand}>
+                {brand}
+              </option>
+            ))}
+          </select>
+          <Ribbon
+            setSearchInput={setSearchInput}
+            userData={userData}
+            ViewData={ViewData}
+          />
         </div>
       </div>
 
-      {localListings.length === 0 ? (
+      {filteredListings.length === 0 ? (
         <div className="text-4xl text-gray-600 text-center w-full h-full flex justify-center items-center">
-          No listings found.
+          No Vehicle Found, Try Adding One!
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {localListings.map((vehicle) => (
+          {filteredListings.map((vehicle) => (
             <div
               key={vehicle.id}
               className="rounded-lg shadow-md overflow-hidden relative"

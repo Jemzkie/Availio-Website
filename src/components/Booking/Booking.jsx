@@ -164,11 +164,8 @@ const Booking = ({
                       </button>
                     )}
 
-                    {confirmCancel ? (
-                      <button className="bg-[#E60000] cursor-pointer items-center flex text-white px-8 py-2 rounded-md">
-                        <ClipLoader size={24} color="#FFFFFF" />
-                      </button>
-                    ) : booking.bookingStatus === "On-Going" ? null : (
+                    {confirmCancel ? null : booking.bookingStatus ===
+                      "On-Going" ? null : (
                       <button
                         className="border border-gray-400 px-4 py-2 cursor-pointer rounded-md"
                         onClick={() => handleCancelClick(booking)}
