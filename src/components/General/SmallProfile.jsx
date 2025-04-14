@@ -3,6 +3,7 @@ import { useSession } from "../../context/SessionContext";
 import { IoNotifications } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import Cat from "../../assets/images/Cat.jpg";
+import { VscUnverified } from "react-icons/vsc";
 
 const SmallProfile = ({ userData }) => {
   const { user } = useSession();
@@ -17,7 +18,11 @@ const SmallProfile = ({ userData }) => {
             <label className="text-gray-600 text-sm">
               {user.displayRole || "Vehicle Owner"}
             </label>
-            <MdVerified className="text-red-400 w-5 h-5" />
+            {userData?.businessVerified ? (
+              <MdVerified className="text-red-400 w-5 h-5" />
+            ) : (
+              <VscUnverified className="w-5 h-5" />
+            )}{" "}
           </div>
         </div>
 

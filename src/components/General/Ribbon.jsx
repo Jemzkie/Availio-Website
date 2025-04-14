@@ -3,6 +3,8 @@ import { IoNotifications, IoSearch } from "react-icons/io5";
 import Cat from "../../assets/images/Cat.jpg";
 import { useSession } from "../../context/SessionContext"; // ✅ Import session context
 import { MdVerified } from "react-icons/md";
+import { VscUnverified } from "react-icons/vsc";
+
 const Ribbon = ({ userData }) => {
   const { user } = useSession();
 
@@ -29,7 +31,11 @@ const Ribbon = ({ userData }) => {
               <label className="text-gray-600 text-sm">
                 {user.displayRole || "Vehicle Owner"}
               </label>
-              <MdVerified className="text-red-400 w-5 h-5" />
+              {userData?.businessVerified ? (
+                <MdVerified className="text-red-400 w-5 h-5" />
+              ) : (
+                <VscUnverified className="w-5 h-5" />
+              )}
             </div>
           </div>
 

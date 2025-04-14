@@ -59,11 +59,11 @@ export const fetchBookingStatus = async (uid) => {
     };
 
     const counts = {
-      daily: { complete: 0, pending: 0, cancel: 0 },
-      weekly: { complete: 0, pending: 0, cancel: 0 },
-      monthly: { complete: 0, pending: 0, cancel: 0 },
-      quarterly: { complete: 0, pending: 0, cancel: 0 },
-      yearly: { complete: 0, pending: 0, cancel: 0 },
+      daily: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      weekly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      monthly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      quarterly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      yearly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
     };
 
     const inRange = (date, start, end) => date >= start && date < end;
@@ -80,7 +80,9 @@ export const fetchBookingStatus = async (uid) => {
       if (status === "Complete" && booking.completedAt?.toDate) {
         dateToCheck = booking.completedAt.toDate();
       } else if (
-        (status === "Pending" || status === "Cancel") &&
+        (status === "Pending" ||
+          status === "On-Going" ||
+          status === "Cancelled") &&
         booking.createdAt
       ) {
         dateToCheck = new Date(booking.createdAt);
@@ -90,8 +92,9 @@ export const fetchBookingStatus = async (uid) => {
 
       const updateCount = (period) => {
         if (status === "Complete") counts[period].complete++;
+        if (status === "On-Going") counts[period].ongoing++;
         if (status === "Pending") counts[period].pending++;
-        if (status === "Cancel") counts[period].cancel++;
+        if (status === "Cancelled") counts[period].cancelled++;
       };
 
       if (inRange(dateToCheck, ...ranges.daily)) updateCount("daily");
@@ -105,11 +108,11 @@ export const fetchBookingStatus = async (uid) => {
   } catch (error) {
     console.error(error);
     return {
-      daily: { complete: 0, pending: 0, cancel: 0 },
-      weekly: { complete: 0, pending: 0, cancel: 0 },
-      monthly: { complete: 0, pending: 0, cancel: 0 },
-      quarterly: { complete: 0, pending: 0, cancel: 0 },
-      yearly: { complete: 0, pending: 0, cancel: 0 },
+      daily: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      weekly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      monthly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      quarterly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
+      yearly: { complete: 0, pending: 0, ongoing: 0, cancelled: 0 },
     };
   }
 };

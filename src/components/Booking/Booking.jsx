@@ -53,7 +53,7 @@ const Booking = ({
         ))}
       </div>
 
-      <div className="flex flex-col gap-4 px-5">
+      <div className="flex flex-col gap-4 px-5 pb-20">
         {!bookingData ? (
           <div className="h-96 flex items-center justify-center">
             <MoonLoader />
@@ -115,12 +115,17 @@ const Booking = ({
                   "Cancelled" ? null : (
                   <>
                     {booking.bookingStatus === "On-Going" ? (
-                      <button
-                        className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
-                        onClick={() => handleConfirmClick(booking)}
-                      >
-                        Confirm
-                      </button>
+                      <>
+                        <button
+                          className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"
+                          onClick={() => handleConfirmClick(booking)}
+                        >
+                          Confirm
+                        </button>
+                        <button className="border border-gray-400 cursor-pointer px-4 py-2 rounded-md">
+                          Extend
+                        </button>
+                      </>
                     ) : (
                       <button
                         className="bg-[#E60000] px-4 py-2 cursor-pointer text-white rounded-md"

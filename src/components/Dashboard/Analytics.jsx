@@ -22,7 +22,6 @@ const Analytics = ({
   listingsData,
   earningData,
 }) => {
-  console.log(listingsData);
   const [date, setDate] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -279,12 +278,12 @@ const Analytics = ({
               {filteredIncome > prevFilteredIncome ? (
                 <div className="flex flex-row gap-1 items-center text-green-400">
                   <FaArrowUpLong />
-                  <label>{incomePercentage.toFixed(2)}%</label>
+                  <label>{incomePercentage}%</label>
                 </div>
               ) : filteredIncome < prevFilteredIncome ? (
                 <div className="flex flex-row items-center text-red-400 gap-2">
                   <FaArrowDownLong />
-                  <label>{incomePercentage.toFixed(2)}%</label>
+                  <label>{incomePercentage}%</label>
                 </div>
               ) : (
                 <div className="flex flex-row items-center text-gray-400 gap-2">
@@ -311,12 +310,12 @@ const Analytics = ({
               {filteredExpense > prevFilteredExpense ? (
                 <div className="flex flex-row gap-1 items-center text-red-400">
                   <FaArrowUpLong />
-                  <label>{expensePercentage.toFixed(2)}%</label>
+                  <label>{expensePercentage}%</label>
                 </div>
               ) : filteredExpense < prevFilteredExpense ? (
                 <div className="flex flex-row items-center text-green-400 gap-2">
                   <FaArrowDownLong />
-                  <label>{expensePercentage.toFixed(2)}%</label>
+                  <label>{expensePercentage}%</label>
                 </div>
               ) : (
                 <div className="flex flex-row items-center text-gray-400 gap-2">
@@ -410,7 +409,7 @@ const Analytics = ({
               <thead>
                 <tr className="border-b border-gray-300">
                   <th className="py-3 px-6 text-left">No.</th>
-                  <th className="py-3 px-6 text-left">Vehicle No.</th>
+                  <th className="py-3 px-6 text-left">Vehicle</th>
                   <th className="py-3 px-6 text-left">Status</th>
                   <th className="py-3 px-6 text-left">Earning</th>
                   <th className="py-3 px-6 text-left"></th>
@@ -460,7 +459,7 @@ const Analytics = ({
                         <td className="py-4 px-6">{index + 1}</td>
                         <td className="py-4 px-6">
                           <label className="px-4 py-1 rounded-sm bg-gray-200">
-                            {listing.plateNumber}
+                            {listing.plateNumber || listing.name}
                           </label>
                         </td>
                         <td className="py-4 px-6">

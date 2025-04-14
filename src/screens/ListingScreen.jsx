@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import CreateListingModal from "../components/Listing/CreateListingModal";
 import Menu from "../components/General/Menu";
 import Listing from "../components/Listing/Listing";
 import { fetchVehicles } from "../hooks/vehicleService";
@@ -12,6 +12,7 @@ const ListingScreen = () => {
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(null);
   const { user } = useSession();
 
   useEffect(() => {
@@ -42,10 +43,19 @@ const ListingScreen = () => {
 
   return (
     <div className="w-full flex flex-col h-auto">
-      <div className="flex flex-row">
+      <div className={`flex flex-row ${isCreateOpen ? "blur-xs" : ""}`}>
         <Menu ViewData={ViewData} />
-        <Listing userData={userData} listings={listings} />
+        <Listing
+          isCreateOpen={isCreateOpen}
+          setIsCreateOpen={setIsCreateOpen}
+          userData={userData}
+          listings={listings}
+        />
       </div>
+      <CreateListingModal
+        isCreateOpen={isCreateOpen}
+        setIsCreateOpen={setIsCreateOpen}
+      />
     </div>
   );
 };
