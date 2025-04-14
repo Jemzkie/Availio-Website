@@ -14,6 +14,8 @@ import {
   markBookingAsCompleted,
   markBookingAsOngoing,
 } from "../hooks/bookingService";
+import ExtendBookingModal from "../components/Booking/ExtendBookingModal";
+import RateRenterModal from "../components/Booking/RateRenterModal";
 
 const BookingScreen = () => {
   const ViewData = "Booking";
@@ -24,8 +26,11 @@ const BookingScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isExtendOpen, setIsExtendOpen] = useState(false);
+  const [isRatingOpen, setIsRatingOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+
   const [confirmCancel, setConfirmCancel] = useState(false);
 
   const { user } = useSession();
@@ -54,6 +59,16 @@ const BookingScreen = () => {
     setIsConfirmOpen(true);
   };
 
+  const handleRatingClick = (booking) => {
+    setSelectedBooking(booking);
+    setIsRatingOpen(true);
+  };
+
+  const handleExtendClick = (booking) => {
+    setSelectedBooking(booking);
+    setIsExtendOpen(true);
+  };
+
   const handleOngoingClick = (booking) => {
     setSelectedBooking(booking);
     setIsModalOpen(true);
@@ -70,7 +85,14 @@ const BookingScreen = () => {
     if (!selectedBooking) return;
     setConfirmLoading(true);
 
-    await markBookingAsOngoing(selectedBooking.bookingId);
+    const commissionFee =
+      selectedBooking.totalPrice - selectedBooking.totalPrice * 0.9;
+
+    await markBookingAsOngoing(
+      selectedBooking.bookingId,
+      user.uid,
+      commissionFee
+    );
 
     setIsModalOpen(false);
     setSelectedBooking(null);
@@ -82,14 +104,7 @@ const BookingScreen = () => {
     if (!selectedBooking) return;
     setConfirmLoading(true);
 
-    const commissionFee =
-      selectedBooking.totalPrice - selectedBooking.totalPrice * 0.9;
-
-    await markBookingAsCompleted(
-      selectedBooking.bookingId,
-      user.uid,
-      commissionFee
-    );
+    await markBookingAsCompleted(selectedBooking.bookingId);
 
     setIsModalOpen(false);
     setSelectedBooking(null);
@@ -105,7 +120,13 @@ const BookingScreen = () => {
     <div className="w-full flex flex-col h-auto">
       <div
         className={`flex flex-row ${
-          TopUpModal || isModalOpen || isConfirmOpen ? "blur-xs" : ""
+          TopUpModal ||
+          isModalOpen ||
+          isConfirmOpen ||
+          isExtendOpen ||
+          isRatingOpen
+            ? "blur-xs"
+            : ""
         }`}
       >
         <Menu ViewData={ViewData} />
@@ -117,6 +138,8 @@ const BookingScreen = () => {
           handleConfirmClick={handleConfirmClick}
           handleOngoingClick={handleOngoingClick}
           handleCancelClick={handleCancelClick}
+          handleExtendClick={handleExtendClick}
+          handleRatingClick={handleRatingClick}
           confirmCancel={confirmCancel}
         />
       </div>
@@ -140,6 +163,19 @@ const BookingScreen = () => {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleOngoingBooking}
         confirmLoading={confirmLoading}
+        booking={selectedBooking}
+      />
+
+      <ExtendBookingModal
+        isOpen={isExtendOpen}
+        userData={userData}
+        onClose={() => setIsExtendOpen(false)}
+        booking={selectedBooking}
+      />
+
+      <RateRenterModal
+        isOpen={isRatingOpen}
+        onClose={() => setIsRatingOpen(false)}
         booking={selectedBooking}
       />
     </div>

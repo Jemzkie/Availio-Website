@@ -40,7 +40,6 @@ const Dashboard = () => {
         const userListings = vehicles.filter(
           (vehicle) => vehicle.ownerId === user.uid
         );
-        console.log(vehicles);
 
         setListings(userListings);
 

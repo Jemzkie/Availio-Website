@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useSession } from "../../context/SessionContext";
-import { useNavigate } from "react-router-dom";
 import { addVehicle } from "../../hooks/vehicleService";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ToastContainer } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 
 const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
   if (!isCreateOpen) return null;
   const { user } = useSession();
-  const navigate = useNavigate();
 
   const [vehicleData, setVehicleData] = useState({
     images: ["", "", "", ""],
@@ -42,7 +42,17 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
       setVehicleData((prev) => ({ ...prev, images: updatedImages }));
     } catch (error) {
       console.error("Upload failed:", error);
-      alert("Image upload failed. Please try again.");
+      toast.error("Image upload failed. Please try again.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   };
 
@@ -50,7 +60,17 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
     e.preventDefault();
 
     if (!user?.uid) {
-      alert("You need to be logged in to add a vehicle.");
+      toast.error("You need to be logged in to add a vehicle.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       return;
     }
 
@@ -61,10 +81,31 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
 
     const result = await addVehicle(newVehicle);
     if (result.success) {
-      alert("Vehicle listed successfully!");
+      toast.success("Succesesfully Listed Vechicle.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       window.location.reload();
     } else {
-      alert(`Error: ${result.error}`);
+      toast.error("Something Went Wrong! Please Try Again", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      console.error(`Error: ${result.error}`);
     }
   };
 
@@ -188,10 +229,11 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
                 <option value="Honda">Honda</option>
                 <option value="Suzuki">Suzuki</option>
                 <option value="KYMCO">KYMCO</option>
-                <option value="Vespa">Suzuki</option>
-                <option value="Vespa">Toyota</option>
-                <option value="Vespa">Subaru</option>
-                <option value="Vespa">Mitsubishi</option>
+                <option value="Suzuki">Suzuki</option>
+                <option value="Toyota">Toyota</option>
+                <option value="Subaru">Subaru</option>
+                <option value="Mitsubishi">Mitsubishi</option>
+                <option value="Nissan">Nissan</option>
               </select>
 
               {/* Vehicle Name */}
@@ -289,6 +331,7 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
