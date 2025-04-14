@@ -13,6 +13,7 @@ const ListingScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [isCreateOpen, setIsCreateOpen] = useState(null);
+  const [searchInput, setSearchInput] = useState(null);
   const { user } = useSession();
 
   useEffect(() => {
@@ -48,8 +49,11 @@ const ListingScreen = () => {
         <Listing
           isCreateOpen={isCreateOpen}
           setIsCreateOpen={setIsCreateOpen}
+          setSearchInput={setSearchInput}
           userData={userData}
           listings={listings}
+          setListings={setListings}
+          searchInput={searchInput}
         />
       </div>
       <CreateListingModal

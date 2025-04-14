@@ -1,23 +1,34 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useMemo } from "react";
 import Ribbon from "../General/Ribbon";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { RiArrowDropDownLine } from "react-icons/ri";
-
 import { MdDeleteOutline } from "react-icons/md";
+import { deleteVehicle } from "../../hooks/vehicleService";
 
 const Listing = ({
   listings,
   ViewData,
   userData,
-  isCreateOpen,
   setIsCreateOpen,
+  setSearchInput,
+  searchInput,
+  setListings,
 }) => {
-  const navigate = useNavigate();
+  const [selectedBrand, setSelectedBrand] = useState("");
 
-  const Click = () => {
-    console.log("handle delete here");
-  };
+  const brandOptions = useMemo(() => {
+    const allBrands = listings?.map((l) => l.brand).filter(Boolean);
+    return [...new Set(allBrands)];
+  }, [listings]);
+
+  const filteredListings = listings?.filter((listing) => {
+    const matchesSearch = listing?.name
+      ?.toLowerCase()
+      .includes(searchInput?.toLowerCase() || "");
+    const matchesBrand = selectedBrand
+      ? listing?.brand === selectedBrand
+      : true;
+    return matchesSearch && matchesBrand;
+  });
 
   return (
     <div className="flex flex-col font-inter flex-1 p-5">
@@ -31,29 +42,55 @@ const Listing = ({
           Upload Your Unit <MdOutlineFileUpload className="w-8 h-8" />
         </button>
         <div className="flex flex-row gap-4 items-center">
-          <button className="w-auto text-nowrap items-center p-1 gap-2 flex flex-row text-sm px-4 font-semibold rounded-lg border border-gray-400 cursor-pointer">
-            Brands <RiArrowDropDownLine className="w-8 h-8" />
-          </button>
-          <Ribbon userData={userData} ViewData={ViewData} />
+          <select
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            className="border px-3 py-2 rounded-md text-gray-700 bg-white"
+          >
+            <option value="">All Brands</option>
+            {brandOptions.map((brand) => (
+              <option key={brand} value={brand}>
+                {brand}
+              </option>
+            ))}
+          </select>
+          <Ribbon
+            setSearchInput={setSearchInput}
+            userData={userData}
+            ViewData={ViewData}
+          />
         </div>
       </div>
 
-      {listings.length === 0 ? (
+      {filteredListings?.length === 0 ? (
         <div className="text-4xl text-gray-600 text-center w-full h-full flex justify-center items-center">
-          No listings found.
+          No Vehicle Found, Try Adding One!
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {listings.length > 0
-            ? listings.map((vehicle) => (
+          {filteredListings?.length > 0
+            ? filteredListings?.map((vehicle) => (
                 <div
                   key={vehicle.id}
-                  className=" rounded-lg shadow-md overflow-hidden relative"
+                  className="rounded-lg shadow-md overflow-hidden relative"
                 >
                   <MdDeleteOutline
-                    onClick={Click}
+                    onClick={async () => {
+                      const confirmDelete = window.confirm(
+                        `Are you sure you want to delete "${vehicle.name}"?`
+                      );
+                      if (confirmDelete) {
+                        const success = await deleteVehicle(vehicle.id);
+                        if (success) {
+                          setListings((prevListings) =>
+                            prevListings.filter((v) => v.id !== vehicle.id)
+                          );
+                        }
+                      }
+                    }}
                     className="absolute top-4 right-4 w-6 h-6 text-red-600 cursor-pointer"
                   />
+
                   <img
                     src={vehicle.images?.[0]}
                     alt={vehicle.name}
@@ -74,8 +111,6 @@ const Listing = ({
             : null}
         </div>
       )}
-
-      {/* ✅ Listings Section */}
     </div>
   );
 };

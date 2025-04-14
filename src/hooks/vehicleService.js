@@ -8,6 +8,7 @@ import {
   query,
   where,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig.js";
 
@@ -21,6 +22,7 @@ export const addVehicle = async (vehicleData) => {
       model,
       transmissionType,
       fuelType,
+      cchp,
       vehicleType,
       pricePerDay,
       location,
@@ -36,6 +38,7 @@ export const addVehicle = async (vehicleData) => {
       !fuelType ||
       !pricePerDay ||
       !vehicleType ||
+      !cchp ||
       !location ||
       !transmissionType ||
       !brand
@@ -52,6 +55,7 @@ export const addVehicle = async (vehicleData) => {
       fuelType,
       vehicleType,
       transmissionType,
+      cchp,
       pricePerDay,
       location,
       brand,
@@ -67,6 +71,17 @@ export const addVehicle = async (vehicleData) => {
   } catch (error) {
     console.error("Error adding vehicle:", error);
     return { success: false, error: error.message };
+  }
+};
+
+export const deleteVehicle = async (vehicleId) => {
+  try {
+    const vehicleRef = doc(db, "vehicles", vehicleId);
+    await deleteDoc(vehicleRef);
+    return true;
+  } catch (error) {
+    console.error("Error deleting vehicle:", error);
+    return false;
   }
 };
 

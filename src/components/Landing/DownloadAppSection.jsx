@@ -9,10 +9,10 @@ function DownloadAppSection() {
     <section className="flex flex-row mt-32 text-5xl md:w-11/12 md:h-[580px] md:rounded-e-2xl text-nowrap relative bg-[#E60000] text-white font-semibold font-roboto py-12 px-6 md:p-32">
       <div className="md:w-1/3 flex flex-col md:gap-16 z-10">
         <label className="md:text-4xl text-xl">
-          Unlock your adventure. Rent a scooter with ease.
+          Unlock your adventure. Rent a vehicle with ease.
         </label>
         <label className="md:text-5xl text-2xl text-black font-semibold font-roboto text-wrap md:w-[900px]">
-          Download our new app and book your first scooter today
+          Download our new app and book your first vehicle today
         </label>
         <div className="flex flex-row md:flex-nowrap ">
           <img className="md:w-[900px] w-[200px]" src={AppStore} />
