@@ -10,7 +10,7 @@ const ConfirmationCompleteModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm animate-fade-in">
         <h3 className="text-lg font-semibold mb-4">
           Confirm Booking Completion
         </h3>

@@ -69,7 +69,7 @@ const RateRenterModal = ({ isOpen, onClose, booking }) => {
 
   return (
     <div className="fixed inset-0  bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl animate-fade-in">
         <h2 className="text-xl font-semibold text-center mb-4">
           Rate Your Renter
         </h2>
