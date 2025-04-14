@@ -107,6 +107,7 @@ const Listing = ({
             ))}
           </select>
           <Ribbon
+            listings={listings}
             setSearchInput={setSearchInput}
             userData={userData}
             ViewData={ViewData}

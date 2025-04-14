@@ -228,7 +228,6 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
                 <option value="">Select Vehicle Brand</option>
                 <option value="Yamaha">Yamaha</option>
                 <option value="Honda">Honda</option>
-                <option value="Suzuki">Suzuki</option>
                 <option value="KYMCO">KYMCO</option>
                 <option value="Suzuki">Suzuki</option>
                 <option value="Toyota">Toyota</option>

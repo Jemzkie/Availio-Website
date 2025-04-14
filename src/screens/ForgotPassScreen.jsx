@@ -16,19 +16,19 @@ const ForgotPassScreen = () => {
         <div className="w-full flex flex-row gap-5">
           <div className="md:w-1/2 w-full h-full md:mt-20">
             <Link
-              className="flex flex-row mb-5 items-center md:hidden"
+              className="hidden flex-row mb-5 items-center md:flex"
               to="/login"
             >
               <IoIosArrowBack />
               Back to login
             </Link>
-            <div className="w-full text-center">
+            <div className="w-full md:text-left text-center">
               <label className="text-5xl font-semibold">
                 Forgot Your Password?
               </label>
             </div>
 
-            <div className="w-full text-center">
+            <div className="w-full md:text-left text-center">
               <label className="text-xl flex flex-col mt-10 text-[#E60000]">
                 Don’t worry, happens to all of us. Enter your email below to
                 recover your password

@@ -3,7 +3,13 @@ import SmallProfile from "../General/SmallProfile";
 import formatTimestamp from "../../utils/formatTimestamp";
 import Wallet from "../General/Wallet";
 
-const Transaction = ({ Transaction, userData, isOpen, setTopUpModal }) => {
+const Transaction = ({
+  Transaction,
+  userData,
+  listingsData,
+  isOpen,
+  setTopUpModal,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
@@ -28,7 +34,7 @@ const Transaction = ({ Transaction, userData, isOpen, setTopUpModal }) => {
           isOpen={isOpen}
           setTopUpModal={setTopUpModal}
         />
-        <SmallProfile userData={userData} />
+        <SmallProfile listings={listingsData} userData={userData} />
       </div>
 
       {Transaction.length === 0 ? (

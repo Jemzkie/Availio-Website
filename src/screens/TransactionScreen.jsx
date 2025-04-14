@@ -3,6 +3,7 @@ import Menu from "../components/General/Menu";
 import Transaction from "../components/Transaction/Transaction";
 import { useSession } from "../context/SessionContext";
 import { fetchOwnerTransaction } from "../hooks/transactionService";
+import { fetchVehicles } from "../hooks/vehicleService";
 import Loader from "../components/General/Loader";
 import fetchUser from "../hooks/userData";
 import WalletModal from "../components/Wallet/WalletModal";
@@ -14,6 +15,7 @@ const TransactionScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [TopUpModal, setTopUpModal] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [listingsData, setListingsData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +25,12 @@ const TransactionScreen = () => {
 
         const transaction = await fetchOwnerTransaction(user.uid);
         setTransactionData(transaction);
+
+        const vehicles = await fetchVehicles();
+        const userListings = vehicles.filter(
+          (vehicle) => vehicle.ownerId === user.uid
+        );
+        setListingsData(userListings);
         setIsLoading(false);
       } catch (error) {
         console.log(err);
@@ -45,6 +53,7 @@ const TransactionScreen = () => {
         <Transaction
           Transaction={transactionData}
           userData={userData}
+          listingsData={listingsData}
           setTopUpModal={setTopUpModal}
         />
       </div>

@@ -246,7 +246,7 @@ function Register() {
                 className="text-center text-[#E60000] font-semibold"
                 to="/login"
               >
-                Login
+                Login as Supplier
               </Link>
             </div>
             <div className="flex flex-row justify-center items-center gap-5 mt-5 md:mt-10">

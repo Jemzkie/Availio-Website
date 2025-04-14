@@ -5,7 +5,10 @@ import fetchUser from "../hooks/userData";
 import Loader from "../components/General/Loader";
 import WalletModal from "../components/Wallet/WalletModal";
 import { useSession } from "../context/SessionContext";
-import { fetchBookedVehiclesWithRenters } from "../hooks/vehicleService";
+import {
+  fetchBookedVehiclesWithRenters,
+  fetchVehicles,
+} from "../hooks/vehicleService";
 import ConfirmationOngoingModal from "../components/Booking/ConfirmationOngoingModal";
 import ConfirmationCompleteModal from "../components/Booking/ConfirmationCompleteModal";
 import {
@@ -23,6 +26,7 @@ const BookingScreen = () => {
   const [TopUpModal, setTopUpModal] = useState(false);
   const [userData, setUserData] = useState(null);
   const [bookingData, setBookingData] = useState([]);
+  const [listingsData, setListingsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -42,6 +46,12 @@ const BookingScreen = () => {
 
         const bookingRequest = await fetchBookedVehiclesWithRenters(user.uid);
         setBookingData(bookingRequest);
+
+        const vehicles = await fetchVehicles();
+        const userListings = vehicles.filter(
+          (vehicle) => vehicle.ownerId === user.uid
+        );
+        setListingsData(userListings);
 
         setIsLoading(false);
       } catch (err) {
@@ -143,6 +153,7 @@ const BookingScreen = () => {
         <Booking
           bookingData={bookingData}
           userData={userData}
+          listingsData={listingsData}
           isOpen={TopUpModal}
           setTopUpModal={setTopUpModal}
           handleConfirmClick={handleConfirmClick}

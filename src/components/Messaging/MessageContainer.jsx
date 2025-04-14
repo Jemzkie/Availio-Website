@@ -1,6 +1,4 @@
 import React from "react";
-import { IoIosCall } from "react-icons/io";
-import { IoVideocam } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import { IoIosSend } from "react-icons/io";
 
@@ -23,8 +21,6 @@ const MessageContainer = ({ uid }) => {
         </div>
 
         <div className="flex flex-row gap-5">
-          <IoVideocam className="w-7 h-7" />
-          <IoIosCall className="w-7 h-7" />
           <RxDashboard className="w-7 h-7" />
         </div>
       </div>
