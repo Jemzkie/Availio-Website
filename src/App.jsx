@@ -14,7 +14,6 @@ import VerifyScreen from "./screens/VerifyScreen";
 import SetPassScreen from "./screens/SetPassScreen";
 import Dashboard from "./screens/DashboardScreen";
 import ListingScreen from "./screens/ListingScreen";
-import CreateListingScreen from "./screens/CreateListingScreen";
 import { auth } from "./config/firebaseConfig";
 import { SessionProvider } from "./context/SessionContext";
 import PrivateRoute from "./components/PrivateRoute";
@@ -79,10 +78,6 @@ function App() {
           <Route
             path="/bookings"
             element={<PrivateRoute element={<BookingScreen />} />}
-          />
-          <Route
-            path="/create-listing"
-            element={<PrivateRoute element={<CreateListingScreen />} />}
           />
           <Route
             path="/profile"

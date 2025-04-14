@@ -414,8 +414,17 @@ const Profile = ({ user, userData }) => {
                     </label>
                   </div>
                   <div className="flex items-center gap-2 rounded-md border border-gray-400 px-4">
-                    <button>Unverified</button>
-                    <VscUnverified className="w-7 h-7" />
+                    {userData?.businessVerified ? (
+                      <>
+                        <label>Verified</label>
+                        <MdVerified className="text-red-400 w-7 h-7" />
+                      </>
+                    ) : (
+                      <>
+                        <label>Unverified</label>
+                        <VscUnverified className="w-7 h-7" />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

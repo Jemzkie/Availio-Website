@@ -14,8 +14,18 @@ import { db } from "../config/firebaseConfig.js";
 // ✅ Add a vehicle
 export const addVehicle = async (vehicleData) => {
   try {
-    const { ownerId, images, name, model, fuelType, pricePerDay, location } =
-      vehicleData;
+    const {
+      ownerId,
+      images,
+      name,
+      model,
+      transmissionType,
+      fuelType,
+      vehicleType,
+      pricePerDay,
+      location,
+      brand,
+    } = vehicleData;
 
     if (
       !ownerId ||
@@ -25,8 +35,12 @@ export const addVehicle = async (vehicleData) => {
       !model ||
       !fuelType ||
       !pricePerDay ||
-      !location
+      !vehicleType ||
+      !location ||
+      !transmissionType ||
+      !brand
     ) {
+      console.log(vehicleData);
       throw new Error("All fields are required, including 4 images.");
     }
 
@@ -36,8 +50,12 @@ export const addVehicle = async (vehicleData) => {
       name,
       model,
       fuelType,
+      vehicleType,
+      transmissionType,
       pricePerDay,
       location,
+      brand,
+      defaultImg: vehicleData.images[0],
       createdAt: serverTimestamp(),
     });
 
