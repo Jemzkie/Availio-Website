@@ -23,7 +23,7 @@ const WalletModal = ({ isOpen, setTopUpModal, user, userData }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center">
-      <div className="bg-white p-5 rounded-xl shadow-lg w-md font-inter relative">
+      <div className="bg-white p-5 rounded-xl shadow-lg w-md font-inter relative animate-fade-in">
         <button
           onClick={() => setTopUpModal(false)}
           className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-black"

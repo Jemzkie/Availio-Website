@@ -48,7 +48,7 @@ const ExtendBookingModal = ({ isOpen, onClose, booking, userData }) => {
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-md w-[300px] space-y-4">
+      <div className="bg-white p-6 rounded-lg shadow-md w-[300px] space-y-4 animate-fade-in">
         <h2 className="text-lg font-bold">Extend Return Date</h2>
 
         <div>
