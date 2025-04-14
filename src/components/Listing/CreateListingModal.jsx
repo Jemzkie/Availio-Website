@@ -114,7 +114,7 @@ const CreateListingModal = ({ setIsCreateOpen, isCreateOpen }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center">
-      <div className="bg-white p-12 rounded-xl shadow-lg w-7xl font-inter flex flex-col relative">
+      <div className="bg-white p-12 rounded-xl shadow-lg w-7xl font-inter flex flex-col relative animate-fade-in">
         <button
           onClick={() => setIsCreateOpen(false)}
           className="absolute top-4 right-4 text-gray-500 cursor-pointer hover:text-black"
