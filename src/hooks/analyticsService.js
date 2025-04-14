@@ -133,7 +133,7 @@ export const fetchEarningSummary = async (uid) => {
     const bookingSnapshot = await getDocs(
       query(
         collection(db, "bookings"),
-        where("bookingStatus", "==", "Complete")
+        where("bookingStatus", "in", ["Complete", "On-Going"])
       )
     );
 
@@ -288,7 +288,7 @@ export const fetchIncomeandExpenses = async (uid) => {
     const bookingSnapshot = await getDocs(
       query(
         collection(db, "bookings"),
-        where("bookingStatus", "==", "Complete")
+        where("bookingStatus", "in", ["Complete", "On-Going"])
       )
     );
 

@@ -25,6 +25,7 @@ const Analytics = ({
   const [date, setDate] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [incomePercentage, setIncomePercentage] = useState(0);
   const [expensePercentage, setExpensePercentage] = useState(0);
 
@@ -36,6 +37,9 @@ const Analytics = ({
 
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [filterIndex, setFilterIndex] = useState(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const listingsPerPage = 4;
 
   useEffect(() => {
     const updateDate = () => {
@@ -236,6 +240,26 @@ const Analytics = ({
     setFilterIndex((prevIndex) => (prevIndex + 1) % filterOptions.length);
   };
 
+  const toggleSortOrder = () => {
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
+  const sortedListings = [...listingsData].sort((a, b) => {
+    const bookingsA = a.bookings?.length || 0;
+    const bookingsB = b.bookings?.length || 0;
+
+    return sortOrder === "asc" ? bookingsA - bookingsB : bookingsB - bookingsA;
+  });
+
+  const indexOfLastListing = currentPage * listingsPerPage;
+  const indexOfFirstListing = indexOfLastListing - listingsPerPage;
+  const currentListings = sortedListings.slice(
+    indexOfFirstListing,
+    indexOfLastListing
+  );
+
+  const totalPages = Math.ceil(sortedListings.length / listingsPerPage);
+
   return (
     <div className="flex flex-col flex-1 font-inter">
       <div className="flex w-full h-28 flex-row">
@@ -259,7 +283,7 @@ const Analytics = ({
         <div className="w-3/12 h-full flex flex-col gap-5 bg-[#F8F7F1] px-5 pb-10">
           <button
             onClick={handleCycle}
-            className="w-full py-2 hover:bg-[#E60000] hover:text-white duration-300 flex items-center text-center justify-center bg-white rounded-md"
+            className="w-full py-2 hover:bg-[#E60000] cursor-pointer hover:text-white duration-300 flex items-center text-center justify-center bg-white rounded-md"
           >
             {filterOptions[filterIndex]}
           </button>
@@ -400,9 +424,14 @@ const Analytics = ({
               <label className="font-semibold text-gray-600">
                 Live Vehicle Status
               </label>
-              <button className="flex flex-row gap-2 items-center px-4 py-1 border border-gray-600 rounded-md">
+              <button
+                onClick={toggleSortOrder}
+                className="flex flex-row gap-2 items-center px-4 py-1 border border-gray-600 rounded-md"
+              >
                 <VscSettings className="text-gray-600" />
-                <label className="text-gray-600">Filter</label>
+                <label className="text-gray-600 capitalize">
+                  {sortOrder}ending
+                </label>
               </button>
             </div>
             <table className="w-full border-collapse overflow-x-auto text-gray-600">
@@ -410,6 +439,7 @@ const Analytics = ({
                 <tr className="border-b border-gray-300">
                   <th className="py-3 px-6 text-left">No.</th>
                   <th className="py-3 px-6 text-left">Vehicle</th>
+                  <th className="py-3 px-6 text-left">Usage</th>
                   <th className="py-3 px-6 text-left">Status</th>
                   <th className="py-3 px-6 text-left">Earning</th>
                   <th className="py-3 px-6 text-left"></th>
@@ -417,19 +447,21 @@ const Analytics = ({
               </thead>
               <tbody className="text-sm">
                 {listingsData && listingsData.length > 0 ? (
-                  listingsData.map((listing, index) => {
+                  currentListings.map((listing, index) => {
                     const now = new Date();
-
                     const groupedTotal = listing.bookings?.reduce(
                       (acc, booking) => {
                         if (
-                          booking.bookingStatus !== "Complete" ||
-                          !booking.completedAt
-                        )
+                          (booking.bookingStatus !== "Complete" &&
+                            booking.bookingStatus !== "On-Going") ||
+                          (!booking.completedAt &&
+                            booking.bookingStatus === "Complete")
+                        ) {
                           return acc;
+                        }
 
                         const key = getGroupKey(
-                          booking.completedAt,
+                          booking.completedAt || booking.startDate,
                           filterOptions[filterIndex]
                         );
                         const amount = booking.totalPrice || 0;
@@ -456,10 +488,17 @@ const Analytics = ({
 
                     return (
                       <tr key={index}>
-                        <td className="py-4 px-6">{index + 1}</td>
+                        <td className="py-4 px-6">
+                          {indexOfFirstListing + index + 1}
+                        </td>
                         <td className="py-4 px-6">
                           <label className="px-4 py-1 rounded-sm bg-gray-200">
-                            {listing.plateNumber || listing.name}
+                            {listing.name}
+                          </label>
+                        </td>
+                        <td className="py-4 px-6">
+                          <label className="px-4 py-1 rounded-sm bg-gray-200">
+                            {listing.bookings.length || 0}
                           </label>
                         </td>
                         <td className="py-4 px-6">
@@ -495,6 +534,38 @@ const Analytics = ({
               </tbody>
             </table>
           </div>
+          <div className="flex justify-center gap-2 mt-4">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 rounded border ${
+                currentPage === 1
+                  ? "text-gray-400 border-gray-300"
+                  : "text-black border-gray-500"
+              }`}
+            >
+              Previous
+            </button>
+
+            <span className="px-4 py-1 text-gray-600">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1 rounded border ${
+                currentPage === totalPages
+                  ? "text-gray-400 border-gray-300"
+                  : "text-black border-gray-500"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+
           <div className="flex flex-col">
             <div className="flex flex-row justify-between">
               <div className="flex flex-row gap-5">
