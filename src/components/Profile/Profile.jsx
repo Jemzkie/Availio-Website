@@ -9,6 +9,7 @@ import { VscUnverified } from "react-icons/vsc";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../config/firebaseConfig";
 import { MdVerified } from "react-icons/md";
+import { FaUserCircle } from "react-icons/fa";
 
 const Profile = ({ user, userData }) => {
   const [previewBusinessProfile, setPreviewBusinessProfile] = useState(null);
@@ -297,10 +298,14 @@ const Profile = ({ user, userData }) => {
                   </div>
                 ) : (
                   <div className="relative">
-                    <img
-                      className="h-52 w-52 object-contain rounded-full border border-gray-400"
-                      src={userData?.businessProfile}
-                    />
+                    {userData?.businessProfile ? (
+                      <img
+                        className="h-52 w-52 object-cover rounded-full border border-gray-400"
+                        src={userData?.businessProfile}
+                      />
+                    ) : (
+                      <FaUserCircle className="w-52 h-52" />
+                    )}
                     <label className="cursor-pointer hover:bg-[#E60000] duration-300 -translate-y-8 transform absolute mt-2 flex flex-row gap-2 items-center text-white justify-center w-20 h-8 bg-[#141414] rounded-md">
                       <input
                         type="file"
@@ -384,10 +389,15 @@ const Profile = ({ user, userData }) => {
                     </div>
                   ) : (
                     <div className="relative">
-                      <img
-                        className="h-52 w-52 object-cover rounded-full border border-gray-400"
-                        src={userData?.personalProfile}
-                      />
+                      {userData?.personalProfile || user?.photoURL ? (
+                        <img
+                          className="h-52 w-52 object-cover rounded-full border border-gray-400"
+                          src={userData?.personalProfile || user?.photoURL}
+                        />
+                      ) : (
+                        <FaUserCircle className="w-52 h-52" />
+                      )}
+
                       <label className="cursor-pointer hover:bg-[#E60000] duration-300 -translate-y-8 transform absolute mt-2 flex flex-row gap-2 items-center text-white justify-center w-20 h-8 bg-[#141414] rounded-md">
                         <input
                           type="file"
@@ -492,11 +502,11 @@ const Profile = ({ user, userData }) => {
                     Please wait for review. All documents uploaded.
                   </div>
                 )
-              ) : (
+              ) : userData?.businessVerified === true ? (
                 <div className="mt-4 px-4 py-2 bg-green-100 text-green-800 rounded-md text-sm text-center">
                   You Are Fully Verified!
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
