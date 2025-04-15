@@ -329,7 +329,7 @@ const Analytics = ({
             </div>
             <div className="w-full flex flex-row justify-between items-center mt-2">
               <label className="font-semibold text-2xl">
-                ₱ {filteredExpense}
+                ₱ {(filteredIncome * 0.9).toFixed(2)}
               </label>
               {filteredExpense > prevFilteredExpense ? (
                 <div className="flex flex-row gap-1 items-center text-red-400">
