@@ -8,6 +8,7 @@ import { toast, Bounce } from "react-toastify";
 import { VscUnverified } from "react-icons/vsc";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../config/firebaseConfig";
+import { MdVerified } from "react-icons/md";
 
 const Profile = ({ user, userData }) => {
   const [previewBusinessProfile, setPreviewBusinessProfile] = useState(null);
