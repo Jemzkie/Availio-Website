@@ -10,6 +10,8 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../config/firebaseConfig";
 import { MdVerified } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
+import MapModal from "../Map/MapModal";
+import { GeoPoint } from "firebase/firestore";
 
 const Profile = ({ user, userData }) => {
   const [previewBusinessProfile, setPreviewBusinessProfile] = useState(null);
@@ -35,6 +37,8 @@ const Profile = ({ user, userData }) => {
   const [uploadProgress, setUploadProgress] = useState([0, 0, 0]);
   const [filePreviews, setFilePreviews] = useState([null, null, null]);
   const [verificationUrls, setVerificationUrls] = useState([null, null, null]);
+  const [mapModalOpen, setMapModalOpen] = useState(false);
+  const [businessCoordinates, setBusinessCoordinates] = useState(null);
 
   const documentMappings = [
     { label: "DTI", key: "DTI" },
@@ -73,13 +77,26 @@ const Profile = ({ user, userData }) => {
     }
   };
 
+  const handleLocationSelect = (data) => {
+    setBusinessAddress(data.address);
+    setBusinessCoordinates({ lat: data.lat, lng: data.lng });
+  };
+
   const handleUpdate = async () => {
     setIsUpdating(true);
     const updatedData = {};
 
     if (businessName.trim()) updatedData.businessName = businessName.trim();
-    if (businessAddress.trim())
+    if (businessAddress.trim()) {
       updatedData.businessAddress = businessAddress.trim();
+
+      if (businessCoordinates?.lat && businessCoordinates?.lng) {
+        updatedData.businessCoordinates = new GeoPoint(
+          businessCoordinates.lat,
+          businessCoordinates.lng
+        );
+      }
+    }
     if (businessEmail.trim()) updatedData.businessEmail = businessEmail.trim();
     if (contactNumber.trim()) updatedData.contactNumber = contactNumber.trim();
     if (selectedBusinessImage)
@@ -242,14 +259,23 @@ const Profile = ({ user, userData }) => {
 
                 <div className="mt-3 flex flex-col gap-1">
                   <label>Business Address</label>
-                  <input
-                    value={businessAddress}
-                    onChange={(e) => setBusinessAddress(e.target.value)}
-                    placeholder={
-                      userData?.businessAddress || "Add Business Address"
-                    }
-                    className=" py-1 px-4 border border-gray-400 rounded-sm"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      value={businessAddress}
+                      onChange={(e) => setBusinessAddress(e.target.value)}
+                      placeholder={
+                        userData?.businessAddress || "Add Business Address"
+                      }
+                      className="flex-1 py-1 px-4 border border-gray-400 rounded-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setMapModalOpen(true)}
+                      className="px-3 py-1 bg-blue-600 text-white rounded-sm"
+                    >
+                      Pin on Map
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mt-3 flex flex-col gap-1">
@@ -512,6 +538,12 @@ const Profile = ({ user, userData }) => {
         </div>
       </div>
       <ToastContainer />
+
+      <MapModal
+        isOpen={mapModalOpen}
+        onClose={() => setMapModalOpen(false)}
+        setAddressData={handleLocationSelect}
+      />
     </div>
   );
 };
