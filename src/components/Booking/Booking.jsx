@@ -29,6 +29,27 @@ const Booking = ({
     }
   }, [activeFilter, bookingData]);
 
+  const formatDateTime = (value) => {
+    if (!value) return "Invalid date";
+
+    if (value.toDate) {
+      value = value.toDate();
+    } else {
+      value = new Date(value);
+    }
+
+    if (isNaN(value)) return "Invalid date";
+
+    return value.toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="flex flex-col flex-1 font-inter">
       <div className="w-full flex flex-row items-center justify-between p-5">
@@ -85,10 +106,10 @@ const Booking = ({
                     Renter: {booking.renter?.username || "N/A"}
                   </div>
                   <div className="text-sm text-gray-600">
-                    Pick-Up Date: {booking?.pickupDate || "N/A"}
+                    Pick-Up Date: {formatDateTime(booking?.pickupDate) || "N/A"}
                   </div>
                   <div className="text-sm text-gray-600">
-                    Return Date: {booking?.returnDate || "N/A"}
+                    Return Date: {formatDateTime(booking?.returnDate) || "N/A"}
                   </div>
                   <div className="text-sm text-gray-600">
                     Status:{" "}
