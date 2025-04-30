@@ -1,9 +1,18 @@
 import axios from "axios";
-
-const checkout = async (totalPrice, user, bookingDetails) => {
+export default async function handler(req, res) {
   const encodedKey = btoa(process.env.VITE_PAYMONGO_SECRET_KEY);
-  console.log(totalPrice, user, bookingDetails);
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
   try {
+    const { totalPrice, user, bookingDetails } = req.body;
+
+    if (!totalPrice || !user || !bookingDetails) {
+      return res.status(400).json({ message: "Missing parameters" });
+    }
+
     const response = await axios.post(
       "https://api.paymongo.com/v1/checkout_sessions",
       {
@@ -48,14 +57,13 @@ const checkout = async (totalPrice, user, bookingDetails) => {
       }
     );
 
-    return response;
-  } catch (error) {
-    console.error(
-      "PayMongo Checkout Error:",
-      error.response?.data || error.message
-    );
-    return null;
-  }
-};
+    if (!response || !response.data) {
+      return res.status(500).json({ message: "Checkout failed" });
+    }
 
-export default checkout;
+    return res.status(200).json(response.data);
+  } catch (error) {
+    console.error("API Route Error:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
