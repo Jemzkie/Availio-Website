@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const checkout = async (totalPrice, user, bookingDetails) => {
-  const encodedKey = btoa(import.meta.env.VITE_PAYMONGO_SECRET_KEY);
+  const encodedKey = btoa(process.env.VITE_PAYMONGO_SECRET_KEY);
 
   try {
     const response = await axios.post(
