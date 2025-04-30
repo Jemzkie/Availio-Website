@@ -2,7 +2,7 @@ import axios from "axios";
 
 const checkout = async (totalPrice, user, bookingDetails) => {
   const encodedKey = btoa(process.env.VITE_PAYMONGO_SECRET_KEY);
-
+  console.log(totalPrice, user, bookingDetails);
   try {
     const response = await axios.post(
       "https://api.paymongo.com/v1/checkout_sessions",
