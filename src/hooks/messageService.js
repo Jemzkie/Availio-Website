@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, getDoc, doc, setDoc, query, where, orderBy, Timestamp } from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc, doc, setDoc, query, where, orderBy, Timestamp, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
 // ✅ Create or Get a Conversation between two users
@@ -15,6 +15,8 @@ export const getOrCreateConversation = async (userId1, userId2) => {
       await setDoc(conversationRef, {
         participants,
         createdAt: Timestamp.now(),
+        lastMessage: null,
+        lastMessageTime: Timestamp.now(),
       });
     }
 
@@ -26,21 +28,31 @@ export const getOrCreateConversation = async (userId1, userId2) => {
 };
 
 // ✅ Send Message
-export const sendMessage = async (conversationId, senderId, message) => {
+export const sendMessage = async (conversationId, senderId, message, media = null) => {
   try {
-    if (!conversationId || !senderId || !message) {
+    if (!conversationId || !senderId) {
       throw new Error("Missing required fields");
     }
 
     const messageRef = collection(db, "conversations", conversationId, "messages");
     const newMessage = {
       senderId,
-      message,
+      message: message || "",
+      media,
+      reactions: [],
       createdAt: Timestamp.now(),
     };
 
-    await addDoc(messageRef, newMessage);
-    return { success: true, message: "Message sent successfully" };
+    const docRef = await addDoc(messageRef, newMessage);
+
+    // Update conversation's last message
+    const conversationRef = doc(db, "conversations", conversationId);
+    await updateDoc(conversationRef, {
+      lastMessage: message || (media ? (media.type === 'image' ? '📷 Image' : '🎥 Video') : ''),
+      lastMessageTime: Timestamp.now(),
+    });
+
+    return { success: true, message: "Message sent successfully", messageId: docRef.id };
   } catch (error) {
     console.error("Error sending message:", error);
     throw new Error("Failed to send message");
@@ -81,7 +93,8 @@ export const getConversations = async (userId) => {
 
     const conversationsQuery = query(
       collection(db, "conversations"),
-      where("participants", "array-contains", userId)
+      where("participants", "array-contains", userId),
+      orderBy("lastMessageTime", "desc")
     );
     const conversationsSnapshot = await getDocs(conversationsQuery);
 
@@ -94,5 +107,46 @@ export const getConversations = async (userId) => {
   } catch (error) {
     console.error("Error fetching conversations:", error);
     throw new Error("Failed to get conversations");
+  }
+};
+
+// ✅ Update Message Reaction
+export const updateMessageReaction = async (conversationId, messageId, userId, reactionType) => {
+  try {
+    const messageRef = doc(db, "conversations", conversationId, "messages", messageId);
+    const messageSnap = await getDoc(messageRef);
+
+    if (!messageSnap.exists()) {
+      throw new Error("Message not found");
+    }
+
+    const message = messageSnap.data();
+    const existingReaction = message.reactions?.find(r => r.userId === userId);
+
+    if (existingReaction) {
+      // Remove existing reaction if it's the same type
+      if (existingReaction.type === reactionType) {
+        await updateDoc(messageRef, {
+          reactions: message.reactions.filter(r => r.userId !== userId)
+        });
+      } else {
+        // Update existing reaction
+        await updateDoc(messageRef, {
+          reactions: message.reactions.map(r => 
+            r.userId === userId ? { ...r, type: reactionType } : r
+          )
+        });
+      }
+    } else {
+      // Add new reaction
+      await updateDoc(messageRef, {
+        reactions: arrayUnion({ userId, type: reactionType, createdAt: Timestamp.now() })
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating message reaction:", error);
+    throw new Error("Failed to update reaction");
   }
 };
