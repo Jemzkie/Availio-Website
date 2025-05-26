@@ -12,7 +12,7 @@ const ForgotPassScreen = () => {
   return (
     <div>
       <div className="w-full h-auto flex flex-col md:items-start items-center p-6 md:p-16 gap-5">
-        <img className="w-[360px]" src={logo} />
+        <img className="w-[250px]" src={logo} />
         <div className="w-full flex flex-row gap-5">
           <div className="md:w-1/2 w-full h-full md:mt-20">
             <Link
@@ -71,7 +71,7 @@ const ForgotPassScreen = () => {
             </div>
           </div>
           <div className="md:block hidden md:w-1/2 h-full">
-            <img src={back} />
+          <img className="w-[500px]" src={back} />
           </div>
         </div>
       </div>

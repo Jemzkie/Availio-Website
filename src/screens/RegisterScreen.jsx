@@ -113,7 +113,7 @@ function Register() {
   return (
     <div>
       <div className="w-full h-auto flex flex-col md:items-start items-center p-6 md:p-16 gap-5">
-        <img className="w-[360px]" src={logo} />
+        <img className="w-[250px]" src={logo} />
         <div className="w-full flex flex-row gap-5">
           <form
             onSubmit={handleRegister}
@@ -285,7 +285,7 @@ function Register() {
             )}
           </form>
           <div className="md:block hidden w-1/2 h-full">
-            <img src={back} />
+          <img className="w-[500px]" src={back} />
           </div>
         </div>
       </div>

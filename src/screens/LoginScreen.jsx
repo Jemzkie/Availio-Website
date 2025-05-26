@@ -75,7 +75,7 @@ function Login() {
   return (
     <div>
       <div className="w-full h-auto flex flex-col md:items-start items-center p-6 md:p-16 gap-5">
-        <img className="w-[360px]" src={logo} />
+        <img className="w-[250px]" src={logo}  />
         <div className="w-full flex flex-row gap-5">
           <form
             onSubmit={handleLogin}
@@ -137,7 +137,7 @@ function Login() {
               {loading ? "Logging in..." : "Login"}
             </button>
             <div className="justify-center items-center flex gap-2 mt-5">
-              <label>Don’t have an account?</label>
+              <label>Don't have an account?</label>
               <Link
                 className="text-center text-[#E60000] font-semibold"
                 to="/register"
@@ -182,8 +182,8 @@ function Login() {
               </div>
             )}
           </form>
-          <div className="md:block hidden md:w-1/2 h-full">
-            <img src={back} />
+          <div className="md:block hidden md:w-1/2 h-full flex justify-center items-center">
+            <img className="w-150" src={back} />
           </div>
         </div>
       </div>
