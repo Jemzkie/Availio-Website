@@ -13,6 +13,7 @@ import {
   signInWithApple,
 } from "../hooks/userService";
 import { MoonLoader } from "react-spinners";
+import scooterImage from "../assets/images/scooter.png"; // Make sure to add this image
 
 function Register() {
   const [userData, setUserData] = useState({
@@ -112,18 +113,19 @@ function Register() {
   };
   return (
     <div>
-      <div className="w-full h-auto flex flex-col md:items-start items-center p-6 md:p-16 gap-5">
-        <img className="w-[250px]" src={logo} />
-        <div className="w-full flex flex-row gap-5">
+      <div className="w-full h-auto flex flex-col md:flex-row md:items-start items-center p-6 md:p-16 gap-5">
+        {/* Left Side - Registration Form */}
+        <div className="md:w-1/2 w-full flex flex-col">
+          <img className="w-[250px]" src={logo} />
           <form
             onSubmit={handleRegister}
-            className="md:w-1/2 w-full h-full mt-5 md:mt-20"
+            className="w-full h-full mt-5 md:mt-20"
           >
             <div className="w-full md:text-left text-center">
-              <label className="text-5xl  font-semibold">Sign Up</label>
+              <label className="text-5xl font-semibold">Sign Up</label>
             </div>
             <label className="text-xl md:text-left text-center flex flex-col md:text-nowrap text-wrap mt-10 text-[#E60000]">
-              Let’s get you all setup so you can access your personal account.
+              Let's get you all setup so you can access your personal account.
             </label>
             {error && <p className="error-message">{error}</p>}
             <div className="flex flex-row w-full gap-5 mt-5">
@@ -149,7 +151,7 @@ function Register() {
                   name="lastName"
                   value={userData.lastName}
                   onChange={handleChange}
-                  className="w-full placeholder:text-gray-300 px-6 py-3 md:py-5 md:px-10  rounded-lg border border-solid"
+                  className="w-full placeholder:text-gray-300 px-6 py-3 md:py-5 md:px-10 rounded-lg border border-solid"
                   placeholder="Enter your last name"
                 />
               </div>
@@ -261,22 +263,8 @@ function Register() {
             ) : (
               <div className="flex flex-row gap-5 justify-center mt-10">
                 <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                  <FaFacebook
-                    onClick={() => handleSocialLogin("facebook")}
-                    disabled={loading}
-                    className="w-10 h-10"
-                  />
-                </div>
-                <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
                   <FcGoogle
                     onClick={() => handleSocialLogin("google")}
-                    disabled={loading}
-                    className="w-10 h-10"
-                  />
-                </div>
-                <div className="border-2 w-48 h-16 rounded-xl flex justify-center items-center border-[#2E709E] cursor-pointer">
-                  <FaApple
-                    onClick={() => handleSocialLogin("apple")}
                     disabled={loading}
                     className="w-10 h-10"
                   />
@@ -284,8 +272,63 @@ function Register() {
               </div>
             )}
           </form>
-          <div className="md:block hidden w-1/2 h-full">
-          <img className="w-[500px]" src={back} />
+        </div>
+
+        {/* New Right Side Design */}
+        <div className="md:w-1/2 w-full hidden md:flex flex-col items-center justify-center p-10 bg-gradient-to-b from-[#1A1919] to-[#E60000] rounded-3xl text-white">
+          <div className="max-w-md text-center">
+            <h2 className="text-4xl font-bold mb-6">
+              Join the Availio Community!
+            </h2>
+            <img
+              src={scooterImage}
+              alt="Scooter Gaming"
+              className="w-full h-auto mb-8 rounded-lg"
+            />
+            <p className="text-xl mb-8">
+              Create your account to unlock exclusive features and start your
+              availio journey today.
+            </p>
+
+            <div className="space-y-4 text-left">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                    <span className="text-[#2E709E] font-bold">✓</span>
+                  </div>
+                </div>
+                <p className="ml-3 text-lg">Book Vehicles</p>
+              </div>
+
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                    <span className="text-[#2E709E] font-bold">✓</span>
+                  </div>
+                </div>
+                <p className="ml-3 text-lg">
+                  Streamline your vehicle renting business
+                </p>
+              </div>
+
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                    <span className="text-[#2E709E] font-bold">✓</span>
+                  </div>
+                </div>
+                <p className="ml-3 text-lg">Track your performance</p>
+              </div>
+
+              <div className="flex items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                    <span className="text-[#2E709E] font-bold">✓</span>
+                  </div>
+                </div>
+                <p className="ml-3 text-lg">Connect with other riders</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
