@@ -10,6 +10,8 @@ import { FaHeart, FaThumbsUp, FaLaugh, FaSurprise, FaSadTear, FaAngry } from "re
 import EmojiPicker from 'emoji-picker-react';
 import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db } from "../../config/firebaseConfig";
 
 const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
   const { user } = useSession();
@@ -22,21 +24,29 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
+  // Set up real-time message listener
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const messagesData = await getMessages(conversationId);
-        setMessages(messagesData);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-        setIsLoading(false);
-      }
-    };
+    if (!conversationId) return;
 
-    if (conversationId) {
-      fetchMessages();
-    }
+    setIsLoading(true);
+    const messagesQuery = query(
+      collection(db, "conversations", conversationId, "messages"),
+      orderBy("createdAt", "asc")
+    );
+
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+      const messagesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMessages(messagesData);
+      setIsLoading(false);
+    }, (error) => {
+      console.error("Error listening to messages:", error);
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, [conversationId]);
 
   useEffect(() => {
@@ -54,10 +64,6 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
     try {
       await sendMessage(conversationId, user.uid, newMessage.trim());
       setNewMessage("");
-      
-      // Refresh messages
-      const updatedMessages = await getMessages(conversationId);
-      setMessages(updatedMessages);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -71,8 +77,6 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
   const handleReactionClick = async (messageId, reaction) => {
     try {
       await updateMessageReaction(conversationId, messageId, user.uid, reaction);
-      const updatedMessages = await getMessages(conversationId);
-      setMessages(updatedMessages);
       setShowReactionPicker(null);
     } catch (error) {
       console.error("Error updating reaction:", error);
@@ -94,9 +98,6 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
         type: file.type.startsWith('image/') ? 'image' : 'video',
         url: downloadURL
       });
-
-      const updatedMessages = await getMessages(conversationId);
-      setMessages(updatedMessages);
     } catch (error) {
       console.error("Error uploading media:", error);
     } finally {
@@ -117,120 +118,90 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="h-18 flex flex-row items-center px-4 justify-between border-b border-gray-200">
-        <div className="flex flex-row font-jakarta gap-4 py-3">
-          <img 
-            className="rounded-full w-12 h-12 object-cover" 
-            src={otherUser?.profilePic || "/default-avatar.png"} 
-            alt={otherUser?.displayName}
-          />
-          <div className="flex flex-col">
-            <label className="font-semibold">{otherUser?.displayName}</label>
-            <div className="flex flex-row gap-2 items-center">
-              <div className="rounded-full w-3 h-3 bg-green-400"></div>
-              <label className="text-gray-600">Online</label>
-            </div>
-          </div>
+    <div className="flex flex-col h-full">
+      {/* Chat Header */}
+      <div className="flex items-center gap-3 p-4 border-b border-gray-200">
+        <img
+          src={otherUser?.profilePic || "/default-avatar.png"}
+          alt={otherUser?.displayName || "User"}
+          className="w-10 h-10 rounded-full object-cover"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/default-avatar.png";
+          }}
+        />
+        <div className="flex flex-col">
+          <span className="font-semibold text-lg">
+            {otherUser?.displayName || "Unknown User"}
+          </span>
         </div>
       </div>
 
-      <div className="flex-1 bg-gray-50 rounded-md p-4 overflow-y-auto overflow-x-hidden custom-scrollbar">
-        {messages.length > 0 ? (
+      {/* Messages Container */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+        {isLoading ? (
+          <div className="flex justify-center items-center h-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        ) : messages.length > 0 ? (
           messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.senderId === user.uid ? 'justify-end' : 'justify-start'} mb-4 group`}
+              className={`flex ${
+                message.senderId === user.uid ? "justify-end" : "justify-start"
+              }`}
             >
-              <div className="relative max-w-[85%]">
-                <div
-                  className={`rounded-lg px-4 py-2 break-words ${
-                    message.senderId === user.uid
-                      ? 'bg-[#2E3B5B] text-white'
-                      : 'bg-white border border-gray-200'
-                  }`}
-                >
-                  {message.media && (
-                    <div className="mb-2">
-                      {message.media.type === 'image' ? (
-                        <img 
-                          src={message.media.url} 
-                          alt="Shared image" 
-                          className="max-w-full rounded-lg"
-                        />
-                      ) : (
-                        <video 
-                          src={message.media.url} 
-                          controls 
-                          className="max-w-full rounded-lg"
-                        />
-                      )}
-                    </div>
-                  )}
-                  <p className="text-sm whitespace-pre-wrap">{message.message}</p>
-                  <p className={`text-xs mt-1 ${message.senderId === user.uid ? 'text-gray-300' : 'text-gray-500'}`}>
-                    {formatTimestamp(message.createdAt)}
-                  </p>
-                </div>
-                
-                {/* Message Reactions */}
-                {message.reactions && Object.keys(message.reactions).length > 0 && (
-                  <div className="absolute -bottom-4 right-0 flex gap-1 bg-white rounded-full px-2 py-1 shadow-sm">
-                    {getReactionCount(message.reactions, 'like') > 0 && (
-                      <span className="flex items-center gap-1">
-                        <FaThumbsUp className="text-blue-500" />
-                        <span className="text-xs">{getReactionCount(message.reactions, 'like')}</span>
-                      </span>
+              {message.senderId !== user.uid && (
+                <img
+                  src={otherUser?.profilePic || "/default-avatar.png"}
+                  alt={otherUser?.displayName || "User"}
+                  className="w-8 h-8 rounded-full object-cover mr-2"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/default-avatar.png";
+                  }}
+                />
+              )}
+              <div
+                className={`max-w-[70%] rounded-lg p-3 ${
+                  message.senderId === user.uid
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100"
+                }`}
+              >
+                {message.media && (
+                  <div className="mb-2">
+                    {message.media.type === "image" ? (
+                      <img
+                        src={message.media.url}
+                        alt="Shared media"
+                        className="max-w-full rounded-lg"
+                      />
+                    ) : (
+                      <video
+                        src={message.media.url}
+                        controls
+                        className="max-w-full rounded-lg"
+                      />
                     )}
-                    {getReactionCount(message.reactions, 'heart') > 0 && (
-                      <span className="flex items-center gap-1">
-                        <FaHeart className="text-red-500" />
-                        <span className="text-xs">{getReactionCount(message.reactions, 'heart')}</span>
-                      </span>
-                    )}
-                    {/* Add more reaction types as needed */}
                   </div>
                 )}
-
-                {/* Reaction Picker */}
-                <button
-                  className="absolute -right-8 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => setShowReactionPicker(message.id)}
-                >
-                  <BsEmojiSmile className="text-gray-400 hover:text-gray-600" />
-                </button>
-                
-                {showReactionPicker === message.id && (
-                  <div className="absolute -right-32 top-1/2 transform -translate-y-1/2 bg-white rounded-lg shadow-lg p-2 flex gap-2">
-                    <button onClick={() => handleReactionClick(message.id, 'like')}>
-                      <FaThumbsUp className="text-blue-500 hover:scale-125 transition-transform" />
-                    </button>
-                    <button onClick={() => handleReactionClick(message.id, 'heart')}>
-                      <FaHeart className="text-red-500 hover:scale-125 transition-transform" />
-                    </button>
-                    <button onClick={() => handleReactionClick(message.id, 'laugh')}>
-                      <FaLaugh className="text-yellow-500 hover:scale-125 transition-transform" />
-                    </button>
-                    <button onClick={() => handleReactionClick(message.id, 'wow')}>
-                      <FaSurprise className="text-yellow-500 hover:scale-125 transition-transform" />
-                    </button>
-                    <button onClick={() => handleReactionClick(message.id, 'sad')}>
-                      <FaSadTear className="text-yellow-500 hover:scale-125 transition-transform" />
-                    </button>
-                    <button onClick={() => handleReactionClick(message.id, 'angry')}>
-                      <FaAngry className="text-red-500 hover:scale-125 transition-transform" />
-                    </button>
+                <p>{message.message}</p>
+                {message.reactions && message.reactions.length > 0 && (
+                  <div className="flex gap-1 mt-1">
+                    {message.reactions.map((reaction, index) => (
+                      <span key={index}>{reaction.type}</span>
+                    ))}
                   </div>
                 )}
               </div>
             </div>
           ))
         ) : (
-          <div className="h-full flex items-center justify-center text-gray-400">
+          <div className="flex justify-center items-center h-full text-gray-500">
             No messages yet. Start the conversation!
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       <form onSubmit={handleSendMessage} className="h-18 mt-4 flex gap-5 flex-row justify-between items-center px-4">
