@@ -91,18 +91,40 @@ export const getConversations = async (userId) => {
       throw new Error("Missing user ID");
     }
 
+    console.log("Fetching conversations for user:", userId);
+    
+    // Get all conversations
     const conversationsQuery = query(
-      collection(db, "conversations"),
-      where("participants", "array-contains", userId),
-      orderBy("lastMessageTime", "desc")
+      collection(db, "conversations")
     );
+    
     const conversationsSnapshot = await getDocs(conversationsQuery);
+    console.log("Total conversations found:", conversationsSnapshot.size);
 
-    const conversations = conversationsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    // Filter conversations where the user is a participant
+    const conversations = conversationsSnapshot.docs
+      .map((doc) => {
+        const data = doc.data();
+        console.log("Processing conversation:", { id: doc.id, participants: data.participants });
+        return {
+          id: doc.id,
+          ...data,
+        };
+      })
+      .filter(conversation => {
+        const isParticipant = conversation.participants?.includes(userId);
+        console.log(`Conversation ${conversation.id} - User is participant:`, isParticipant);
+        return isParticipant;
+      });
 
+    // Sort conversations by lastMessageTime
+    conversations.sort((a, b) => {
+      const timeA = a.lastMessageTime?.toDate?.() || new Date(0);
+      const timeB = b.lastMessageTime?.toDate?.() || new Date(0);
+      return timeB - timeA;
+    });
+
+    console.log("Filtered conversations for user:", conversations);
     return conversations;
   } catch (error) {
     console.error("Error fetching conversations:", error);
@@ -148,5 +170,40 @@ export const updateMessageReaction = async (conversationId, messageId, userId, r
   } catch (error) {
     console.error("Error updating message reaction:", error);
     throw new Error("Failed to update reaction");
+  }
+};
+
+// ✅ Create Test Conversation
+export const createTestConversation = async (userId1, userId2) => {
+  try {
+    // Sort user IDs to ensure uniqueness
+    const participants = [userId1, userId2].sort();
+    const conversationId = `${participants[0]}_${participants[1]}`;
+
+    const conversationRef = doc(db, "conversations", conversationId);
+    const conversationSnap = await getDoc(conversationRef);
+
+    if (!conversationSnap.exists()) {
+      await setDoc(conversationRef, {
+        participants,
+        createdAt: Timestamp.now(),
+        lastMessage: "Hi! Let's start a conversation.",
+        lastMessageTime: Timestamp.now(),
+      });
+
+      // Add a test message
+      const messageRef = collection(db, "conversations", conversationId, "messages");
+      await addDoc(messageRef, {
+        senderId: userId1,
+        message: "Hi! Let's start a conversation.",
+        createdAt: Timestamp.now(),
+        reactions: []
+      });
+    }
+
+    return conversationId;
+  } catch (error) {
+    console.error("Error creating test conversation:", error);
+    throw new Error("Failed to create test conversation");
   }
 };
