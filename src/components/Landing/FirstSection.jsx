@@ -19,7 +19,7 @@ const FirstSection = ({ ViewData }) => {
         <div className="md:w-1/2 w-full text-6xl ">
           <h1 className="text-[#2E709E] w-[500px] font-semibold font-roboto md:text-left text-center">
             Check Availability Check{" "}
-            <label className="text-[#E60000]">Avalio.</label>
+            <label className="text-[#E60000]">Availio.</label>
           </h1>
 
           <p className="text-[#2E709E] text-lg md:text-left text-center md:w-[544px] mt-10">
