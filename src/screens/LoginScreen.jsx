@@ -86,7 +86,7 @@ function Login() {
             </div>
 
             <label className="text-xl flex flex-col mt-8 text-center md:text-left md:mt-10 text-[#E60000]">
-              Login to access your scooter gaming account
+              Login to access your Availio account
             </label>
             {error && <p className="error-message">{error}</p>}
 

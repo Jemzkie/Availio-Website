@@ -37,8 +37,8 @@ export default async function handler(req, res) {
               },
             ],
             description: `Rental payment for ${bookingDetails.motorcycleName}`,
-            success_url: `https://scootergaming.vercel.app/payment-success?bookingId=${bookingDetails.bookingId}`,
-            cancel_url: "https://scootergaming.vercel.app/payment-cancelled",
+            success_url: `https://availiowebsite.vercel.app/payment-success?bookingId=${bookingDetails.bookingId}`,
+            cancel_url: "https://availiowebsite.vercel.app/payment-cancelled",
             metadata: {
               user_id: user.uid,
               booking_id: bookingDetails.bookingId,
