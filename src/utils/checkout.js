@@ -28,8 +28,8 @@ const checkout = async (totalTopup, user) => {
               },
             ],
             description: "Top Up Wallet Balance",
-            success_url: "https://scootergaming.vercel.app/dashboard",
-            cancel_url: "https://scootergaming.vercel.app/dashboard",
+            success_url: "https://availiowebsite.vercel.app/dashboard",
+            cancel_url: "https://availiowebsite.vercel.app/dashboard",
             metadata: {
               user_id: user.uid,
             },
