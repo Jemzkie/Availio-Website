@@ -12,6 +12,8 @@ import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import BookingBanner from "./BookingBanner";
+import Cat from "../../assets/images/Cat.jpg";
 
 const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
   const { user } = useSession();
@@ -122,18 +124,21 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
       {/* Chat Header */}
       <div className="flex items-center gap-3 p-4 border-b border-gray-200">
         <img
-          src={otherUser?.profilePic || "/default-avatar.png"}
+          src={otherUser?.profilePic || Cat}
           alt={otherUser?.displayName || "User"}
           className="w-10 h-10 rounded-full object-cover"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "/default-avatar.png";
+            e.target.src = Cat;
           }}
         />
         <div className="flex flex-col">
-          <span className="font-semibold text-lg">
-            {otherUser?.displayName || "Unknown User"}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-lg">
+              {otherUser?.displayName || "Unknown User"}
+            </span>
+            <BookingBanner userId={otherUserId} />
+          </div>
         </div>
       </div>
 
@@ -153,12 +158,12 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
             >
               {message.senderId !== user.uid && (
                 <img
-                  src={otherUser?.profilePic || "/default-avatar.png"}
+                  src={otherUser?.profilePic || Cat}
                   alt={otherUser?.displayName || "User"}
                   className="w-8 h-8 rounded-full object-cover mr-2"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = "/default-avatar.png";
+                    e.target.src = Cat;
                   }}
                 />
               )}

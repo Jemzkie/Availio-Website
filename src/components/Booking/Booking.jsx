@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Wallet from "../General/Wallet";
 import Ribbon from "../General/Ribbon";
 import { MoonLoader } from "react-spinners";
+
 const Booking = ({
   isOpen,
   setTopUpModal,
@@ -14,8 +15,9 @@ const Booking = ({
   handleExtendClick,
   handleRatingClick,
   confirmCancel,
+  initialStatus = "Pending"
 }) => {
-  const [activeFilter, setActiveFilter] = useState("Pending");
+  const [activeFilter, setActiveFilter] = useState(initialStatus);
   const [filteredBookings, setFilteredBookings] = useState([]);
 
   useEffect(() => {
@@ -28,6 +30,11 @@ const Booking = ({
       setFilteredBookings(filtered);
     }
   }, [activeFilter, bookingData]);
+
+  // Update activeFilter when initialStatus changes
+  useEffect(() => {
+    setActiveFilter(initialStatus);
+  }, [initialStatus]);
 
   const formatDateTime = (value) => {
     if (!value) return "Invalid date";
@@ -160,7 +167,7 @@ const Booking = ({
                       Rate Renter
                     </button>
                   )
-                ) : booking.bookingStatus === "Cancelled" ? null : (
+                ) : (
                   <>
                     {booking.bookingStatus === "On-Going" ? (
                       <>
