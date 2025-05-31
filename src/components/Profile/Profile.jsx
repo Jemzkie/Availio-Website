@@ -9,9 +9,10 @@ import { VscUnverified } from "react-icons/vsc";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../config/firebaseConfig";
 import { MdVerified } from "react-icons/md";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaStar } from "react-icons/fa";
 import MapModal from "../Map/MapModal";
 import { GeoPoint } from "firebase/firestore";
+import { getAverageRating } from "../../hooks/ratingService";
 
 const Profile = ({ user, userData }) => {
   const [previewBusinessProfile, setPreviewBusinessProfile] = useState(null);
@@ -39,6 +40,9 @@ const Profile = ({ user, userData }) => {
   const [verificationUrls, setVerificationUrls] = useState([null, null, null]);
   const [mapModalOpen, setMapModalOpen] = useState(false);
   const [businessCoordinates, setBusinessCoordinates] = useState(null);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const documentMappings = [
     { label: "DTI", key: "DTI" },
@@ -60,6 +64,18 @@ const Profile = ({ user, userData }) => {
       setUploadedFiles(uploaded);
     }
   }, [userData]);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      if (user?.uid) {
+        const { averageRating, totalRatings } = await getAverageRating(user.uid);
+        setAverageRating(averageRating);
+        setTotalRatings(totalRatings);
+        setIsLoading(false);
+      }
+    };
+    fetchRating();
+  }, [user?.uid]);
 
   const handleBusinessProfileChange = (e) => {
     const file = e.target.files[0];
@@ -227,15 +243,30 @@ const Profile = ({ user, userData }) => {
                 src={userData?.personalProfile || user.photoURL || Cat}
               />
               <div className="flex flex-col">
-                <label className="text-lg font-semibold">
-                  {userData?.firstName + " " + userData?.lastName + " "}
-                  <label className="text-gray-500">
-                    ({user.displayName || userData.userName})
+                <div className="flex items-center gap-2">
+                  <label className="text-lg font-semibold">
+                    {userData?.firstName + " " + userData?.lastName + " "}
+                    <label className="text-gray-500">
+                      ({user.displayName || userData.userName})
+                    </label>
                   </label>
-                </label>
-                <label className="text-xs text-gray-600">
-                  Your Personal Account Details
-                </label>
+                  {!isLoading && averageRating > 0 && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm text-gray-600">
+                        {averageRating.toFixed(1)} ({totalRatings})
+                      </span>
+                      <FaStar className="text-yellow-400 w-4 h-4" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs text-gray-600">
+                    Your Personal Account Details
+                  </label>
+                  {userData?.isOwner && (
+                    <span className="text-xs text-gray-600">• Owner</span>
+                  )}
+                </div>
               </div>
             </div>
 
