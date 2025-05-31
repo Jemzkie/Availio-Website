@@ -25,6 +25,9 @@ import BookingScreen from "./screens/BookingScreen";
 import { checkUserBan } from "./hooks/banService";
 import BanModal from "./components/General/BanModal";
 import { MoonLoader } from "react-spinners";
+import { doc, getDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { db } from "./config/firebaseConfig";
 
 // Create a wrapper component to handle ban checks
 const BanCheckWrapper = ({ children }) => {
@@ -91,11 +94,22 @@ const BanCheckWrapper = ({ children }) => {
 const AppRoutes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useSession();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setIsLoggedIn(true);
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        // Check if user exists in Firestore
+        const userRef = doc(db, "users", firebaseUser.uid);
+        const userSnap = await getDoc(userRef);
+        
+        if (userSnap.exists()) {
+          setIsLoggedIn(true);
+        } else {
+          // If user doesn't exist in Firestore, sign them out
+          await signOut(auth);
+          setIsLoggedIn(false);
+        }
       } else {
         setIsLoggedIn(false);
       }
@@ -113,8 +127,12 @@ const AppRoutes = () => {
     );
   }
 
+  // Define public routes that don't require authentication
+  const publicRoutes = ['/', '/login', '/register', '/forgotpass', '/verify', '/setpass'];
+
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<LandingScreen />} />
       <Route
         path="/register"
@@ -127,6 +145,8 @@ const AppRoutes = () => {
       <Route path="/forgotpass" element={<ForgotPassScreen />} />
       <Route path="/verify" element={<VerifyScreen />} />
       <Route path="/setpass" element={<SetPassScreen />} />
+
+      {/* Protected Routes */}
       <Route
         path="/dashboard"
         element={
@@ -185,6 +205,18 @@ const AppRoutes = () => {
               <BookingScreen />
             </BanCheckWrapper>
           </PrivateRoute>
+        }
+      />
+
+      {/* Catch all route - redirect to login for any non-existent route */}
+      <Route
+        path="*"
+        element={
+          isLoggedIn ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
         }
       />
     </Routes>

@@ -92,13 +92,28 @@ export const markBookingAsOngoing = async (bookingId, uid, commissionFee) => {
 export const markRatingToRenter = async (bookingId, renterRating, details) => {
   try {
     const bookingRef = doc(db, "bookings", bookingId);
+    const bookingDoc = await getDoc(bookingRef);
+    const booking = bookingDoc.data();
+
+    // Update the booking document
     await updateDoc(bookingRef, {
       renterRating,
       details,
     });
+
+    // Add the rating to the owner's supplierRatings collection
+    const ownerId = booking.ownerId;
+    const ratingsRef = collection(db, "users", ownerId, "supplierRatings");
+    await addDoc(ratingsRef, {
+      rating: renterRating,
+      details,
+      bookingId,
+      createdAt: Timestamp.now()
+    });
+
     return true;
   } catch (error) {
-    console.error("Error updating booking status:", error);
+    console.error("Error updating rating:", error);
     return false;
   }
 };

@@ -4,7 +4,8 @@ import DealsSection from "../components/Landing/DealsSection";
 import StatsSection from "../components/Landing/StatsSection";
 import DownloadAppSection from "../components/Landing/DownloadAppSection";
 import Footer from "../components/General/Footer";
-function HeroSection() {
+
+function LandingScreen() {
   const ViewData = "Landing";
   return (
     <div className="w-full h-auto overflow-x-hidden pt-12">
@@ -17,4 +18,4 @@ function HeroSection() {
   );
 }
 
-export default HeroSection;
+export default LandingScreen;

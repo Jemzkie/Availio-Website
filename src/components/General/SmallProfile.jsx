@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "../../context/SessionContext";
 import { IoNotifications } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import Cat from "../../assets/images/Cat.jpg";
 import { VscUnverified } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
+import { getAverageRating } from "../../hooks/ratingService";
+import { FaStar } from "react-icons/fa";
 
 const SmallProfile = ({ userData, listings }) => {
   const { user } = useSession();
   const navigate = useNavigate();
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      if (user?.uid) {
+        const { averageRating, totalRatings } = await getAverageRating(user.uid);
+        setAverageRating(averageRating);
+        setTotalRatings(totalRatings);
+        setIsLoading(false);
+      }
+    };
+    fetchRating();
+  }, [user?.uid]);
 
   const pendingBookings = listings.filter((listing) =>
     listing.bookings.some((booking) => booking.bookingStatus === "Pending")
@@ -36,7 +53,17 @@ const SmallProfile = ({ userData, listings }) => {
       </div>
       <div className="flex flex-row gap-6">
         <div className="flex flex-col items-end">
-          <label className="font-semibold text-sm">{user.displayName}</label>
+          <div className="flex items-center gap-2">
+            <label className="font-semibold text-sm">{user.displayName}</label>
+            {!isLoading && averageRating > 0 && (
+              <div className="flex items-center gap-1">
+                <span className="text-sm text-gray-600">
+                  {averageRating.toFixed(1)} ({totalRatings})
+                </span>
+                <FaStar className="text-yellow-400 w-4 h-4" />
+              </div>
+            )}
+          </div>
           <div className="flex flex-row gap-2 items-center">
             <label className="text-gray-600 text-sm">
               {user.displayRole || "Vehicle Owner"}
@@ -45,7 +72,7 @@ const SmallProfile = ({ userData, listings }) => {
               <MdVerified className="text-red-400 w-5 h-5" />
             ) : (
               <VscUnverified className="w-5 h-5" />
-            )}{" "}
+            )}
           </div>
         </div>
 
