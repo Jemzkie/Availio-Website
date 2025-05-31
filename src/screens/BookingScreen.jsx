@@ -22,6 +22,7 @@ import ConfirmationCancelModal from "../components/Booking/ConfirmationCancelMod
 
 const BookingScreen = () => {
   const ViewData = "Booking";
+  const [initialStatus, setInitialStatus] = useState("Pending");
 
   const [TopUpModal, setTopUpModal] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -37,6 +38,16 @@ const BookingScreen = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const { user } = useSession();
+
+  useEffect(() => {
+    // Get the status from localStorage when component mounts
+    const storedStatus = localStorage.getItem('bookingFilterStatus');
+    if (storedStatus) {
+      setInitialStatus(storedStatus);
+      // Clear the stored status after using it
+      localStorage.removeItem('bookingFilterStatus');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -161,6 +172,7 @@ const BookingScreen = () => {
           handleCancelClick={handleCancelClick}
           handleExtendClick={handleExtendClick}
           handleRatingClick={handleRatingClick}
+          initialStatus={initialStatus}
         />
       </div>
       <WalletModal

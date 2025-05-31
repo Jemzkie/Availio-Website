@@ -5,6 +5,10 @@ import {
   addDoc,
   collection,
   Timestamp,
+  query,
+  where,
+  getDocs,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
@@ -109,5 +113,43 @@ export const markBookingAsCancelled = async (bookingId) => {
   } catch (error) {
     console.error("Error updating booking status:", error);
     return false;
+  }
+};
+
+export const getActiveBookingsForUser = async (userId, currentUserId) => {
+  try {
+    const bookingsRef = collection(db, "bookings");
+    const q = query(
+      bookingsRef,
+      where("renterId", "==", userId),
+      where("bookingStatus", "in", ["Pending", "On-Going"])
+    );
+    
+    const querySnapshot = await getDocs(q);
+    const activeBookings = [];
+    
+    for (const bookingDoc of querySnapshot.docs) {
+      const bookingData = bookingDoc.data();
+      // Get vehicle details
+      const vehicleRef = doc(db, "vehicles", bookingData.vehicleId);
+      const vehicleSnap = await getDoc(vehicleRef);
+      
+      if (vehicleSnap.exists()) {
+        const vehicleData = vehicleSnap.data();
+        // Only include bookings where the current user is the owner
+        if (vehicleData.ownerId === currentUserId) {
+          activeBookings.push({
+            id: bookingDoc.id,
+            ...bookingData,
+            vehicleName: vehicleData.name
+          });
+        }
+      }
+    }
+    
+    return activeBookings;
+  } catch (error) {
+    console.error("Error getting active bookings:", error);
+    return [];
   }
 };
