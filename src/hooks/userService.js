@@ -43,7 +43,6 @@ export const registerUser = async (email, password, userData) => {
       businessAddress: "",
       businessEmail: "",
       businessVerified: false,
-      numRides: 0,
       role: "Owner",
       profilePicture: "",
       provider: "email",

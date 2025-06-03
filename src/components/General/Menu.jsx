@@ -49,7 +49,7 @@ const MenuScreen = ({ ViewData }) => {
           <label className="text-white text-lg cursor-pointer">Dashboard</label>
         </Link>
         <Link
-          to="/listing"
+          to="/listings"
           className={`flex gap-2 items-center py-3 rounded-md duration-300  ${
             ViewData === "Listing" ? "bg-[#E60000]" : ""
           }`}

@@ -1,7 +1,6 @@
 {
   "rewrites": [
-    { "source": "/dashboard", "destination": "/" },
-    { "source": "/:path*", "destination": "/" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {

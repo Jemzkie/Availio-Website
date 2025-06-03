@@ -12,6 +12,9 @@ import { storage } from "../../config/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
+import BookingBanner from "./BookingBanner";
+import Cat from "../../assets/images/Cat.jpg";
+import { getAverageRating } from "../../hooks/ratingService";
 
 const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
   const { user } = useSession();
@@ -21,8 +24,22 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showReactionPicker, setShowReactionPicker] = useState(null);
   const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalRatings, setTotalRatings] = useState(0);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  // Fetch rating data for the other user
+  useEffect(() => {
+    const fetchRating = async () => {
+      if (otherUserId) {
+        const { averageRating, totalRatings } = await getAverageRating(otherUserId);
+        setAverageRating(averageRating);
+        setTotalRatings(totalRatings);
+      }
+    };
+    fetchRating();
+  }, [otherUserId]);
 
   // Set up real-time message listener
   useEffect(() => {
@@ -121,20 +138,37 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
     <div className="flex flex-col h-full">
       {/* Chat Header */}
       <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-        <img
-          src={otherUser?.profilePic || "/default-avatar.png"}
-          alt={otherUser?.displayName || "User"}
-          className="w-10 h-10 rounded-full object-cover"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "/default-avatar.png";
-          }}
-        />
-        <div className="flex flex-col">
-          <span className="font-semibold text-lg">
-            {otherUser?.displayName || "Unknown User"}
-          </span>
+        <div className="flex items-center gap-2">
+          <img
+            src={otherUser.profilePic || Cat}
+            alt="Profile"
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-gray-800">
+                {otherUser.firstName} {otherUser.lastName}
+              </span>
+              {otherUser.isOwner && (
+                <div className="flex items-center gap-1">
+                  <span className="text-xs text-gray-500">Owner</span>
+                  {averageRating > 0 && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-gray-500">
+                        {averageRating.toFixed(1)} ({totalRatings})
+                      </span>
+                      <span className="text-yellow-400">★</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <span className="text-sm text-gray-500">
+              {otherUser.isOwner ? "Vehicle Owner" : "Renter"}
+            </span>
+          </div>
         </div>
+        <BookingBanner userId={otherUserId} />
       </div>
 
       {/* Messages Container */}
@@ -153,12 +187,12 @@ const MessageContainer = ({ conversationId, otherUserId, otherUser }) => {
             >
               {message.senderId !== user.uid && (
                 <img
-                  src={otherUser?.profilePic || "/default-avatar.png"}
+                  src={otherUser?.profilePic || Cat}
                   alt={otherUser?.displayName || "User"}
                   className="w-8 h-8 rounded-full object-cover mr-2"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = "/default-avatar.png";
+                    e.target.src = Cat;
                   }}
                 />
               )}
