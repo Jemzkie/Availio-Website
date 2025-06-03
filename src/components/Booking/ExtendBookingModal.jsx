@@ -20,6 +20,14 @@ const ExtendBookingModal = ({ isOpen, onClose, booking, userData }) => {
     const extendAmount = booking.vehicle.pricePerDay * daysToExtend;
     const extendCommissionAmount = extendAmount - extendAmount * 0.9;
 
+    const newBalance = userData.walletBalance - extendCommissionAmount;
+
+    if (newBalance <= 0) {
+      alert("Insufficient wallet balance to cover the commission fee.");
+      setConfirmLoading(false);
+      return;
+    }
+
     const res = await markExtendBooking(
       booking.bookingId,
       formattedDate,
