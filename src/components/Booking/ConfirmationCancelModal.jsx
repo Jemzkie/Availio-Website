@@ -13,9 +13,7 @@ const ConfirmationCancelModal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm animate-fade-in">
-        <h3 className="text-lg font-semibold mb-4">
-          Confirm Cancel Completion
-        </h3>
+        <h3 className="text-lg font-semibold mb-4">Cancel Booking</h3>
         <p>
           Are you sure you want to mark this booking as{" "}
           <strong>Cancelled</strong>?

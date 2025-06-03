@@ -41,11 +41,11 @@ const BookingScreen = () => {
 
   useEffect(() => {
     // Get the status from localStorage when component mounts
-    const storedStatus = localStorage.getItem('bookingFilterStatus');
+    const storedStatus = localStorage.getItem("bookingFilterStatus");
     if (storedStatus) {
       setInitialStatus(storedStatus);
       // Clear the stored status after using it
-      localStorage.removeItem('bookingFilterStatus');
+      localStorage.removeItem("bookingFilterStatus");
     }
   }, []);
 
@@ -121,7 +121,7 @@ const BookingScreen = () => {
 
     const newBalance = userData.walletBalance - commissionFee;
 
-    if (newBalance < 0) {
+    if (newBalance <= 0) {
       alert("Insufficient wallet balance to cover the commission fee.");
       setConfirmLoading(false);
       return;
