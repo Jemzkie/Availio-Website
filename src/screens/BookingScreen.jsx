@@ -53,6 +53,7 @@ const BookingScreen = () => {
     const fetchData = async () => {
       try {
         const userRequest = await fetchUser(user.uid);
+        console.log(userRequest);
         setUserData(userRequest);
 
         const bookingRequest = await fetchBookedVehiclesWithRenters(user.uid);
@@ -117,6 +118,14 @@ const BookingScreen = () => {
 
     const commissionFee =
       selectedBooking.totalPrice - selectedBooking.totalPrice * 0.9;
+
+    const newBalance = userData.walletBalance - commissionFee;
+
+    if (newBalance < 0) {
+      alert("Insufficient wallet balance to cover the commission fee.");
+      setConfirmLoading(false);
+      return;
+    }
 
     await markBookingAsOngoing(
       selectedBooking.bookingId,

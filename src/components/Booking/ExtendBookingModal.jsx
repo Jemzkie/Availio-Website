@@ -12,17 +12,8 @@ const ExtendBookingModal = ({ isOpen, onClose, booking, userData }) => {
     if (!daysToExtend || isNaN(daysToExtend) || daysToExtend < 1)
       return alert("Please enter a valid number of days to extend.");
 
-    // Convert "2025-04-11 9:00 PM" into a Date object
-    const originalDate = parse(
-      booking.returnDate,
-      "yyyy-MM-dd hh:mm a",
-      new Date()
-    );
-
-    // Add days
+    const originalDate = booking.returnDate.toDate(); // ✅ Fix here
     const extendedDate = addDays(originalDate, Number(daysToExtend));
-
-    // Format as "YYYY-MM-DD hh:mm A"
     const formattedDate = format(extendedDate, "yyyy-MM-dd h:mm a");
 
     setLoading(true);
